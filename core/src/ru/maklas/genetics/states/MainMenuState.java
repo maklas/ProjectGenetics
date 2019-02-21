@@ -9,6 +9,7 @@ public class MainMenuState extends State {
     @Override
     protected void onCreate() {
         A.skins.load();
+        pushState(new GeneticsGenerationState());
     }
 
 

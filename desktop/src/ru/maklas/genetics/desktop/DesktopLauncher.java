@@ -11,7 +11,8 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.height = 640;
         config.width = 360;
-        config.resizable = false;
+        config.resizable = true;
+        config.samples = 4;
         config.title = MNW.GAME_NAME;
         Log.logger = new FileLogger();
         new LwjglApplication(new ProjectGenetics(), config);

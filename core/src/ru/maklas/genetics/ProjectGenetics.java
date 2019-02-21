@@ -86,6 +86,11 @@ public class ProjectGenetics extends ApplicationAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+        MNW.gsm.resize(width, height);
+    }
+
+    @Override
     public void pause() {
         MNW.gsm.toBackground();
     }
