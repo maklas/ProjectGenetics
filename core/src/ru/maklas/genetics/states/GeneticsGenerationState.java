@@ -1,10 +1,12 @@
 package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.MovementSystem;
@@ -15,6 +17,11 @@ import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.engine.rendering.RenderingSystem;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
+import ru.maklas.genetics.tests.Chromosome;
+import ru.maklas.genetics.tests.Crossover;
+import ru.maklas.genetics.tests.Gene;
+import ru.maklas.genetics.tests.GeneNames;
+import ru.maklas.genetics.utils.Log;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.genetics.utils.functions.FunctionDrawer;
 import ru.maklas.genetics.utils.functions.GraphFunction;
@@ -30,6 +37,8 @@ public class GeneticsGenerationState extends AbstractEngineState {
     OrthographicCamera cam;
     FunctionDrawer drawer;
     GraphFunction function;
+    private Array<Chromosome> chromosomes = new Array<>();
+    private Crossover crossover = new Crossover();
 
     @Override
     protected void loadAssets() {
@@ -37,6 +46,12 @@ public class GeneticsGenerationState extends AbstractEngineState {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         drawer = new FunctionDrawer();
         function = new ParabolaFunction(0.1f, 0, 0);
+        for (int i = 0; i < 25; i++) {
+            Chromosome chromosome = new Chromosome();
+            chromosome.add(new Gene(4).setName(GeneNames.X).setMinMaxDouble(0, 100).randomize());
+            chromosome.add(new Gene(4).setName(GeneNames.Y).setMinMaxDouble(0, 100).randomize());
+            chromosomes.add(chromosome);
+        }
     }
 
     @Override
@@ -70,6 +85,22 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void update(float dt) {
         engine.update(dt);
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.U)){
+            Array<Chromosome> cpy = chromosomes.cpy();
+            chromosomes.clear();
+
+
+            while (chromosomes.size < 25){
+                Chromosome a = cpy.get(Utils.rand.nextInt(cpy.size));
+                Chromosome b = cpy.get(Utils.rand.nextInt(cpy.size));
+                while (b == a){
+                    b = cpy.get(Utils.rand.nextInt(cpy.size));
+                }
+                Chromosome child = crossover.cross(a, b, Utils.rand.nextInt((8 * 8) + 1));
+                chromosomes.add(child);
+            }
+        }
+
     }
 
     @Override
@@ -90,13 +121,22 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
         sr.setColor(Color.CYAN);
         drawer.draw(function, sr, Utils.camLeftX(cam), Utils.camRightX(cam), cam.zoom);
-
+        sr.setColor(Color.GREEN);
+        drawChromosomes(sr);
         sr.end();
 
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
         engine.render();
         batch.end();
+    }
+
+    private void drawChromosomes(ShapeRenderer sr) {
+        for (Chromosome chromosome : chromosomes) {
+            float x = (float) chromosome.get(GeneNames.X).decodeAsDouble();
+            float y = (float) chromosome.get(GeneNames.Y).decodeAsDouble();
+            sr.circle(x, y, 3 * cam.zoom, 6);
+        }
     }
 
     private void drawNet() {

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.utils.BinaryUtils;
 import ru.maklas.genetics.utils.ClassUtils;
-import ru.maklas.genetics.utils.Gray;
+import ru.maklas.genetics.utils.StringUtils;
 
 /**
  * Created by maklas on 04-Jan-18.
@@ -14,13 +14,11 @@ import ru.maklas.genetics.utils.Gray;
 public class Test {
 
     public static void main(String[] args){
-        for (int i = 0; i < 256; i++) {
-            byte b = ((byte) i);
-            byte gray = Gray.encode((b));
-            String originalString = BinaryUtils.toBinString((b));
-            String grayString = BinaryUtils.toBinString(gray);
-            String decodedString = BinaryUtils.toBinString(Gray.decode(gray));
-            System.out.println(originalString + " -> " + grayString + " > " + decodedString);
+        Chromosome a = new Chromosome().add(new Gene(4)).add(new Gene(4));
+        Chromosome b = new Chromosome().add(new Gene(new byte[]{-1, -1, -1, -1})).add(new Gene(new byte[]{-1, -1, -1, -1}));
+        for (int i = 0; i < 64; i++) {
+            String s = new Crossover().cross(a, b, i).byteCode();
+            System.out.println(s + (StringUtils.countChars(s, '0') == i ? "" : " Fail"));
         }
     }
 
