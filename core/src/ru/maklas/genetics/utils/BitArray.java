@@ -7,11 +7,7 @@ public class BitArray {
 
     public BitArray(int bitLength) {
         this.length = bitLength;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bitLength; i++) {
-            sb.append('0');
-        }
-        this.value = sb.toString();
+        fill(false);
     }
 
     BitArray(String value) {
@@ -101,5 +97,14 @@ public class BitArray {
             sb.append(array.value);
         }
         return new BitArray(sb.toString());
+    }
+
+    public void fill(boolean set) {
+        char c = set ? '1' : '0';
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(c);
+        }
+        this.value = sb.toString();
     }
 }

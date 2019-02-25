@@ -130,4 +130,9 @@ public class Gene {
                 "asDouble = " + decodeAsDouble() + '\n' +
                 '}';
     }
+
+    public Gene fill(boolean set) {
+        bits.fill(set);
+        return this;
+    }
 }

@@ -36,4 +36,23 @@ public class Crossover {
         return child;
     }
 
+
+    public Chromosome cross(Chromosome a, Chromosome b, int[] crossingPoints){
+        //5
+        //0, 3, 5, 10
+        //0, 3, 5, 10, 16
+        Chromosome child = a.cpy();
+        int finalPoint = a.length();
+        for (int i = 0; i < (crossingPoints.length + 1) / 2; i++) {
+            int crossStart = crossingPoints[i * 2];
+            int crossEnd = crossingPoints.length > i * 2 + 1 ? crossingPoints[i * 2 + 1] : finalPoint;
+
+            for (int j = crossStart; j < crossEnd; j++) {
+                child.set(j, b.getBit(j));
+            }
+        }
+
+        return child;
+    }
+
 }

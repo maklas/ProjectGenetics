@@ -12,13 +12,12 @@ import ru.maklas.genetics.utils.*;
 public class Test {
 
     public static void main(String[] args){
-        BitArray bits = new BitArray(16);
-        for (int i = 0; i < Math.pow(2, 12); i++) {
-            bits.setAsLong(i);
-            String s = bits.toString();
-            BitArray gray = bits.binToGray();
-            System.out.println(i + ": " + s + " -> " + gray.toString(8) + " -> " + (s.equals(gray.grayToBin().toString()) ? " Ok" : " Fail"));
-        }
+        Chromosome a = new Chromosome().add(new Gene(4)).add(new Gene(4));
+        Chromosome b = new Chromosome().add(new Gene(4).fill(true)).add(new Gene(4).fill(true));
+        System.out.println(a.byteCode());
+        System.out.println(b.byteCode());
+        System.out.println("-------------");
+        System.out.println(new Crossover().cross(a, b, new int[]{2, 4}).byteCode());
     }
 
     private static String toString(BitArray bits){

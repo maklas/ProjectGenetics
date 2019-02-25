@@ -1,7 +1,6 @@
 package ru.maklas.genetics.tests;
 
 import com.badlogic.gdx.utils.Array;
-import ru.maklas.genetics.utils.BinaryUtils;
 
 /**
  * Хромосома (особь, генотип).
@@ -57,5 +56,35 @@ public class Chromosome {
             return sb.toString();
         }
         return "";
+    }
+
+    public Chromosome cpy() {
+        Chromosome chromosome = new Chromosome();
+        for (Gene gene : genes) {
+            chromosome.add(gene.cpy());
+        }
+        return chromosome;
+    }
+
+    public boolean getBit(int pos) {
+        for (Gene gene : genes) {
+            if (gene.length() <= pos){
+                pos-= gene.length();
+            } else {
+                return gene.getBit(pos);
+            }
+        }
+        return false;
+    }
+
+    public void set(int pos, boolean set) {
+        for (Gene gene : genes) {
+            if (pos >= gene.length()){
+                pos -= gene.length();
+            } else {
+                gene.setBit(pos, set);
+            }
+        }
+
     }
 }
