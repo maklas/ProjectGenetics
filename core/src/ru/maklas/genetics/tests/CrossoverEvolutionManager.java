@@ -34,6 +34,15 @@ public class CrossoverEvolutionManager extends EvolutionManager {
             Chromosome chromosomeA = a.get(M.chromosome).chromosome;
             Chromosome chromosomeB = b.get(M.chromosome).chromosome;
             Chromosome newChromosome = new Crossover().cross(chromosomeA, chromosomeB, Utils.rand.nextInt(chromosomeA.length()));
+
+            //Random mutation part
+            for (Gene gene : newChromosome.getGenes()) {
+                int numberOfMutations = Utils.rand.nextInt(1);
+                for (int j = 0; j < numberOfMutations; j++) {
+                    gene.setBit(Utils.rand.nextInt(gene.length()), Utils.rand.nextBoolean());
+                }
+            }
+
             nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosome, generationNumber, a, b));
         }
 

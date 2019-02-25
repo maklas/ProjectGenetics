@@ -22,7 +22,6 @@ import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Crossover;
 import ru.maklas.genetics.tests.CrossoverEvolutionManager;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -80,7 +79,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
     @Override
     protected void update(float dt) {
-        engine.update(dt);
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
             engine.dispatch(new ResetEvolutionRequest());
         } else
@@ -114,6 +112,8 @@ public class GeneticsGenerationState extends AbstractEngineState {
                 engine.dispatch(new EvolveRequest());
             }
         }
+
+        engine.update(dt);
     }
 
     @Override

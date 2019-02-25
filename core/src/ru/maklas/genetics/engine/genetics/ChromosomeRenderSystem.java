@@ -223,7 +223,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
 
     private Array<Entity> getChromosomesUnderMouse(Array<Entity> entities){
         final Vector2 mouse = Utils.getMouse(cam);
-        final float range = 10 + cam.zoom;
+        final float range = 10 * cam.zoom;
         final float range2 = range * range;
 
         if (currentGeneration == null) return entities;
