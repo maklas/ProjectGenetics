@@ -21,16 +21,16 @@ public class Crossover {
             Gene geneB = genesB.get(i);
             if (crossPoint <= 0){ //Прошли точку, просто переливаем что есть из второй хромосомы.
                 child.add(geneB.cpy());
-                crossPoint -= geneB.length() * 8;
-            } else if (crossPoint > geneA.length() * 8){ //До точки ещё далеко, берем из А.
+                crossPoint -= geneB.length();
+            } else if (crossPoint > geneA.length()){ //До точки ещё далеко, берем из А.
                 child.add(geneA.cpy());
-                crossPoint -= geneA.length() * 8;
+                crossPoint -= geneA.length();
             } else { //Точка кроссовера находится где-то посередине этого гена.
                 Gene cpy = geneA.cpy();
-                for (int j = crossPoint; j < cpy.length() * 8; j++) {
+                for (int j = crossPoint; j < cpy.length(); j++) {
                     cpy.setBit(j, geneB.getBit(j));
                 }
-                crossPoint -= geneA.length() * 8;
+                crossPoint -= geneA.length();
                 child.add(cpy);
             }
         }

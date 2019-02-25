@@ -7,10 +7,6 @@ import android.view.WindowManager;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import io.fabric.sdk.android.Fabric;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.utils.Config;
 import ru.maklas.genetics.utils.Log;
@@ -29,8 +25,6 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
 
-        enableCrashlytics();
-        MNW.crash = new AndroidCrashReport();
         MNW.device = new AndroidDevice(this);
         MNW.statistics = new AndroidStatistics();
 
@@ -41,15 +35,6 @@ public class AndroidLauncher extends AndroidApplication {
 
     private ApplicationListener getLauncher() {
         return new ProjectGenetics();
-    }
-
-    private void enableCrashlytics() {
-        if (Fabric.isInitialized()) return;
-        try {
-            Fabric.with(getApplicationContext(), new Crashlytics());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void loadWithAds(AndroidApplicationConfiguration config){
@@ -64,14 +49,6 @@ public class AndroidLauncher extends AndroidApplication {
 
         //LibGDX layout
         View libgdxView = initializeForView(getLauncher(), config);
-
-        //Interstitial
-
-        MobileAds.initialize(getApplicationContext(), Config.adMobAppId);
-        InterstitialAd interstitialAd = new InterstitialAd(getApplicationContext());
-        interstitialAd.setAdUnitId(Config.useFakeAds ? Config.adMobFakeInterstitialId : Config.adMobInterstitialId);
-        MNW.ads = new AndroidAds(interstitialAd, this);
-        Log.trace("Android ads are loaded");
 
         //Combinig layouts
         //RelativeLayout.LayoutParams adParams =

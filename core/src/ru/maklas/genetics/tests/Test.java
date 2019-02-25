@@ -3,9 +3,7 @@ package ru.maklas.genetics.tests;
 
 import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.mnw.MNW;
-import ru.maklas.genetics.utils.BinaryUtils;
-import ru.maklas.genetics.utils.ClassUtils;
-import ru.maklas.genetics.utils.StringUtils;
+import ru.maklas.genetics.utils.*;
 
 /**
  * Created by maklas on 04-Jan-18.
@@ -14,12 +12,17 @@ import ru.maklas.genetics.utils.StringUtils;
 public class Test {
 
     public static void main(String[] args){
-        Chromosome a = new Chromosome().add(new Gene(4)).add(new Gene(4));
-        Chromosome b = new Chromosome().add(new Gene(new byte[]{-1, -1, -1, -1})).add(new Gene(new byte[]{-1, -1, -1, -1}));
-        for (int i = 0; i < 64; i++) {
-            String s = new Crossover().cross(a, b, i).byteCode();
-            System.out.println(s + (StringUtils.countChars(s, '0') == i ? "" : " Fail"));
+        BitArray bits = new BitArray(16);
+        for (int i = 0; i < Math.pow(2, 12); i++) {
+            bits.setAsLong(i);
+            String s = bits.toString();
+            BitArray gray = bits.binToGray();
+            System.out.println(i + ": " + s + " -> " + gray.toString(8) + " -> " + (s.equals(gray.grayToBin().toString()) ? " Ok" : " Fail"));
         }
+    }
+
+    private static String toString(BitArray bits){
+        return bits.toString(4) + " (" + bits.asLong() + "/" + bits.maxValue() + ")";
     }
 
     private static void countStrings(){

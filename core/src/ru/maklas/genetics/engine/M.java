@@ -2,13 +2,15 @@ package ru.maklas.genetics.engine;
 
 
 import com.badlogic.gdx.utils.ObjectMap;
+import ru.maklas.genetics.engine.genetics.ChromosomeComponent;
+import ru.maklas.genetics.engine.genetics.GenerationComponent;
+import ru.maklas.genetics.engine.genetics.ParentsComponent;
+import ru.maklas.genetics.engine.other.*;
+import ru.maklas.genetics.engine.rendering.*;
 import ru.maklas.mengine.ComponentMapper;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.EntitySystem;
 import ru.maklas.mengine.UpdatableEntitySystem;
-import ru.maklas.genetics.engine.other.*;
-import ru.maklas.genetics.engine.projectiles.ProjectileComponent;
-import ru.maklas.genetics.engine.rendering.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -27,7 +29,10 @@ public class M {
     public static final ComponentMapper<AnimationComponent>             anim = ComponentMapper.of(AnimationComponent.class); //Анимации
     public static final ComponentMapper<TTLComponent>                   ttl = ComponentMapper.of(TTLComponent.class); //Удаление Entity из движка через определённое время
     public static final ComponentMapper<MovementComponent>              move = ComponentMapper.of(MovementComponent.class); // Простое движение Entity (vx,vy)
-    public static final ComponentMapper<ProjectileComponent>            proj = ComponentMapper.of(ProjectileComponent.class); // Снаряд
+
+    public static final ComponentMapper<ChromosomeComponent>            chromosome = ComponentMapper.of(ChromosomeComponent.class);
+    public static final ComponentMapper<GenerationComponent>            generation = ComponentMapper.of(GenerationComponent.class);
+    public static final ComponentMapper<ParentsComponent>               parents = ComponentMapper.of(ParentsComponent.class);
 
 
     /** Сортируем системы в порядке их обновления в Engine.update() **/

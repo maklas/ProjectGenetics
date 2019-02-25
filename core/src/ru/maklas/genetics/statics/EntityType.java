@@ -6,10 +6,7 @@ import ru.maklas.mengine.Entity;
 public class EntityType {
 
     public static final int BACKGROUND = 1;
-    public static final int CREEP = 2;
-    public static final int TOWER = 3;
-    public static final int PROJECTILE = 4;
-    public static final int SOCKET = 5;
+    public static final int CHROMOSOME = 2;
     private static final EntityType[] map;
 
     static {
@@ -38,10 +35,7 @@ public class EntityType {
 
         map = new EntityType[16];
         map[BACKGROUND]       = new EntityType(background, none);
-        map[CREEP]            = new EntityType(creep, tower | projectile);
-        map[TOWER]            = new EntityType(tower, creep);
-        map[PROJECTILE]       = new EntityType(projectile, creep);
-        map[SOCKET]     = new EntityType(none, none);
+        map[CHROMOSOME]       = new EntityType(none, none);
         //Маски можно перечислять через "|", чтобы их комбинировать: new EntityType(bird, pipe | coin | feather)
     }
 
@@ -78,10 +72,7 @@ public class EntityType {
     public static String typeToString(int code) {
         switch (code) {
             case BACKGROUND: return "BACKGROUND";
-            case CREEP: return "CREEP";
-            case TOWER: return "TOWER";
-            case PROJECTILE: return "PROJECTILE";
-            case SOCKET: return "SOCKET";
+            case CHROMOSOME: return "CHROMOSOME";
             default: return "UNKNOWN";
         }
     }

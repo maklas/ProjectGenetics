@@ -46,7 +46,6 @@ public class CameraSystem extends EntitySystem {
                 case FOLLOW_ENTITY:
                     Entity byId = getEngine().findById(cc.followEntityId);
                     if (byId == null){
-                        cc.mode = CameraMode.JUST_LOOK;
                         continue;
                     }
                     if (cc.followX) e.x = byId.x - cc.followOffsetX;

@@ -48,6 +48,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     Array<EntitySystem> pausedSystems = new Array<>();
     boolean wasUsingRuler = false;
     boolean isUsingRuler = false;
+    boolean drawTextInfo = true;
     Vector2 rulerStart = new Vector2();
     Vector2 rulerEnd = new Vector2();
 
@@ -87,8 +88,16 @@ public class EntityDebugSystem extends RenderEntitySystem {
         return this;
     }
 
+    public EntityDebugSystem setTextInfoEnabled(boolean enabled) {
+        this.drawTextInfo = enabled;
+        return this;
+    }
+
     @Override
     public void render() {
+        batch.setProjectionMatrix(cam.combined);
+        batch.begin();
+
         font.setColor(color);
 
         updateCamera();
@@ -103,21 +112,24 @@ public class EntityDebugSystem extends RenderEntitySystem {
             drawCirclesOnEntities();
         }
 
-        try {
-            Vector2 mouse = Utils.toScreen(Gdx.input.getX(), Gdx.input.getY(), cam);
-            float rangeSquared = range * range;
-            for (Entity entity : entities) {
-                if (Vector2.dst2(mouse.x, mouse.y, entity.x, entity.y) < rangeSquared){
-                    printEntity(entity);
-                    break;
+        if (drawTextInfo) {
+            try {
+                Vector2 mouse = Utils.toScreen(Gdx.input.getX(), Gdx.input.getY(), cam);
+                float rangeSquared = range * range;
+                for (Entity entity : entities) {
+                    if (Vector2.dst2(mouse.x, mouse.y, entity.x, entity.y) < rangeSquared) {
+                        printEntity(entity);
+                        break;
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         if (help) drawHelp();
         if (isUsingRuler) drawRuler();
+        batch.end();
     }
 
     private void updateEntities() {
@@ -230,7 +242,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         batch.setProjectionMatrix(cam.combined);
         Array<Component> components = e.getComponents();
 
-        float scale = 2f * getSafeCamZoom();
+        float scale = 1f * getSafeCamZoom();
 
         float x = Utils.camLeftX(cam) + (5 * cam.zoom);
         float y = Utils.camTopY(cam) - (5 * cam.zoom);
@@ -271,7 +283,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private float getSafeCamZoom(){
-        return Math.max(0.1f, cam.zoom);
+        return Math.max(0.05f, cam.zoom);
     }
 
     private String ff(float f){

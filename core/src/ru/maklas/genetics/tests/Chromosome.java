@@ -50,7 +50,7 @@ public class Chromosome {
         if (genes.size > 0) {
             StringBuilder sb = new StringBuilder();
             for (Gene gene : genes) {
-                sb.append(BinaryUtils.toBinString(gene.getRawData()));
+                sb.append(gene.getRawData());
                 sb.append(" ");
             }
             sb.setLength(sb.length() - 1);
