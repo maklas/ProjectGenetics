@@ -49,8 +49,8 @@ public class RenderingSystem extends IterableZSortedRenderSystem<RenderComponent
             //before rendering background
         }
 
-        if (Layers.socket > oldLayer && Layers.socket <= newLayer){
-            //before rendering socket
+        if (Layers.generation > oldLayer && Layers.generation <= newLayer){
+            //before rendering generation
         }
     }
 

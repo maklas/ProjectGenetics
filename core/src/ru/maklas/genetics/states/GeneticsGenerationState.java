@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
-import ru.maklas.genetics.engine.M;
-import ru.maklas.genetics.engine.genetics.*;
+import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
+import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
+import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
+import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.MovementSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
@@ -19,11 +19,8 @@ import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
-import ru.maklas.genetics.statics.Layers;
-import ru.maklas.genetics.tests.Chromosome;
 import ru.maklas.genetics.tests.Crossover;
-import ru.maklas.genetics.tests.Gene;
-import ru.maklas.genetics.tests.GeneNames;
+import ru.maklas.genetics.tests.CrossoverEvolutionManager;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Bundler;
@@ -33,11 +30,8 @@ import ru.maklas.mengine.UpdatableEntitySystem;
 
 public class GeneticsGenerationState extends AbstractEngineState {
 
-    private static final int generationSize = 30;
     private ShapeRenderer sr;
     private OrthographicCamera cam;
-    private Counter chromosomeIdCounter = new Counter(100_000, 2_000_000_000);
-    private int currentGeneration = 0;
 
     @Override
     protected void loadAssets() {
@@ -52,6 +46,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         bundler.set(B.gsmState, this);
         bundler.set(B.dt, 1 / 60f);
         bundler.set(B.sr, sr);
+        bundler.set(B.evol, new CrossoverEvolutionManager(new Crossover()));
     }
 
     @Override
@@ -60,7 +55,14 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new ChromosomeSystem());
         engine.add(new UpdatableEntitySystem());
         engine.add(new AnimationSystem());
-        engine.add(new EntityDebugSystem().setTextInfoEnabled(false));
+        engine.add(new EntityDebugSystem()
+                .setTextInfoEnabled(false)
+                .addHelp("R", "Restart")
+                .addHelp("E", "Evolve")
+                .addHelp("Y", "Keep Evolving")
+                .addHelp("V", "Change view")
+                .addHelp("LMB", "Select Chromosome")
+        );
         engine.add(new CameraSystem());
         engine.add(new MovementSystem());
         engine.add(new TTLSystem());
@@ -69,69 +71,48 @@ public class GeneticsGenerationState extends AbstractEngineState {
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
-        randomizeChromosomes();
-    }
-
-    private void randomizeChromosomes(){
-        currentGeneration = 0;
-        ImmutableArray<Entity> chromosomes = engine.entitiesFor(ChromosomeComponent.class);
-        chromosomes.foreach(engine::removeLater);
-
-        for (int i = 0; i < generationSize; i++) {
-            Chromosome chromosome = new Chromosome()
-                    .add(new Gene(16).setName(GeneNames.X).setMinMaxDouble(0, 1000).randomize())
-                    .add(new Gene(16).setName(GeneNames.Y).setMinMaxDouble(0, 1000).randomize());
-
-            Entity e = new Entity(chromosomeIdCounter.next(), EntityType.CHROMOSOME, 0, 0, Layers.chromosome);
-            e.add(new ChromosomeComponent(chromosome));
-            e.add(new GenerationComponent(currentGeneration));
-            e.add(new ParentsComponent());
-            engine.add(e);
-        }
-        engine.getSystemManager().getSystem(ChromosomeRenderSystem.class).currentGeneration = currentGeneration;
-    }
-
-    private void evolve(){
-        Array<Entity> lastGenerationChromosomes = engine.entitiesFor(ChromosomeComponent.class).mapReduce(e -> {
-            if (e.get(M.generation).generation == currentGeneration){
-                return e;
-            } else {
-                return null;
-            }
-        });
-
-        final int newGenerationSize = generationSize;
-
-        for (int i = 0; i < newGenerationSize; i++) {
-            Entity a = lastGenerationChromosomes.random();
-            Entity b = lastGenerationChromosomes.random();
-            while (b == a){
-                b = lastGenerationChromosomes.random();
-            }
-
-            Chromosome newChromosome = new Crossover().cross(a.get(M.chromosome).chromosome, b.get(M.chromosome).chromosome, Utils.rand.nextInt(8 * 8));
-            Entity child = new Entity(chromosomeIdCounter.next(), EntityType.CHROMOSOME, 0, 0, Layers.chromosome);
-            child.add(new ChromosomeComponent(newChromosome));
-            child.add(new GenerationComponent(currentGeneration + 1));
-            child.add(new ParentsComponent().add(a).add(b));
-            engine.add(child);
-        }
-
-        currentGeneration++;
-        engine.getSystemManager().getSystem(ChromosomeRenderSystem.class).currentGeneration = currentGeneration;
     }
 
     @Override
-    protected void start() { }
+    protected void start() {
+        engine.dispatch(new ResetEvolutionRequest());
+    }
 
     @Override
     protected void update(float dt) {
         engine.update(dt);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-            evolve();
-        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
-            randomizeChromosomes();
+            engine.dispatch(new ResetEvolutionRequest());
+        } else
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            engine.dispatch(new EvolveRequest());
+        } else
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V)){
+            ChromosomeRenderSystem system = engine.getSystemManager().getSystem(ChromosomeRenderSystem.class);
+            switch (system.renderMode){
+                case LAST_GEN:
+                case TARGET_TREE:
+                    system.renderModeLastAndParents();
+                    break;
+                case LAST_AND_PARENTS:
+                    system.renderModeLast();
+                    break;
+            }
+        } else
+        if (Gdx.input.justTouched()){
+            ChromosomeRenderSystem system = engine.getSystemManager().getSystem(ChromosomeRenderSystem.class);
+            if (system.chromosomesUnderMouse.size > 0){
+                system.renderModeTree(system.chromosomesUnderMouse.first().id);
+            } else {
+                system.renderModeLastAndParents();
+            }
+        } else
+
+        if (Gdx.input.isKeyPressed(Input.Keys.Y)){
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 16.666f) {
+                engine.dispatch(new EvolveRequest());
+            }
         }
     }
 

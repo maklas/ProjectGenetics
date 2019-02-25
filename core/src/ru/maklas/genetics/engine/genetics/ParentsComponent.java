@@ -14,4 +14,8 @@ public class ParentsComponent implements Component {
         return this;
     }
 
+    public ParentsComponent(Entity... parents) {
+        this.parents.addAll(parents);
+    }
+
 }

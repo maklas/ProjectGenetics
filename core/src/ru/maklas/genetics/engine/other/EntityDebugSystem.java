@@ -52,19 +52,18 @@ public class EntityDebugSystem extends RenderEntitySystem {
     Vector2 rulerStart = new Vector2();
     Vector2 rulerEnd = new Vector2();
 
-    String[][] helps = {
-            {"H", "Help"},
-            {"P", "Pause/Unpause"},
-            {"K", "Enable/Disable Entity highlight"},
-            {"M", "Change camera mode"},
-            {"I", "Slow time"},
-            {"O", "TimeScale = 1"},
-            {"L", "Enable/Disable physics debug"},
-            {"Z", "Zoom in"},
-            {"X", "Zoom out"},
-            {"C", "Revert zoom"},
-            {"]", "Next Entity"},
-    };
+    Array<String[]> helps = Array.with(
+            new String[]{"H", "Help"},
+            new String[]{"P", "Pause/Unpause"},
+            new String[]{"K", "Enable/Disable Entity highlight"},
+            new String[]{"M", "Change camera mode"},
+            new String[]{"I", "Slow time"},
+            new String[]{"O", "TimeScale = 1"},
+            new String[]{"L", "Enable/Disable physics debug"},
+            new String[]{"Z", "Zoom in"},
+            new String[]{"X", "Zoom out"},
+            new String[]{"C", "Revert zoom"}
+    );
 
     @Override
     public void onAddedToEngine(Engine engine) {
@@ -90,6 +89,11 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
     public EntityDebugSystem setTextInfoEnabled(boolean enabled) {
         this.drawTextInfo = enabled;
+        return this;
+    }
+
+    public EntityDebugSystem addHelp(String button, String desc){
+        helps.add(new String[]{button, desc});
         return this;
     }
 
@@ -164,17 +168,17 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private void drawHelp() {
-        float scale = 2f * getSafeCamZoom();
+        float scale = 1 * cam.zoom;
 
         float x = cam.position.x - (cam.viewportWidth/2) * getSafeCamZoom() + 10;
-        float y = cam.position.y - (cam.viewportHeight/2) * getSafeCamZoom() + 10 + (helps.length * 16 * scale);
+        float y = cam.position.y - (cam.viewportHeight/2) * getSafeCamZoom() + 10 + (helps.size * 16 * scale);
         float dy = 16 * scale;
 
         font.getData().setScale(scale);
 
 
-        for (int i = 0; i < helps.length; i++) {
-            String[] line = helps[i];
+        for (int i = 0; i < helps.size; i++) {
+            String[] line = helps.get(i);
             font.draw(batch, line[0] + " - " + line[1], x, y, 10, Align.left, false);
             y -= dy;
         }

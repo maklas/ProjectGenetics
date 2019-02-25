@@ -1,7 +1,6 @@
 package ru.maklas.genetics.tests;
 
 import ru.maklas.genetics.utils.BitArray;
-import ru.maklas.genetics.utils.Gray;
 import ru.maklas.genetics.utils.Utils;
 
 /** Ген. Представлят собой какой-то признак в хромосоме **/

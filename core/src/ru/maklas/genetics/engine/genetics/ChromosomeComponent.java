@@ -7,9 +7,11 @@ import ru.maklas.mengine.components.IRenderComponent;
 public class ChromosomeComponent implements IRenderComponent {
 
     public Chromosome chromosome;
+    public int generation;
     public boolean dirty = true;
 
-    public ChromosomeComponent(Chromosome chromosome) {
+    public ChromosomeComponent(Chromosome chromosome, int generation) {
         this.chromosome = chromosome;
+        this.generation = generation;
     }
 }

@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
+import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
@@ -28,12 +30,14 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     private OrthographicCamera cam;
     private Batch batch;
 
-    public boolean renderParents = true;
     public boolean renderArrows = true;
-    public int currentGeneration = 0;
-    private ImmutableArray<Entity> parentE;
-    private ImmutableArray<Entity> genE;
+    public ChromosomeRenderMode renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
+    public int targetChromosomeId;
+
     private BitmapFont font;
+    private Entity currentGeneration;
+    public final Array<Entity> chromosomesUnderMouse = new Array<>();
+    private int generationNumber;
 
 
     @Override
@@ -42,48 +46,65 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         sr = engine.getBundler().getAssert(B.sr);
         cam = engine.getBundler().getAssert(B.cam);
         batch = engine.getBundler().getAssert(B.batch);
-        parentE = entitiesFor(ParentsComponent.class);
-        genE = entitiesFor(GenerationComponent.class);
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
 
+        subscribe(GenerationChangedEvent.class, this::onGenerationChanged);
+
+    }
+
+    private void onGenerationChanged(GenerationChangedEvent e) {
+        currentGeneration = e.getGeneration();
+        generationNumber = e.getGenerationNumber();
+    }
+
+    public ChromosomeRenderSystem renderModeLast(){
+        renderMode = ChromosomeRenderMode.LAST_GEN;
+        return this;
+    }
+
+    public ChromosomeRenderSystem renderModeLastAndParents(){
+        renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
+        return this;
+    }
+
+    public ChromosomeRenderSystem renderModeTree(){
+        return renderModeTree(targetChromosomeId);
+    }
+
+    public ChromosomeRenderSystem renderModeTree(int targetId){
+        renderMode = ChromosomeRenderMode.TARGET_TREE;
+        targetChromosomeId = targetId;
+        return this;
     }
 
     @Override
     public void render() {
+        chromosomesUnderMouse.clear();
+        getChromosomesUnderMouse(chromosomesUnderMouse);
+
+
         sr.setAutoShapeType(true);
         sr.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
-        if (renderArrows){
-            sr.setColor(arrowColor);
-            for (Entity entity : parentE) {
-                if (entity.get(M.generation).generation == currentGeneration) {
-                    ParentsComponent pc = entity.get(M.parents);
-                    for (Entity parent : pc.parents) {
-                        drawArrow(sr, parent, entity);
-                    }
+        switch (renderMode){
+            case LAST_GEN:
+                renderOnlyLastGen(sr);
+                break;
+            case LAST_AND_PARENTS:
+                renderLastGenAndParents(sr);
+                break;
+            case TARGET_TREE:
+                Entity targetChromosome = engine.findById(targetChromosomeId);
+                if (targetChromosome != null){
+                    renderTargetChromosomeTree(sr, targetChromosome);
+                } else {
+                    renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
                 }
-            }
+                break;
         }
 
-        if (renderParents && currentGeneration > 0){
-            sr.setColor(parentColor);
-            sr.set(ShapeRenderer.ShapeType.Filled);
-            final int generationToRender = currentGeneration - 1;
-            for (Entity entity : genE) {
-                if (entity.get(M.generation).generation == generationToRender){
-                    drawParentChromosome(sr, entity);
-                }
-            }
-        }
-
-        sr.setColor(currentGenerationColor);
-        for (Entity entity : genE) {
-            if (entity.get(M.generation).generation == currentGeneration){
-                drawChromosome(sr, entity);
-            }
-        }
 
         sr.end();
 
@@ -92,6 +113,80 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         batch.setColor(Color.WHITE);
         printChromosomes();
         batch.end();
+    }
+
+    private void renderOnlyLastGen(ShapeRenderer sr) {
+        if (currentGeneration == null){
+            return;
+        }
+
+        sr.setColor(currentGenerationColor);
+        sr.set(ShapeRenderer.ShapeType.Filled);
+        for (Entity chromosome : currentGeneration.get(M.generation).chromosomes) {
+            drawChromosome(sr, chromosome);
+        }
+    }
+
+    private void renderLastGenAndParents(ShapeRenderer sr) {
+        if (currentGeneration == null){
+            return;
+        }
+
+        GenerationComponent gc = currentGeneration.get(M.generation);
+
+        if (renderArrows){
+            sr.setColor(arrowColor);
+            sr.set(ShapeRenderer.ShapeType.Line);
+
+            for (Entity chromosome : gc.chromosomes) {
+                ParentsComponent pc = chromosome.get(M.parents);
+                for (Entity parent : pc.parents) {
+                    drawArrow(sr, parent, chromosome);
+                }
+            }
+        }
+
+        sr.set(ShapeRenderer.ShapeType.Filled);
+
+        if (gc.previousGeneration != null){
+            sr.setColor(parentColor);
+            for (Entity chromosome : gc.previousGeneration.get(M.generation).chromosomes) {
+                drawParentChromosome(sr, chromosome);
+            }
+        }
+
+        sr.setColor(currentGenerationColor);
+        for (Entity chromosome : gc.chromosomes) {
+            drawChromosome(sr, chromosome);
+        }
+    }
+
+    private void renderTargetChromosomeTree(ShapeRenderer sr, Entity targetChromosome) {
+        Array<Entity> entities = new Array<>();
+        getTree(targetChromosome, entities, 4);
+
+
+        sr.set(ShapeRenderer.ShapeType.Line);
+        sr.setColor(arrowColor);
+        for (Entity entity : entities) {
+            for (Entity parent : entity.get(M.parents).parents) {
+                drawArrow(sr, parent, entity);
+            }
+        }
+
+        entities.clear();
+        getTree(targetChromosome, entities);
+        entities.removeValue(targetChromosome, true);
+
+        sr.setColor(parentColor);
+        sr.set(ShapeRenderer.ShapeType.Filled);
+        for (Entity entity : entities) {
+            drawParentChromosome(sr, entity);
+        }
+
+        sr.setColor(currentGenerationColor);
+        sr.set(ShapeRenderer.ShapeType.Line);
+        drawChromosome(sr, targetChromosome);
     }
 
     private void printChromosomes() {
@@ -103,12 +198,83 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
 
         font.getData().setScale(scale);
 
-        engine.entitiesFor();
-
-        font.draw(batch, "id: "  + e.id + ", type: " + EntityType.typeToString(e.type) + ", x: " + ff(e.x) + ", y: " + ff(e.y) + ", ang: " + ff(e.getAngle()), x, y, 10, Align.left, false);
-        for (Component c : components) {
+        font.draw(batch, "Generation N: " + generationNumber, x, y, 10, Align.left, false);
+        y -= dy;
+        String viewMode = "";
+        switch (this.renderMode){
+            case LAST_GEN:
+                viewMode = "Last Generation";
+                break;
+            case LAST_AND_PARENTS:
+                viewMode = "Last Generation and Parents";
+                break;
+            case TARGET_TREE:
+                Entity target = engine.findById(targetChromosomeId);
+                viewMode = "Target tree (id=" + targetChromosomeId + ", " + "gen=" + (target == null ? "null" : target.get(M.chromosome).generation) + ")";
+                break;
+        }
+        font.draw(batch, "View mode: " + viewMode, x, y, 10, Align.left, false);
+        for (Entity c : chromosomesUnderMouse) {
             y -= dy;
-            font.draw(batch, StringUtils.componentToString(c), x, y,10, Align.left, false);
+            ChromosomeComponent cc = c.get(M.chromosome);
+            font.draw(batch, "{id=" + c.id + ", gen=" + cc.generation + ", pos=(" + StringUtils.ff(c.x, 2) + ", " + StringUtils.ff(c.y, 2) + "), " + cc.chromosome.byteCode() + "}", x, y,10, Align.left, false);
+        }
+    }
+
+    private Array<Entity> getChromosomesUnderMouse(Array<Entity> entities){
+        final Vector2 mouse = Utils.getMouse(cam);
+        final float range = 10 + cam.zoom;
+        final float range2 = range * range;
+
+        if (currentGeneration == null) return entities;
+        GenerationComponent gc = currentGeneration.get(M.generation);
+
+        switch (renderMode){
+            case LAST_GEN:
+                for (Entity chromosome : gc.chromosomes) {
+                    if (mouse.dst2(chromosome.x, chromosome.y) < range2){
+                        entities.add(chromosome);
+                    }
+                }
+                break;
+            case LAST_AND_PARENTS:
+
+                for (Entity chromosome : gc.chromosomes) {
+                    if (mouse.dst2(chromosome.x, chromosome.y) < range2){
+                        entities.add(chromosome);
+                    }
+                }
+
+                if (gc.previousGeneration != null){
+                    for (Entity chromosome : gc.previousGeneration.get(M.generation).chromosomes) {
+                        if (mouse.dst2(chromosome.x, chromosome.y) < range2){
+                            entities.add(chromosome);
+                        }
+                    }
+                }
+
+                break;
+            case TARGET_TREE:
+                Entity targetChromosome = engine.findById(targetChromosomeId);
+                if (targetChromosome == null) return entities;
+
+                getTree(targetChromosome, entities);
+                entities.filter(e -> mouse.dst2(e.x, e.y) < range2);
+                break;
+        }
+
+        return entities;
+    }
+
+    private void getTree(Entity chromosome, Array<Entity> entities) {
+        getTree(chromosome, entities, 5);
+    }
+    private void getTree(Entity chromosome, Array<Entity> entities, int depth) {
+        if (depth-- == 0) return;
+        entities.add(chromosome);
+        Array<Entity> parents = chromosome.get(M.parents).parents;
+        for (Entity parent : parents) {
+            getTree(parent, entities, depth);
         }
     }
 

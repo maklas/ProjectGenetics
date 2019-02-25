@@ -28,7 +28,7 @@ public class BitArray {
     }
 
     public long maxValue(){
-        return 1 << length;
+        return ((long)1) << (long)length;
     }
 
     public boolean get(int position){

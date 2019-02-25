@@ -7,6 +7,7 @@ public class EntityType {
 
     public static final int BACKGROUND = 1;
     public static final int CHROMOSOME = 2;
+    public static final int GENERATION = 3;
     private static final EntityType[] map;
 
     static {
@@ -36,6 +37,7 @@ public class EntityType {
         map = new EntityType[16];
         map[BACKGROUND]       = new EntityType(background, none);
         map[CHROMOSOME]       = new EntityType(none, none);
+        map[GENERATION]       = new EntityType(none, none);
         //Маски можно перечислять через "|", чтобы их комбинировать: new EntityType(bird, pipe | coin | feather)
     }
 
@@ -73,6 +75,7 @@ public class EntityType {
         switch (code) {
             case BACKGROUND: return "BACKGROUND";
             case CHROMOSOME: return "CHROMOSOME";
+            case GENERATION: return "GENERATION";
             default: return "UNKNOWN";
         }
     }

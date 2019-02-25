@@ -1,7 +1,6 @@
 package ru.maklas.genetics.tests;
 
 import com.badlogic.gdx.utils.Array;
-import ru.maklas.genetics.utils.BinaryUtils;
 
 public class Crossover {
 
