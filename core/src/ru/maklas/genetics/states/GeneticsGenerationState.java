@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import ru.maklas.genetics.engine.B;
+import ru.maklas.genetics.engine.formulas.FunctionComponent;
+import ru.maklas.genetics.engine.formulas.FunctionDrawingSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
@@ -22,6 +24,7 @@ import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Crossover;
 import ru.maklas.genetics.tests.CrossoverEvolutionManager;
 import ru.maklas.genetics.utils.Utils;
+import ru.maklas.genetics.utils.functions.ParabolaFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -65,11 +68,13 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new MovementSystem());
         engine.add(new TTLSystem());
+        engine.add(new FunctionDrawingSystem());
     }
 
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
+        engine.add(new Entity().add(new FunctionComponent(new ParabolaFunction(1, 2, 3))));
     }
 
     @Override
