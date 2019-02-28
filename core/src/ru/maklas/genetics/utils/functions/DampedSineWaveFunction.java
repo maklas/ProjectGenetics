@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class DampedSineWaveFunction implements GraphFunction {
 
-    float amp;
-    float waveLen;
-    float shift;
-    float decay;
+    public float amp;
+    public float waveLen;
+    public float shift;
+    public float decay;
 
     /**
      * @param amp Amplitude

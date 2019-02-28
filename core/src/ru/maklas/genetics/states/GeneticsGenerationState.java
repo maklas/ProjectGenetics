@@ -145,8 +145,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
         sr.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
-        drawNet();
-
         sr.setColor(Color.CYAN);
         sr.setColor(Color.GREEN);
         sr.end();
@@ -159,11 +157,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
         batch.end();
     }
 
-    private void drawNet() {
-        sr.setColor(Color.WHITE);
-        sr.line(Utils.camLeftX(cam), 0, Utils.camRightX(cam), 0);
-        sr.line(0, Utils.camBotY(cam), 0, Utils.camTopY(cam));
-    }
 
     @Override
     protected void dispose() {

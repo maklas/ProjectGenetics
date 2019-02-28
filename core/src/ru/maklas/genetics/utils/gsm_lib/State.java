@@ -43,7 +43,7 @@ public abstract class State {
 
     /**
      * Triggers 60 times a second to update game logic every frame
-     * @param dt how much time last last update function took in seconds
+     * @param dt how much time last last update selectedFunction took in seconds
      */
     abstract protected void update (float dt);
 

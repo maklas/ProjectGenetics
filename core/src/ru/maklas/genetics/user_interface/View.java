@@ -12,12 +12,8 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public interface View extends Disposable {
 
-    void updateStrings();
-
     /** Если наследуем от Stage, то просто всегда <b>return this;</b> **/
     InputProcessor getInput();
-
-
 
     void addActor(Actor actor);
 
@@ -30,5 +26,7 @@ public interface View extends Disposable {
     Camera getCamera();
 
     void dispose();
+
+    void resize(int width, int height);
 
 }

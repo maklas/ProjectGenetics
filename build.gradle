@@ -30,6 +30,7 @@ allprojects {
         mengineVersion = '0.5.1'
         mLibsVersion = '0.2.1'
         mnetVersion = '0.5'
+        visuiVersion = '1.4.2'
     }
 
     repositories {
@@ -113,6 +114,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.github.maklas:MEngine:$mengineVersion"
         compile "com.github.maklas:MLibs:$mLibsVersion"
+        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
     }
 
 }

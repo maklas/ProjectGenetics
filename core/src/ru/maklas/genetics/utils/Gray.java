@@ -34,18 +34,18 @@ public class Gray {
     }
 
 
-    // Helper function to xor
+    // Helper selectedFunction to xor
     // two characters
     private static char xor_c(char a, char b) {
         return (a == b) ? '0' : '1';
     }
 
-    // Helper function to flip the bit
+    // Helper selectedFunction to flip the bit
     private static char flip(char c) {
         return (c == '0') ? '1' : '0';
     }
 
-    // function to convert binary
+    // selectedFunction to convert binary
     // string to gray string
     public static String binarytoGray(String binary) {
         String gray = "";
@@ -67,7 +67,7 @@ public class Gray {
         return gray;
     }
 
-    // function to convert gray code
+    // selectedFunction to convert gray code
     // string to binary string
     public static String graytoBinary(String gray) {
         String binary = "";

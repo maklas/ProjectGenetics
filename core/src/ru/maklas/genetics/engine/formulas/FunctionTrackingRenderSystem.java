@@ -80,6 +80,8 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
             batch.begin();
             BitmapFont font = A.images.font;
 
+            font.getData().setScale(cam.zoom);
+
             for (TrackResult tr : trackResults) {
                 font.setColor(tr.trackColor);
                 font.getColor().a = 1;
