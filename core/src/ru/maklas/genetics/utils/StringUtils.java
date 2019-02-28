@@ -47,6 +47,10 @@ public class StringUtils {
         return ff((float) (bytes / (double) 1073741824), numbersAfterComma) + " gB";
     }
 
+    public static String priceFormatted(long price, char splitter){
+        return priceFormatted(Long.toString(price), splitter);
+    }
+
     public static String priceFormatted(@NotNull String price, char splitter){
         if (price.length() <= 3){
             return price;

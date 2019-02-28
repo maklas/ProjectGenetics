@@ -31,10 +31,9 @@ public class EntityUtils {
                 .add(new GenerationComponent(generation, previousGeneration, chromosomes));
     }
 
-    public static Entity function(int id, GraphFunction function, Color color, float lineWidth, float precision, boolean trackMouse){
+    public static Entity function(int id, GraphFunction function, Color color, float precision, boolean trackMouse){
         FunctionComponent fc = new FunctionComponent(function);
         fc.color = color;
-        fc.lineWidth = lineWidth;
         fc.precision = precision;
         fc.trackMouse = trackMouse;
         return new Entity(id).add(fc);

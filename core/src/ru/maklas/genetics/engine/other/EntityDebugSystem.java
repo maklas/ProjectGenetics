@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
+import ru.maklas.genetics.engine.input.ScrollEvent;
 import ru.maklas.genetics.utils.FloatAverager;
 import ru.maklas.mengine.*;
 import ru.maklas.genetics.assets.ImageAssets;
@@ -40,7 +41,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private Batch batch;
     private OrthographicCamera cam;
     private static final float range = 30;
-    private static final float minCamZoom = 0.001f;
+    private static final float minCamZoom = 0.0001f;
     private TextureRegion entityCircle;
     boolean paused = false;
     boolean highlightEntities = false;
@@ -78,6 +79,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         font.setUseIntegerPositions(false);
         cam = engine.getBundler().get(B.cam);
         batch = engine.getBundler().get(B.batch);
+        subscribe(ScrollEvent.class, this::onScroll);
 
         int intRange = (int) range;
         entityCircle = ImageAssets.createImage(intRange * 2, intRange * 2, Color.CYAN, p ->{
@@ -187,13 +189,23 @@ public class EntityDebugSystem extends RenderEntitySystem {
         wasUsingRuler = isUsingRuler;
     }
 
+
+    private void onScroll(ScrollEvent e) {
+        if (e.zoomIn()){
+            cam.zoom *= 0.5f;
+            if (cam.zoom < minCamZoom) cam.zoom = minCamZoom;
+        } else {
+            cam.zoom *= 1.33f;
+        }
+    }
+
     private void updateZoom() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
-            cam.zoom *= 0.3f;
+            cam.zoom *= 0.5f;
             if (cam.zoom < minCamZoom) cam.zoom = minCamZoom;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)){
-            cam.zoom += 0.25f;
+            cam.zoom *= 1.33f;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)){
             cam.zoom = defaultZoom;

@@ -51,7 +51,7 @@ public class FunctionSelectionView extends BaseStage {
                 .update()
                 .onChanged(f -> changeListener.accept(getFunction()));
 
-        sinFunctionTable = new ParamTable<>(new SineFunction())
+        sinFunctionTable = new ParamTable<>(new SineFunction(10, 0))
                 .addParam("amp", 10, (f, a) -> f.amp = a, f -> f.amp)
                 .addParam("shift", 0, (f, s) -> f.shift = s, f -> f.shift)
                 .update()

@@ -2,6 +2,7 @@ package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,13 +14,13 @@ import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.EntityUtils;
+import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.rendering.CameraMode;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.user_interface.FunctionSelectionView;
 import ru.maklas.genetics.utils.functions.GraphFunction;
 import ru.maklas.genetics.utils.functions.LinearFunction;
-import ru.maklas.genetics.utils.functions.ParabolaFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -73,7 +74,7 @@ public class FunctionSelectionState extends AbstractEngineState {
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(EntityUtils.camera(cam, CameraMode.BUTTON_CONTROLLED));
-        Entity function = EntityUtils.function(0, selectedFunction, Color.GREEN, 2, 1, true);
+        Entity function = EntityUtils.function(0, selectedFunction, Color.GREEN, 1, true);
         engine.add(function);
         fc = function.get(M.fun);
     }
@@ -85,7 +86,7 @@ public class FunctionSelectionState extends AbstractEngineState {
 
     @Override
     protected InputProcessor getInput() {
-        return view;
+        return new InputMultiplexer(view, new EngineInputAdapter(engine, cam));
     }
 
     @Override
@@ -93,7 +94,6 @@ public class FunctionSelectionState extends AbstractEngineState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             popState();
         }
-        cam.update();
         engine.update(dt);
         view.act(dt);
     }
@@ -107,6 +107,7 @@ public class FunctionSelectionState extends AbstractEngineState {
 
     @Override
     protected void render(Batch batch) {
+        cam.update();
         engine.render();
         view.draw();
     }

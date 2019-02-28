@@ -76,6 +76,7 @@ public class EngineInputAdapter implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+        engine.dispatch(new ScrollEvent(amount == -1));
         return false;
     }
 }
