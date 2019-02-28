@@ -8,7 +8,8 @@ public class FunctionComponent implements Component {
 
     public GraphFunction graphFunction;
     public Color color = Color.WHITE.cpy();
-    public boolean track;
+    public boolean trackMouse = true;
+    public float precision = 1f;
 
     public FunctionComponent(GraphFunction graphFunction) {
         this.graphFunction = graphFunction;

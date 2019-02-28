@@ -89,7 +89,6 @@ public class ChromosomeSystem extends EntitySystem {
         for (int i = 0; i < chromosomesPerGeneration; i++) {
             Chromosome chromosome = new Chromosome();
             chromosome.add(new Gene(4 * 8).setName(GeneNames.X).randomize().setMinMaxDouble(100, 1000));
-            chromosome.add(new Gene(4 * 8).setName(GeneNames.Y).randomize().setMinMaxDouble(100, 1000));
             Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
             newChromosomes.add(e);
             engine.add(e);
@@ -108,7 +107,13 @@ public class ChromosomeSystem extends EntitySystem {
             if (cc.dirty){
                 cc.dirty = false;
                 chromosome.x = ((float) cc.chromosome.get(GeneNames.X).decodeAsDouble());
-                chromosome.y = ((float) cc.chromosome.get(GeneNames.Y).decodeAsDouble());
+
+                Gene yGene = cc.chromosome.get(GeneNames.Y);
+                if (yGene != null) {
+                    chromosome.y = ((float) yGene.decodeAsDouble());
+                } else {
+                    chromosome.y = 0;
+                }
             }
         }
     }

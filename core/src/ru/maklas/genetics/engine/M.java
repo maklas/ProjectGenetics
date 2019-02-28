@@ -3,7 +3,8 @@ package ru.maklas.genetics.engine;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
-import ru.maklas.genetics.engine.formulas.FunctionDrawingSystem;
+import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
+import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeComponent;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
 import ru.maklas.genetics.engine.genetics.GenerationComponent;
@@ -36,7 +37,7 @@ public class M {
     public static final ComponentMapper<ChromosomeComponent>            chromosome = ComponentMapper.of(ChromosomeComponent.class);
     public static final ComponentMapper<GenerationComponent>            generation = ComponentMapper.of(GenerationComponent.class);
     public static final ComponentMapper<ParentsComponent>               parents = ComponentMapper.of(ParentsComponent.class);
-    public static final ComponentMapper<FunctionComponent>               formula = ComponentMapper.of(FunctionComponent.class);
+    public static final ComponentMapper<FunctionComponent> fun = ComponentMapper.of(FunctionComponent.class);
 
 
     /** Сортируем системы в порядке их обновления в Engine.update() **/
@@ -54,8 +55,9 @@ public class M {
 
         map.put(CameraSystem.class, i++);
         map.put(RenderingSystem.class, i++);
-        map.put(FunctionDrawingSystem.class, i++);
+        map.put(FunctionRenderSystem.class, i++);
         map.put(ChromosomeRenderSystem.class, i++);
+        map.put(FunctionTrackingRenderSystem.class, i++);
         map.put(EntityDebugSystem.class, i++);
     }
 

@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
-import ru.maklas.genetics.engine.formulas.FunctionDrawingSystem;
+import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
+import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
@@ -19,12 +20,15 @@ import ru.maklas.genetics.engine.other.TTLSystem;
 import ru.maklas.genetics.engine.rendering.AnimationSystem;
 import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
+import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Crossover;
 import ru.maklas.genetics.tests.CrossoverEvolutionManager;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.utils.functions.ParabolaFunction;
+import ru.maklas.genetics.utils.functions.DampedSineWaveFunction;
+import ru.maklas.genetics.utils.functions.GraphFunction;
+import ru.maklas.genetics.utils.functions.OnlyPositiveFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -68,17 +72,23 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new MovementSystem());
         engine.add(new TTLSystem());
-        engine.add(new FunctionDrawingSystem());
+        engine.add(new FunctionRenderSystem());
+        engine.add(new FunctionTrackingRenderSystem());
     }
 
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
-        engine.add(new Entity().add(new FunctionComponent(new ParabolaFunction(1, 2, 3))));
+        //ParabolaFunction fun = new ParabolaFunction(0.05f, 2, 3);
+        GraphFunction fun = new DampedSineWaveFunction(1000, 100, 0, 0.001f);
+        FunctionComponent fc = new FunctionComponent(new OnlyPositiveFunction(fun));
+        fc.color.set(Color.YELLOW.r, Color.YELLOW.g, Color.YELLOW.b, 0.5f);
+        engine.add(new Entity().add(fc));
     }
 
     @Override
     protected void start() {
+        MNW.backgroundColor.set(.7f, .7f, .7f, 1);
         engine.dispatch(new ResetEvolutionRequest());
     }
 

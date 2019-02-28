@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
+import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
@@ -46,8 +47,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         sr = engine.getBundler().getAssert(B.sr);
         cam = engine.getBundler().getAssert(B.cam);
         batch = engine.getBundler().getAssert(B.batch);
-        font = new BitmapFont();
-        font.setUseIntegerPositions(false);
+        font = A.images.font;
 
         subscribe(GenerationChangedEvent.class, this::onGenerationChanged);
 
@@ -197,6 +197,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         float dy = 16 * scale;
 
         font.getData().setScale(scale);
+        font.setColor(Color.WHITE);
 
         font.draw(batch, "Generation N: " + generationNumber, x, y, 10, Align.left, false);
         y -= dy;

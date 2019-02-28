@@ -11,7 +11,7 @@ import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;
 
-public class FunctionDrawingSystem extends RenderEntitySystem {
+public class FunctionRenderSystem extends RenderEntitySystem {
 
     private ShapeRenderer sr;
     private OrthographicCamera cam;
@@ -32,19 +32,19 @@ public class FunctionDrawingSystem extends RenderEntitySystem {
         sr.begin(ShapeRenderer.ShapeType.Line);
 
         for (Entity formula : formulas) {
-            FunctionComponent fc = formula.get(M.formula);
+            FunctionComponent fc = formula.get(M.fun);
             sr.setColor(fc.color);
-            draw(sr, fc.graphFunction);
+            draw(sr, fc.graphFunction, fc.precision);
         }
 
 
         sr.end();
     }
 
-    private void draw(ShapeRenderer sr, GraphFunction fun) {
+    private void draw(ShapeRenderer sr, GraphFunction fun, float precision) {
         float min = Utils.camLeftX(cam);
         float max = Utils.camRightX(cam);
-        float step = cam.zoom;
+        float step = cam.zoom * precision;
 
         float previousX = 0;
         float x = min;
