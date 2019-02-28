@@ -10,7 +10,7 @@ public class DesktopLauncher {
     public static void main (String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.height = 640;
-        config.width = 360;
+        config.width = 640;
         config.resizable = true;
         config.samples = 4;
         config.title = MNW.GAME_NAME;

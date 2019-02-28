@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Queue;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.*;
+import ru.maklas.genetics.states.Params;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Chromosome;
 import ru.maklas.genetics.tests.EvolutionManager;
@@ -18,8 +19,6 @@ import ru.maklas.mengine.EntitySystem;
 
 public class ChromosomeSystem extends EntitySystem {
 
-    private static final int chromosomesPerGeneration = 100;
-    private static final int maxGenerationMemory = 100;
 
     private ImmutableArray<Entity> chromosomes;
     private ImmutableArray<Entity> generations;
@@ -29,12 +28,14 @@ public class ChromosomeSystem extends EntitySystem {
     private int currentGenerationNumber;
     private Counter chromosomeIdCounter = ID.counterForChromosomes();
     private EvolutionManager evolutionManager;
+    private Params params;
 
 
     @Override
     public void onAddedToEngine(Engine engine) {
         super.onAddedToEngine(engine);
         evolutionManager = engine.getBundler().getAssert(B.evol);
+        params = engine.getBundler().get(B.params);
         chromosomes = entitiesFor(ChromosomeComponent.class);
         generations = entitiesFor(GenerationComponent.class);
         generationMemory = new Queue<>();
@@ -60,7 +61,7 @@ public class ChromosomeSystem extends EntitySystem {
         generationMemory.addLast(currentGeneration);
 
 
-        if (generationMemory.size > maxGenerationMemory){ //Удаляем самое старое поколение.
+        if (generationMemory.size > params.getGenerationMemory()){ //Удаляем самое старое поколение.
             Entity oldestGeneration = generationMemory.removeFirst();
             oldestGeneration.get(M.generation).chromosomes.foreach(engine::removeLater);
             engine.remove(oldestGeneration);
@@ -86,9 +87,9 @@ public class ChromosomeSystem extends EntitySystem {
         currentGenerationNumber = 0;
         Array<Entity> newChromosomes = new Array<>();
 
-        for (int i = 0; i < chromosomesPerGeneration; i++) {
+        for (int i = 0; i < params.getChromosomesPerGeneration(); i++) {
             Chromosome chromosome = new Chromosome();
-            chromosome.add(new Gene(4 * 8).setName(GeneNames.X).randomize().setMinMaxDouble(100, 1000));
+            chromosome.add(new Gene(4 * 8).setName(GeneNames.X).randomize().setMinMaxDouble(params.getMinValue(), params.getMaxValue()));
             Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
             newChromosomes.add(e);
             engine.add(e);

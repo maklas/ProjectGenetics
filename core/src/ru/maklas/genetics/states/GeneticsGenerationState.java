@@ -2,6 +2,8 @@ package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,6 +16,7 @@ import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
+import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.MovementSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
@@ -25,9 +28,6 @@ import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Crossover;
 import ru.maklas.genetics.tests.CrossoverEvolutionManager;
-import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.utils.functions.DampedSineWaveFunction;
-import ru.maklas.genetics.utils.functions.GraphFunction;
 import ru.maklas.genetics.utils.functions.OnlyPositiveFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
@@ -36,8 +36,13 @@ import ru.maklas.mengine.UpdatableEntitySystem;
 
 public class GeneticsGenerationState extends AbstractEngineState {
 
+    private final Params params;
     private ShapeRenderer sr;
     private OrthographicCamera cam;
+
+    public GeneticsGenerationState(Params params) {
+        this.params = params;
+    }
 
     @Override
     protected void loadAssets() {
@@ -53,6 +58,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         bundler.set(B.dt, 1 / 60f);
         bundler.set(B.sr, sr);
         bundler.set(B.evol, new CrossoverEvolutionManager(new Crossover()));
+        bundler.set(B.params, params);
     }
 
     @Override
@@ -79,9 +85,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
-        //ParabolaFunction fun = new ParabolaFunction(0.05f, 2, 3);
-        GraphFunction fun = new DampedSineWaveFunction(1000, 100, 0, 0.001f);
-        FunctionComponent fc = new FunctionComponent(new OnlyPositiveFunction(fun));
+        FunctionComponent fc = new FunctionComponent(params.getFunction());
         fc.color.set(Color.YELLOW.r, Color.YELLOW.g, Color.YELLOW.b, 0.5f);
         engine.add(new Entity().add(fc));
     }
@@ -129,6 +133,11 @@ public class GeneticsGenerationState extends AbstractEngineState {
         }
 
         engine.update(dt);
+    }
+
+    @Override
+    protected InputProcessor getInput() {
+        return new InputMultiplexer(new EngineInputAdapter(engine, cam));
     }
 
     @Override

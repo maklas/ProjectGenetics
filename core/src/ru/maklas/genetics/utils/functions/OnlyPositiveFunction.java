@@ -3,7 +3,7 @@ package ru.maklas.genetics.utils.functions;
 public class OnlyPositiveFunction implements GraphFunction {
 
 
-    GraphFunction delegate;
+    public GraphFunction delegate;
     float negativeY = 0;
 
     public OnlyPositiveFunction(GraphFunction delegate) {

@@ -64,7 +64,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
 
             for (TrackResult tr : trackResults) {
                 sr.setColor(tr.trackColor);
-                sr.getColor().a *= 0.33f;
+                sr.getColor().a *= 0.5f;
                 sr.line(tr.lineFrom, tr.lineTo);
                 if (tr.drawPoint){
                     sr.setColor(Color.PINK);

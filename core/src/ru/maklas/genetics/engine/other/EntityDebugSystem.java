@@ -163,12 +163,12 @@ public class EntityDebugSystem extends RenderEntitySystem {
         } else {
             color = Color.GREEN;
         }
-        String s = Math.round(framePercentVal * 100) + "%";
-        float x = Utils.camRightX(cam) - (15 * cam.zoom);
+        String s = StringUtils.addSpacesLeft(Math.round(framePercentVal * 100) + "%", 4);
+        float x = Utils.camRightX(cam) - (35f * cam.zoom);
         float y = Utils.camTopY(cam) - (5 * cam.zoom);
         font.setColor(color);
         font.getData().setScale(cam.zoom);
-        font.draw(batch, s, x, y, 10, Align.right, false);
+        font.draw(batch, s, x, y, 10, Align.left, false);
     }
 
     private void updateEntities() {

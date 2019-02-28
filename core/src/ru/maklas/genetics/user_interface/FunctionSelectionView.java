@@ -39,7 +39,8 @@ public class FunctionSelectionView extends BaseStage {
         mainTable.add(paramTableContainer).right();
 
 
-        linearFunctionTable = new ParamTable<>(new LinearFunction(1))
+        linearFunctionTable = new ParamTable<>(new LinearFunction(1, 0))
+                .addParam("k", 1, (f, k) -> f.k = k, f -> f.k)
                 .addParam("b", 1, (f, b) -> f.b = b, f -> f.b)
                 .update()
                 .onChanged(f -> changeListener.accept(getFunction()));
@@ -71,18 +72,23 @@ public class FunctionSelectionView extends BaseStage {
 
         if (function instanceof LinearFunction){
             selectBox.setSelected("Linear");
+            linearFunctionTable.function = (LinearFunction) function;
             set("Linear");
         } else if (function instanceof ParabolaFunction){
             selectBox.setSelected("Quadratic");
+            quadraticFunctionTable.function = (ParabolaFunction) function;
             set("Quadratic");
         } else if (function instanceof SineFunction){
             selectBox.setSelected("Sin");
+            sinFunctionTable.function = (SineFunction) function;
             set("Sin");
         } else if (function instanceof DampedSineWaveFunction){
             selectBox.setSelected("Damped Sin");
+            dampedSinFunctionTable.function = (DampedSineWaveFunction) function;
             set("Damped Sin");
         }
 
+        paramTableContainer.getActor().update();
         selectBox.addChangeListener(this::set);
     }
 
@@ -117,7 +123,7 @@ public class FunctionSelectionView extends BaseStage {
 
     private class ParamTable<T extends GraphFunction> extends VisTable {
 
-        private final T function;
+        private T function;
         private Consumer<T> changeListener;
         private Array<ValueReader> readers = new Array<>();
 

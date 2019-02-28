@@ -133,7 +133,7 @@ public class Utils {
     }
 
     public static float camRightX (OrthographicCamera cam){
-        return cam.position.x + cam.viewportWidth * 0.5f * cam.zoom;
+        return cam.position.x + (cam.viewportWidth * 0.5f * cam.zoom);
     }
 
     public static float camLeftX (OrthographicCamera cam){

@@ -36,7 +36,7 @@ public class FunctionSelectionState extends AbstractEngineState {
 
 
     public FunctionSelectionState() {
-        selectedFunction = new LinearFunction(1);
+        selectedFunction = new LinearFunction(1, 0);
     }
 
     public FunctionSelectionState(GraphFunction selectedFunction) {
