@@ -25,6 +25,7 @@ public class MultilayerStateManager implements GameStateManager {
     private boolean useCommand = false;
     private GSMCommand command;
     private InputProcessor noInput = new InputAdapter();
+    private float frameMillis = 1/60f;
 
     public MultilayerStateManager(){
         states = new Stack<>();
@@ -53,7 +54,8 @@ public class MultilayerStateManager implements GameStateManager {
 
 
     public void update(float dt){
-         processCommand();
+        long start = System.nanoTime();
+        processCommand();
 
          Stack<State> states = this.states;
          int size = states.size();
@@ -73,6 +75,11 @@ public class MultilayerStateManager implements GameStateManager {
 
          renderMsgs(dt);
          processCommand();
+         long end = System.nanoTime();
+         frameMillis = (float)((end - start) / 1_000_000d);
+         if (frameMillis <= 0.000001f){//не делаем == 0, чтобы избежать деления на ноль.
+             frameMillis = 0.000001f;
+         }
     }
 
     public void toBackground(){
@@ -214,6 +221,11 @@ public class MultilayerStateManager implements GameStateManager {
             msgs.removeIndex(0);
         }
         msgs.add(m);
+    }
+
+    @Override
+    public float getLastFrameMillis() {
+        return frameMillis;
     }
 
     private void initializePrinting() {

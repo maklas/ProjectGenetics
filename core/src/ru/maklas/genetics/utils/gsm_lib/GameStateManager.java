@@ -56,6 +56,9 @@ public interface GameStateManager {
 
     void printAsync(Object msg, float seconds);
 
+    /** Возвращает сколько миллисекунд занял предыдущий кадр **/
+    float getLastFrameMillis();
+
     /** Clears all messages that were printed **/
     void clearPrints();
 

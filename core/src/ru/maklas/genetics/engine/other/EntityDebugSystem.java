@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
+import ru.maklas.genetics.utils.FloatAverager;
 import ru.maklas.mengine.*;
 import ru.maklas.genetics.assets.ImageAssets;
 import ru.maklas.genetics.engine.B;
@@ -38,10 +40,12 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private Batch batch;
     private OrthographicCamera cam;
     private static final float range = 30;
+    private static final float minCamZoom = 0.001f;
     private TextureRegion entityCircle;
     boolean paused = false;
     boolean highlightEntities = false;
     boolean help = false;
+    boolean drawFramePercent = true;
     float defaultZoom;
     float zoomBeforePause = 1;
     Color color = Color.WHITE;
@@ -51,6 +55,8 @@ public class EntityDebugSystem extends RenderEntitySystem {
     boolean drawTextInfo = true;
     Vector2 rulerStart = new Vector2();
     Vector2 rulerEnd = new Vector2();
+    FloatAverager framePercentAverager = new FloatAverager(60);
+    float framePercentVal = 0;
 
     Array<String[]> helps = Array.with(
             new String[]{"H", "Help"},
@@ -110,6 +116,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         updateRuler();
         updateZoom();
         updateEntities();
+        updateFramePercent();
         if (Gdx.app.getType() != Application.ApplicationType.Desktop) return;
 
         if (highlightEntities){
@@ -117,6 +124,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         }
 
         if (drawTextInfo) {
+            font.setColor(Color.WHITE);
             try {
                 Vector2 mouse = Utils.toScreen(Gdx.input.getX(), Gdx.input.getY(), cam);
                 float rangeSquared = range * range;
@@ -133,7 +141,32 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
         if (help) drawHelp();
         if (isUsingRuler) drawRuler();
+        if (drawFramePercent) drawFramePercent();
         batch.end();
+    }
+
+    private void updateFramePercent() {
+        framePercentAverager.addFloat(MNW.gsm.getLastFrameMillis());
+        if (framePercentAverager.madeCircle()){
+            framePercentVal = MathUtils.clamp(framePercentAverager.getAvg() / 16f, 0, 1f);
+        }
+    }
+
+    private void drawFramePercent() {
+        Color color;
+        if (framePercentVal > 0.95){
+            color = Color.RED;
+        } else if (framePercentVal > 0.7f){
+            color = Color.YELLOW;
+        } else {
+            color = Color.GREEN;
+        }
+        String s = Math.round(framePercentVal * 100) + "%";
+        float x = Utils.camRightX(cam) - (15 * cam.zoom);
+        float y = Utils.camTopY(cam) - (5 * cam.zoom);
+        font.setColor(color);
+        font.getData().setScale(cam.zoom);
+        font.draw(batch, s, x, y, 10, Align.right, false);
     }
 
     private void updateEntities() {
@@ -156,8 +189,8 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
     private void updateZoom() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
-            cam.zoom -= 0.1f;
-            if (cam.zoom < 0.05f) cam.zoom = 0.05f;
+            cam.zoom *= 0.3f;
+            if (cam.zoom < minCamZoom) cam.zoom = minCamZoom;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)){
             cam.zoom += 0.25f;
@@ -287,7 +320,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private float getSafeCamZoom(){
-        return Math.max(0.05f, cam.zoom);
+        return Math.max(minCamZoom, cam.zoom);
     }
 
     private String ff(float f){

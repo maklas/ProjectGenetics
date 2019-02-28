@@ -76,6 +76,11 @@ public class EmptyStateManager implements GameStateManager {
     }
 
     @Override
+    public float getLastFrameMillis() {
+        return 0.01f;
+    }
+
+    @Override
     public void clearPrints() {
 
     }
