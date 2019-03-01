@@ -28,6 +28,7 @@ public class ImageAssets extends Asset{
 
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
     @Override

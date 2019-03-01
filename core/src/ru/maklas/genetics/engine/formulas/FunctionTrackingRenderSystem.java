@@ -67,8 +67,10 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
                 sr.getColor().a *= 0.5f;
                 sr.line(tr.lineFrom, tr.lineTo);
                 if (tr.drawPoint){
+                    sr.flush();
+                    sr.set(ShapeRenderer.ShapeType.Filled);
                     sr.setColor(Color.PINK);
-                    sr.circle(tr.point.x, tr.point.y, 3 * cam.zoom, 6);
+                    sr.circle(tr.point.x, tr.point.y, 3 * cam.zoom, 8);
                 }
             }
 

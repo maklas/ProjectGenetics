@@ -28,7 +28,6 @@ import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Crossover;
 import ru.maklas.genetics.tests.CrossoverEvolutionManager;
-import ru.maklas.genetics.utils.functions.OnlyPositiveFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -78,7 +77,10 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new MovementSystem());
         engine.add(new TTLSystem());
-        engine.add(new FunctionRenderSystem());
+        engine.add(new FunctionRenderSystem()
+                .setNetColor(Color.BLACK)
+                .setNumberColor(Color.BLACK)
+                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
     }
 
@@ -86,13 +88,14 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
         FunctionComponent fc = new FunctionComponent(params.getFunction());
-        fc.color.set(Color.YELLOW.r, Color.YELLOW.g, Color.YELLOW.b, 0.5f);
+        fc.color.set(0.75f, 0.23f, 0.23f, 1);
+        fc.lineWidth = 1.5f;
         engine.add(new Entity().add(fc));
     }
 
     @Override
     protected void start() {
-        MNW.backgroundColor.set(.7f, .7f, .7f, 1);
+        MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
         engine.dispatch(new ResetEvolutionRequest());
     }
 
@@ -150,7 +153,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void render(Batch batch) {
         cam.update();
 
-        Gdx.gl20.glLineWidth(2f);
         sr.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
