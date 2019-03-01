@@ -58,6 +58,18 @@ public class Chromosome {
         return "";
     }
 
+    public String genesString(){
+        if (genes.size == 0) return "";
+        StringBuilder sb = new StringBuilder();
+
+        for (Gene gene : genes) {
+            sb.append("(").append(gene.getName()).append("|")
+                    .append(gene.getRawData().toStringSmart(8)).append(")");
+        }
+
+        return sb.toString();
+    }
+
     public Chromosome cpy() {
         Chromosome chromosome = new Chromosome();
         for (Gene gene : genes) {

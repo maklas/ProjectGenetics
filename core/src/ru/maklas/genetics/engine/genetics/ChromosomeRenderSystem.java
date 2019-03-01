@@ -32,13 +32,14 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     private Batch batch;
 
     public boolean renderArrows = true;
-    public ChromosomeRenderMode renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
+    public ChromosomeRenderMode renderMode = ChromosomeRenderMode.LAST_GEN;
     public int targetChromosomeId;
 
     private BitmapFont font;
     private Entity currentGeneration;
     public final Array<Entity> chromosomesUnderMouse = new Array<>();
     private int generationNumber;
+    private Color textColor = Color.BLACK;
 
 
     @Override
@@ -56,6 +57,9 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     private void onGenerationChanged(GenerationChangedEvent e) {
         currentGeneration = e.getGeneration();
         generationNumber = e.getGenerationNumber();
+        if (renderMode == ChromosomeRenderMode.TARGET_TREE){
+            renderModeLast();
+        }
     }
 
     public ChromosomeRenderSystem renderModeLast(){
@@ -75,6 +79,11 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     public ChromosomeRenderSystem renderModeTree(int targetId){
         renderMode = ChromosomeRenderMode.TARGET_TREE;
         targetChromosomeId = targetId;
+        return this;
+    }
+
+    public ChromosomeRenderSystem setTextColor(Color color){
+        textColor = color;
         return this;
     }
 
@@ -110,7 +119,6 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
 
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
-        batch.setColor(Color.WHITE);
         printChromosomes();
         batch.end();
     }
@@ -197,7 +205,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         float dy = 16 * scale;
 
         font.getData().setScale(scale);
-        font.setColor(Color.WHITE);
+        font.setColor(textColor);
 
         font.draw(batch, "Generation N: " + generationNumber, x, y, 10, Align.left, false);
         y -= dy;
@@ -218,7 +226,16 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         for (Entity c : chromosomesUnderMouse) {
             y -= dy;
             ChromosomeComponent cc = c.get(M.chromosome);
-            font.draw(batch, "{id=" + c.id + ", gen=" + cc.generation + ", pos=(" + StringUtils.ff(c.x, 2) + ", " + StringUtils.ff(c.y, 2) + "), " + cc.chromosome.byteCode() + "}", x, y,10, Align.left, false);
+
+            StringBuilder sb = new StringBuilder()
+                    .append("{id=").append(c.id)
+                    .append(", gen=").append(cc.generation)
+                    .append(", pos=(").append(StringUtils.ff(c.x, 2))
+                    .append(", ").append(StringUtils.ff(c.y, 2))
+                    .append("), ").append(cc.chromosome.genesString())
+                    .append("}");
+
+            font.draw(batch, sb.toString(), x, y,10, Align.left, false);
         }
     }
 

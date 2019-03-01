@@ -87,8 +87,14 @@ public class BitArray {
                 counter = 0;
             }
         }
-
         return builder.reverse().toString();
+    }
+
+    public String toStringSmart(int groups) {
+        if (length <= groups || length % groups != 0){
+            return value;
+        }
+        return toString(groups);
     }
 
     public static BitArray with(BitArray... arrays){

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.input.ScrollEvent;
+import ru.maklas.genetics.engine.rendering.CameraMode;
 import ru.maklas.genetics.utils.FloatAverager;
 import ru.maklas.mengine.*;
 import ru.maklas.genetics.assets.ImageAssets;
@@ -42,11 +43,13 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private OrthographicCamera cam;
     private static final float range = 30;
     private static final float minCamZoom = 0.0001f;
+    private static final float maxCamZoom = 100f;
     private TextureRegion entityCircle;
     boolean paused = false;
     boolean highlightEntities = false;
     boolean help = false;
     boolean drawFramePercent = true;
+    boolean zoomAtMouse = true;
     float defaultZoom;
     float zoomBeforePause = 1;
     Color color = Color.WHITE;
@@ -102,6 +105,11 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
     public EntityDebugSystem addHelp(String button, String desc){
         helps.add(new String[]{button, desc});
+        return this;
+    }
+
+    public EntityDebugSystem setZoomAtMouse(boolean enabled){
+        zoomAtMouse = enabled;
         return this;
     }
 
@@ -192,23 +200,68 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
     private void onScroll(ScrollEvent e) {
         if (e.zoomIn()){
-            cam.zoom *= 0.5f;
-            if (cam.zoom < minCamZoom) cam.zoom = minCamZoom;
+            zoomIn();
         } else {
-            cam.zoom *= 1.33f;
+            zoomOut();
         }
     }
 
     private void updateZoom() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
-            cam.zoom *= 0.5f;
-            if (cam.zoom < minCamZoom) cam.zoom = minCamZoom;
+            zoomIn();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)){
-            cam.zoom *= 1.33f;
+            zoomOut();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)){
             cam.zoom = defaultZoom;
+        }
+    }
+
+    private void zoomIn(){
+        float oldZoom = cam.zoom;
+        float newZoom = cam.zoom * 0.5f;
+        if (newZoom < minCamZoom) newZoom = minCamZoom;
+
+        ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
+
+        if (zoomAtMouse && (cameras.size() == 0 || cameras.get(0).get(M.camera).mode == CameraMode.BUTTON_CONTROLLED || cameras.get(0).get(M.camera).mode == CameraMode.DRAGGABLE)){
+
+            Vector2 mouse = Utils.getMouse(cam);
+            Vector2 distanceFromCenterToMouse = new Vector2(mouse.x - cam.position.x, mouse.y - cam.position.y);
+            Vector2 positionAdjustment = new Vector2(distanceFromCenterToMouse).scl(newZoom / oldZoom);
+            moveCamera(positionAdjustment.x, positionAdjustment.y);
+        }
+
+        cam.zoom = newZoom;
+    }
+
+    private void zoomOut(){
+        float oldZoom = cam.zoom;
+        float newZoom = cam.zoom * 2f;
+        if (newZoom > maxCamZoom) newZoom = maxCamZoom;
+
+        ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
+
+        if (zoomAtMouse && (cameras.size() == 0 || cameras.get(0).get(M.camera).mode == CameraMode.BUTTON_CONTROLLED || cameras.get(0).get(M.camera).mode == CameraMode.DRAGGABLE)){
+
+            Vector2 mouse = Utils.getMouse(cam);
+            Vector2 dst = new Vector2(cam.position.x - mouse.x, cam.position.y - mouse.y);
+            Vector2 dstMulBypartOfScreen = new Vector2(dst).scl(0.5f);
+            Vector2 positionAdjustment = new Vector2(dstMulBypartOfScreen).scl(newZoom / oldZoom);
+            moveCamera(positionAdjustment.x, positionAdjustment.y);
+        }
+
+        cam.zoom = newZoom;
+    }
+
+    private void moveCamera(float dx, float dy){
+        ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
+        if (cameras.size() == 0){
+            cam.translate(dx, dy);
+        } else {
+            cameras.get(0).x += dx;
+            cameras.get(0).y += dy;
         }
     }
 

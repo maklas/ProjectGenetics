@@ -36,6 +36,9 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
     };
     private Array<TrackResult> trackResults = new Array<>();
 
+    private boolean enableTracking = true;
+    private boolean printXY = true;
+
     @Override
     public void onAddedToEngine(Engine engine) {
         super.onAddedToEngine(engine);
@@ -47,6 +50,9 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
 
     @Override
     public void render() {
+        if (!enableTracking){
+            return;
+        }
         Vector2 mouse = Utils.getMouse(cam);
 
         for (Entity function : functions) {
@@ -78,24 +84,36 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
             Gdx.gl.glDisable(GL20.GL_BLEND);
 
 
-            batch.setProjectionMatrix(cam.combined);
-            batch.begin();
-            BitmapFont font = A.images.font;
+            if (printXY) {
+                batch.setProjectionMatrix(cam.combined);
+                batch.begin();
+                BitmapFont font = A.images.font;
 
-            font.getData().setScale(cam.zoom);
+                font.getData().setScale(cam.zoom);
 
-            for (TrackResult tr : trackResults) {
-                font.setColor(tr.trackColor);
-                font.getColor().a = 1;
-                int precision = cam.zoom > 3 ? 1 : cam.zoom > 0.01f ? 2 : 3;
-                font.draw(batch, "(" + StringUtils.ff(tr.xVal, precision) + ", " + StringUtils.ff(tr.yVal, precision) + ")", tr.textPos.x, tr.textPos.y, 10, Align.left, false);
+                for (TrackResult tr : trackResults) {
+                    font.setColor(tr.trackColor);
+                    font.getColor().a = 1;
+                    int precision = cam.zoom > 3 ? 1 : cam.zoom > 0.01f ? 2 : 3;
+                    font.draw(batch, "(" + StringUtils.ff(tr.xVal, precision) + ", " + StringUtils.ff(tr.yVal, precision) + ")", tr.textPos.x, tr.textPos.y, 10, Align.left, false);
+                }
+
+                batch.end();
             }
-
-            batch.end();
 
             trackResultPool.freeAll(trackResults);
             trackResults.clear();
         }
+    }
+
+    public FunctionTrackingRenderSystem setEnableTracking(boolean enableTracking) {
+        this.enableTracking = enableTracking;
+        return this;
+    }
+
+    public FunctionTrackingRenderSystem setPrintXY(boolean printXY) {
+        this.printXY = printXY;
+        return this;
     }
 
     private TrackResult createTrack(FunctionComponent fc, Vector2 mouse) {

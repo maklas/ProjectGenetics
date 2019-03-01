@@ -3,6 +3,7 @@ package ru.maklas.genetics.states;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import ru.maklas.genetics.assets.A;
+import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.user_interface.MainMenuView;
 import ru.maklas.genetics.utils.functions.*;
 import ru.maklas.genetics.utils.gsm_lib.State;
@@ -12,7 +13,7 @@ import static ru.maklas.genetics.utils.StringUtils.ff;
 public class MainMenuState extends State {
 
     MainMenuView mm;
-    GraphFunction function = new ParabolaFunction(0.1f, 0, 0);
+    GraphFunction function = new DampedSineWaveFunction(200f, 25, 0, 0.001f);
 
     @Override
     protected void onCreate() {
@@ -32,6 +33,7 @@ public class MainMenuState extends State {
 
         setFunDesc(function);
 
+        MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
     }
 
     private void setFunDesc(GraphFunction function) {

@@ -95,7 +95,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
     @Override
     protected void start() {
-        MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
         engine.dispatch(new ResetEvolutionRequest());
     }
 
