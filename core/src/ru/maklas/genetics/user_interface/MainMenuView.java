@@ -13,9 +13,6 @@ public class MainMenuView extends BaseStage {
     private final VisLabel functionDescription;
 
     public MainMenuView() {
-        if (!VisUI.isLoaded()){
-            VisUI.load(VisUI.SkinScale.X1);
-        }
         VisTable table = new VisTable();
         table.setFillParent(true);
         table.align(Align.topLeft);

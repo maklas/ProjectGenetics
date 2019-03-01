@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import ru.maklas.genetics.states.Params;
-import ru.maklas.genetics.tests.EvolutionManager;
 import ru.maklas.genetics.utils.Profiler;
 import ru.maklas.genetics.utils.TimeSlower;
 import ru.maklas.genetics.utils.gsm_lib.State;
@@ -20,6 +19,5 @@ public class B {
     public static final BundlerKey<Profiler> profiler = BundlerKey.of("profiler");
     public static final BundlerKey<State> gsmState = BundlerKey.of("state");
     public static final BundlerKey<ShapeRenderer> sr = BundlerKey.of("shapeRenderer");
-    public static final BundlerKey<EvolutionManager> evol = BundlerKey.of("evolutionManager");
     public static final BundlerKey<Params> params = BundlerKey.of("params");
 }

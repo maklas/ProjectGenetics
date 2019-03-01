@@ -10,7 +10,7 @@ public class Params {
 
     private GraphFunction function = new LinearFunction(1, 0);
     private int bitsPerGene = 16;
-    private int chromosomesPerGeneration = 10;
+    private int populationSize = 10;
     private double minValue = 0;
     private double maxValue = 1;
     private int generationMemory = 10;
@@ -35,12 +35,12 @@ public class Params {
         this.bitsPerGene = bitsPerGene;
     }
 
-    public int getChromosomesPerGeneration() {
-        return chromosomesPerGeneration;
+    public int getPopulationSize() {
+        return populationSize;
     }
 
-    public void setChromosomesPerGeneration(int chromosomesPerGeneration) {
-        this.chromosomesPerGeneration = chromosomesPerGeneration;
+    public void setPopulationSize(int populationSize) {
+        this.populationSize = populationSize;
     }
 
     public double getMinValue() {

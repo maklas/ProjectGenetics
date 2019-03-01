@@ -97,6 +97,9 @@ public class Chromosome {
                 gene.setBit(pos, set);
             }
         }
+    }
 
+    public void changeBit(int pos) {
+        set(pos, !getBit(pos));
     }
 }

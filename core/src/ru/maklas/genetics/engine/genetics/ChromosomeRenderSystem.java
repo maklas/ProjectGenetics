@@ -8,15 +8,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
-import ru.maklas.genetics.statics.EntityType;
+import ru.maklas.genetics.engine.genetics.dispatchable.RenderModeChangedEvent;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.mengine.Component;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;
@@ -63,12 +61,20 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     }
 
     public ChromosomeRenderSystem renderModeLast(){
-        renderMode = ChromosomeRenderMode.LAST_GEN;
+        ChromosomeRenderMode oldRenderMode = this.renderMode;
+        this.renderMode = ChromosomeRenderMode.LAST_GEN;
+        if (oldRenderMode != ChromosomeRenderMode.LAST_GEN){
+            dispatch(new RenderModeChangedEvent(renderMode));
+        }
         return this;
     }
 
     public ChromosomeRenderSystem renderModeLastAndParents(){
+        ChromosomeRenderMode oldRenderMode = this.renderMode;
         renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
+        if (oldRenderMode != ChromosomeRenderMode.LAST_AND_PARENTS){
+            dispatch(new RenderModeChangedEvent(renderMode));
+        }
         return this;
     }
 
@@ -77,8 +83,14 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     }
 
     public ChromosomeRenderSystem renderModeTree(int targetId){
+        ChromosomeRenderMode oldRenderMode = this.renderMode;
+        int oldId = this.targetChromosomeId;
         renderMode = ChromosomeRenderMode.TARGET_TREE;
-        targetChromosomeId = targetId;
+        this.targetChromosomeId = targetId;
+
+        if (oldRenderMode != ChromosomeRenderMode.TARGET_TREE || oldId != targetId){
+            dispatch(new RenderModeChangedEvent(renderMode));
+        }
         return this;
     }
 
@@ -110,6 +122,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
                     renderTargetChromosomeTree(sr, targetChromosome);
                 } else {
                     renderMode = ChromosomeRenderMode.LAST_AND_PARENTS;
+                    dispatch(new RenderModeChangedEvent(ChromosomeRenderMode.LAST_AND_PARENTS));
                 }
                 break;
         }
@@ -207,22 +220,6 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         font.getData().setScale(scale);
         font.setColor(textColor);
 
-        font.draw(batch, "Generation N: " + generationNumber, x, y, 10, Align.left, false);
-        y -= dy;
-        String viewMode = "";
-        switch (this.renderMode){
-            case LAST_GEN:
-                viewMode = "Last Generation";
-                break;
-            case LAST_AND_PARENTS:
-                viewMode = "Last Generation and Parents";
-                break;
-            case TARGET_TREE:
-                Entity target = engine.findById(targetChromosomeId);
-                viewMode = "Target tree (id=" + targetChromosomeId + ", " + "gen=" + (target == null ? "null" : target.get(M.chromosome).generation) + ")";
-                break;
-        }
-        font.draw(batch, "View mode: " + viewMode, x, y, 10, Align.left, false);
         for (Entity c : chromosomesUnderMouse) {
             y -= dy;
             ChromosomeComponent cc = c.get(M.chromosome);

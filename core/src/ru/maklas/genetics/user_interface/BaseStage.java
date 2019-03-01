@@ -3,6 +3,7 @@ package ru.maklas.genetics.user_interface;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 
 public class BaseStage extends Stage implements View {
 
@@ -10,6 +11,9 @@ public class BaseStage extends Stage implements View {
 
     public BaseStage() {
         super(new ScreenViewport());
+        if (!VisUI.isLoaded()){
+            VisUI.load(VisUI.SkinScale.X1);
+        }
     }
 
     @Override

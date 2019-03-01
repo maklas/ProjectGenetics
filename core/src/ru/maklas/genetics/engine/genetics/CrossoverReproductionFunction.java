@@ -1,33 +1,35 @@
-package ru.maklas.genetics.tests;
+package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.utils.Array;
 import ru.maklas.genetics.engine.M;
-import ru.maklas.genetics.engine.genetics.EntityUtils;
+import ru.maklas.genetics.states.Params;
+import ru.maklas.genetics.tests.Chromosome;
+import ru.maklas.genetics.tests.Crossover;
+import ru.maklas.genetics.tests.Gene;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 
-public class CrossoverEvolutionManager extends EvolutionManager {
+public class CrossoverReproductionFunction implements ReproductionFunction {
 
-    Crossover crossover;
+    private final int crossPoints;
 
-    public CrossoverEvolutionManager(Crossover crossover) {
-        this.crossover = crossover;
+    public CrossoverReproductionFunction(int crossPoints) {
+        this.crossPoints = crossPoints;
     }
 
-
     @Override
-    public Array<Entity> evolve(Engine engine, int generationNumber, int generationSize, Counter idCounter, Array<Entity> chromosomes) {
+    public Array<Entity> reproduce(Engine engine, Params params, int generationNumber, int populationSize, Counter idCounter, Array<Entity> parents) {
         Array<Entity> nextGen = new Array<>();
 
-        if (chromosomes.size < 2) throw new RuntimeException("Not enough chromosomes to evolve");
+        if (populationSize < 2) throw new RuntimeException("Not enough chromosomes to evolve");
 
-        for (int i = 0; i < generationSize; i++) {
-            Entity a = chromosomes.random();
-            Entity b = chromosomes.random();
+        for (int i = 0; i < populationSize; i++) {
+            Entity a = parents.random();
+            Entity b = parents.random();
             while (a == b){
-                b = chromosomes.random();
+                b = parents.random();
             }
 
 
