@@ -14,11 +14,11 @@ public enum ChromosomeRenderMode {
     public String asText() {
         switch (this){
             case LAST_GEN:
-                return "Last generation";
+                return "Generation";
             case LAST_AND_PARENTS:
-                return "Last generation + parents";
+                return "Parents";
             case TARGET_TREE:
-                return "Chromosome tree";
+                return "Tree";
         }
         return "null";
     }

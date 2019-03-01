@@ -15,11 +15,12 @@ import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
+import ru.maklas.genetics.engine.genetics.ChromosomeComponent;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
 import ru.maklas.genetics.engine.genetics.XGeneChromosomeSystem;
+import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
-import ru.maklas.genetics.engine.genetics.dispatchable.RenderModeChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
@@ -30,6 +31,7 @@ import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
+import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
 import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
 import ru.maklas.mengine.Bundler;
@@ -44,6 +46,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
     private OrthographicCamera cam;
     private CornerView view;
     private ControlTable controlTable;
+    private ChromosomeInfoTable chromosomeInfo;
 
     public GeneticsGenerationState(Params params) {
         this.params = params;
@@ -55,6 +58,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         view = new CornerView();
         controlTable = new ControlTable(true);
+        chromosomeInfo = new ChromosomeInfoTable();
     }
 
     @Override
@@ -69,8 +73,8 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
     @Override
     protected void addSystems(Engine engine) {
-        engine.add(new ChromosomeRenderSystem());
         engine.add(new XGeneChromosomeSystem());
+        engine.add(new ChromosomeRenderSystem());
         engine.add(new UpdatableEntitySystem());
         engine.add(new AnimationSystem());
         engine.add(new EntityDebugSystem()
@@ -106,7 +110,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void start() {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
-        Label renderModeLabel = controlTable.addLabel("Render: " + engine.getSystemManager().getSystem(ChromosomeRenderSystem.class).renderMode.asText());
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
         controlTable.addCheckBox("Draw net", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawNet(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
@@ -124,41 +127,27 @@ public class GeneticsGenerationState extends AbstractEngineState {
         controlTable.addButton("Next Generation", () -> engine.dispatch(new EvolveRequest()));
         controlTable.addButton("Reset", () -> engine.dispatch(new ResetEvolutionRequest()));
 
+        view.bottomRight.setActor(chromosomeInfo);
+
+
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + e.getGenerationNumber()));
-        engine.subscribe(RenderModeChangedEvent.class, e -> renderModeLabel.setText("Render: " + e.getRenderMode().asText()));
+        engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
 
         engine.dispatch(new ResetEvolutionRequest());
+
+
+        chromosomeInfo.set(engine.entitiesFor(ChromosomeComponent.class).random());
     }
 
     @Override
     protected void update(float dt) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) popState();
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
             engine.dispatch(new ResetEvolutionRequest());
         } else
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)){
             engine.dispatch(new EvolveRequest());
         } else
-        if (Gdx.input.isKeyJustPressed(Input.Keys.V)){
-            ChromosomeRenderSystem system = engine.getSystemManager().getSystem(ChromosomeRenderSystem.class);
-            switch (system.renderMode){
-                case LAST_GEN:
-                case TARGET_TREE:
-                    system.renderModeLastAndParents();
-                    break;
-                case LAST_AND_PARENTS:
-                    system.renderModeLast();
-                    break;
-            }
-        } else
-        if (Gdx.input.justTouched()){
-            ChromosomeRenderSystem system = engine.getSystemManager().getSystem(ChromosomeRenderSystem.class);
-            if (system.chromosomesUnderMouse.size > 0){
-                system.renderModeTree(system.chromosomesUnderMouse.first().id);
-            } else {
-                system.renderModeLastAndParents();
-            }
-        } else
-
         if (Gdx.input.isKeyPressed(Input.Keys.Y)){
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start < 16.666f) {

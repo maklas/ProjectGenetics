@@ -441,4 +441,11 @@ public class Utils {
     public static String codePoint() {
         return Gdx.app.getType() == Application.ApplicationType.Desktop ? codePoint(2) : codePoint(3);
     }
+
+    public static boolean contains(int[] integers, int i) {
+        for (int integer : integers) {
+            if(integer == i) return true;
+        }
+        return false;
+    }
 }

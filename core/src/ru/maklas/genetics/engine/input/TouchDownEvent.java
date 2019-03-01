@@ -47,4 +47,8 @@ public class TouchDownEvent implements Event {
     public void setFinger(int finger) {
         this.finger = finger;
     }
+
+    public Vector2 toVector() {
+        return new Vector2(x, y);
+    }
 }

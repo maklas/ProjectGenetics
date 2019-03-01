@@ -53,6 +53,7 @@ public class FunctionSelectionState extends AbstractEngineState {
         });
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         sr = new ShapeRenderer();
+        sr.setAutoShapeType(true);
     }
 
     @Override
