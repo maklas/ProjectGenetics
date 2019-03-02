@@ -17,7 +17,7 @@ import static ru.maklas.genetics.utils.StringUtils.ff;
 public class MainMenuState extends State {
 
     MainMenuView mm;
-    GraphFunction function = new DampedSineWaveFunction(200f, 25, 0, 0.001f);
+    GraphFunction function = new SineFunction(150, 300, 0);
 
     @Override
     protected void onCreate() {
@@ -46,7 +46,7 @@ public class MainMenuState extends State {
         mm.setBitMutationMinMax(1, 1);
         mm.setCrossingPoints(1);
         mm.setGenerationMemory(10);
-        mm.setMinMax(-100, 100);
+        mm.setMinMax(-150, 150);
         MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
     }
 

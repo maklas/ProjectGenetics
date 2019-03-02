@@ -35,6 +35,7 @@ public class RandomBitChangeMutation implements MutationFunction {
             while (memory.contains(bitId)){
                 bitId = Utils.rand.nextInt(child.length());
             }
+            memory.add(bitId);
         }
 
         for (int i = 0; i < memory.size; i++) {

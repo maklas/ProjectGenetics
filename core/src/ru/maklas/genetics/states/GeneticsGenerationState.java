@@ -32,6 +32,7 @@ import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
 import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
+import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.*;
 
@@ -77,7 +78,8 @@ public class GeneticsGenerationState extends AbstractEngineState {
                 .setTextInfoEnabled(false)
                 .addHelp("R", "Restart")
                 .addHelp("E", "Evolve")
-                .addHelp("Y", "Keep Evolving")
+                .addHelp("U", "Evolve 60 per sec")
+                .addHelp("Y", "Max evolution")
                 .addHelp("LMB", "Select Chromosome")
         );
         engine.add(new CameraSystem());
@@ -135,7 +137,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view.bottomRight.setActor(chromosomeInfo);
 
 
-        engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + e.getGenerationNumber()));
+        engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
 
         engine.dispatch(new ResetEvolutionRequest());
@@ -149,6 +151,9 @@ public class GeneticsGenerationState extends AbstractEngineState {
             engine.dispatch(new ResetEvolutionRequest());
         } else
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            engine.dispatch(new EvolveRequest());
+        } else
+        if (Gdx.input.isKeyPressed(Input.Keys.U)){
             engine.dispatch(new EvolveRequest());
         } else
         if (Gdx.input.isKeyPressed(Input.Keys.Y)){

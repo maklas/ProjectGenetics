@@ -34,6 +34,7 @@ public abstract class ChromosomeSystem extends EntitySystem {
     public Entity selectedChromosome;
     public Array<Entity> chromosomesUnderMouse = new Array<>();
     public float collectionRange = 7;
+    public float parentCollectionRange = 10;
 
 
     @Override
@@ -79,7 +80,7 @@ public abstract class ChromosomeSystem extends EntitySystem {
                     }
                 }
                 selectedChromosome = selectedParent;
-                dispatch(new ChromosomeSelectedEvent(null));
+                dispatch(new ChromosomeSelectedEvent(selectedParent));
 
             }
         } else {
@@ -151,6 +152,15 @@ public abstract class ChromosomeSystem extends EntitySystem {
             Entity target = engine.findById(targetId);
             if (target != null && mouse.dst2(target.x, target.y) < range2){
                 entities.add(target);
+            }
+            ParentsComponent pc = target.get(M.parents);
+            if (pc != null){
+                for (Entity parent : pc.parents) {
+                    if (mouse.dst2(parent.x, parent.y) < parentCollectionRange * parentCollectionRange * cam.zoom){
+                        entities.add(parent);
+                    }
+                }
+
             }
         }  else {
 

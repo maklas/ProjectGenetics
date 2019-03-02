@@ -1,6 +1,7 @@
 package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -35,29 +36,31 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
 
     @Override
     public void render() {
+        Gdx.gl.glLineWidth(2f);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
         for (Entity function : functions) {
             FunctionComponent fc = function.get(M.fun);
-            sr.setColor(fc.color);
+            sr.setColor(Color.BLUE);
             if (trackMode == ChromosomeTrackMode.CURRENT_GEN && chromosomeSystem.selectedChromosome == null){
                 for (Entity chromosome : chromosomeSystem.currentGeneration.get(M.generation).chromosomes) {
                     draw(sr, chromosome, fc.graphFunction);
                 }
-            } else if (trackMode == ChromosomeTrackMode.SELECTED && chromosomeSystem.selectedChromosome != null){
+            } else if ((trackMode == ChromosomeTrackMode.SELECTED || trackMode == ChromosomeTrackMode.CURRENT_GEN) && chromosomeSystem.selectedChromosome != null){
                 draw(sr, chromosomeSystem.selectedChromosome, fc.graphFunction);
             }
         }
 
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glLineWidth(1f);
     }
 
     private void draw(ShapeRenderer sr, Entity chromosome, GraphFunction graphFunction) {
         Vector2 start = new Vector2(chromosome.x, chromosome.y);
         Vector2 end = new Vector2(chromosome.x, (float) graphFunction.f(chromosome.x));
         sr.line(start, end);
-        sr.circle(end.x, end.y, 5 * cam.zoom, 12);
+        sr.circle(end.x, end.y, 3 * cam.zoom, 12);
     }
 }
