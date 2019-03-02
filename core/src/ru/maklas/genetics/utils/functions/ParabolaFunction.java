@@ -2,18 +2,18 @@ package ru.maklas.genetics.utils.functions;
 
 public class ParabolaFunction implements GraphFunction {
 
-    public float a;
-    public float b;
-    public float c;
+    public double a;
+    public double b;
+    public double c;
 
-    public ParabolaFunction(float a, float b, float c) {
+    public ParabolaFunction(double a, double b, double c) {
         this.a = a;
         this.b = b;
         this.c = c;
     }
 
     @Override
-    public float f(float x) {
+    public double f(double x) {
         return a * (x * x) + (b * x) + c;
     }
 }

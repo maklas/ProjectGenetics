@@ -15,8 +15,8 @@ import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
-import ru.maklas.genetics.engine.genetics.ChromosomeComponent;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
+import ru.maklas.genetics.engine.genetics.ChromosomeTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.XGeneChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
@@ -24,9 +24,7 @@ import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
-import ru.maklas.genetics.engine.other.MovementSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
-import ru.maklas.genetics.engine.rendering.AnimationSystem;
 import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.statics.EntityType;
@@ -34,10 +32,8 @@ import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
 import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
-import ru.maklas.mengine.Bundler;
-import ru.maklas.mengine.Engine;
-import ru.maklas.mengine.Entity;
-import ru.maklas.mengine.UpdatableEntitySystem;
+import ru.maklas.genetics.utils.Utils;
+import ru.maklas.mengine.*;
 
 public class GeneticsGenerationState extends AbstractEngineState {
 
@@ -55,6 +51,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
     @Override
     protected void loadAssets() {
         sr = new ShapeRenderer();
+        sr.setAutoShapeType(true);
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         view = new CornerView();
         controlTable = new ControlTable(true);
@@ -76,24 +73,21 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new XGeneChromosomeSystem());
         engine.add(new ChromosomeRenderSystem());
         engine.add(new UpdatableEntitySystem());
-        engine.add(new AnimationSystem());
         engine.add(new EntityDebugSystem()
                 .setTextInfoEnabled(false)
                 .addHelp("R", "Restart")
                 .addHelp("E", "Evolve")
                 .addHelp("Y", "Keep Evolving")
-                .addHelp("V", "Change view")
                 .addHelp("LMB", "Select Chromosome")
         );
         engine.add(new CameraSystem());
-        engine.add(new MovementSystem());
         engine.add(new TTLSystem());
         engine.add(new FunctionRenderSystem()
                 .setNetColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
                 .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
-
+        engine.add(new ChromosomeTrackingRenderSystem());
 
     }
 
@@ -111,8 +105,14 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
-        controlTable.addCheckBox("Draw net", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawNet(e));
+        controlTable.addCheckBox("Draw net", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
+        controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
+        ChromosomeTrackingRenderSystem system = engine.getSystemManager().getSystem(ChromosomeTrackingRenderSystem.class);
+        controlTable.addButton(system.trackMode.asText(), (b) -> {
+            system.trackMode = Utils.next(system.trackMode);
+            b.setText(system.trackMode.asText());
+        });
         controlTable.addCheckBox("Print XY", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setPrintXY(e));
         controlTable.addCheckBox("Draggable camera", false, drag -> {
             ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
@@ -125,7 +125,12 @@ public class GeneticsGenerationState extends AbstractEngineState {
             }
         });
         controlTable.addButton("Next Generation", () -> engine.dispatch(new EvolveRequest()));
-        controlTable.addButton("Reset", () -> engine.dispatch(new ResetEvolutionRequest()));
+        controlTable.addButton("Reset population", () -> engine.dispatch(new ResetEvolutionRequest()));
+        controlTable.addButton("Reset cam", () -> {
+            engine.entitiesFor(CameraComponent.class).foreach(c -> {c.x = 0; c.y = 0;});
+            cam.setPosition(0, 0);
+            cam.zoom = 1;
+        });
 
         view.bottomRight.setActor(chromosomeInfo);
 
@@ -134,14 +139,12 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
 
         engine.dispatch(new ResetEvolutionRequest());
-
-
-        chromosomeInfo.set(engine.entitiesFor(ChromosomeComponent.class).random());
     }
 
     @Override
     protected void update(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) popState();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.END) && engine instanceof TestEngine) System.out.println(((TestEngine) engine).captureResults());
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
             engine.dispatch(new ResetEvolutionRequest());
         } else
@@ -176,18 +179,8 @@ public class GeneticsGenerationState extends AbstractEngineState {
         cam.update();
 
         sr.setProjectionMatrix(cam.combined);
-        sr.begin(ShapeRenderer.ShapeType.Line);
-
-        sr.setColor(Color.CYAN);
-        sr.setColor(Color.GREEN);
-        sr.end();
-
-        engine.render();
-
-
         batch.setProjectionMatrix(cam.combined);
-        batch.begin();
-        batch.end();
+        engine.render();
         view.draw();
     }
 

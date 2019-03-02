@@ -4,20 +4,22 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class SineFunction implements GraphFunction {
 
-    public float shift = 0;
-    public float amp = 0;
+    public double shift = 0;
+    public double amp = 0;
+    public double waveLen = 0;
 
     public SineFunction() {
 
     }
 
-    public SineFunction(float amp, float shift) {
+    public SineFunction(double amp, double waveLen, double shift) {
         this.amp = amp;
+        this.waveLen = waveLen;
         this.shift = shift;
     }
 
     @Override
-    public float f(float x) {
-        return amp * MathUtils.sin(x +  shift);
+    public double f(double x) {
+        return amp * Math.sin((2 * MathUtils.PI * (x / waveLen)) + shift);
     }
 }

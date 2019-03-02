@@ -2,6 +2,7 @@ package ru.maklas.genetics.user_interface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Consumer;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
@@ -33,8 +34,16 @@ public class ControlTable extends VisTable {
 
     public void addButton(String name, Runnable listener){
         VisTextButton button = new VisTextButton(name);
-        //button.getStyle().fontColor = Color.BLACK;
         button.addChangeListener(listener);
+        add(button);
+        if (vertical){
+            row();
+        }
+    }
+
+    public void addButton(String name, Consumer<TextButton> listener){
+        VisTextButton button = new VisTextButton(name);
+        button.addChangeListener(() -> listener.accept(button));
         add(button);
         if (vertical){
             row();

@@ -1,5 +1,6 @@
 package ru.maklas.genetics.user_interface;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Consumer;
@@ -52,15 +53,16 @@ public class FunctionSelectionView extends BaseStage {
                 .update()
                 .onChanged(f -> changeListener.accept(getFunction()));
 
-        sinFunctionTable = new ParamTable<>(new SineFunction(10, 0))
+        sinFunctionTable = new ParamTable<>(new SineFunction(10, 5, 0))
                 .addParam("amp", 10, (f, a) -> f.amp = a, f -> f.amp)
+                .addParam("wave length", 5, (f, l) -> f.waveLen = l, f -> f.waveLen)
                 .addParam("shift", 0, (f, s) -> f.shift = s, f -> f.shift)
                 .update()
                 .onChanged(f -> changeListener.accept(getFunction()));
 
         dampedSinFunctionTable = new ParamTable<>(new DampedSineWaveFunction(100, 10, 0, 0.01f))
-                .addParam("amp", 1, (f, a) -> f.amp = a, f -> f.amp)
-                .addParam("wave length", 1, (f, l) -> f.waveLen = l, f -> f.waveLen)
+                .addParam("amp", 10, (f, a) -> f.amp = a, f -> f.amp)
+                .addParam("wave length", 3, (f, l) -> f.waveLen = l, f -> f.waveLen)
                 .addParam("Y-shift", 1, (f, s) -> f.shift = s, f -> f.shift)
                 .addParam("decay", 1, (f, d) -> f.decay = d, f -> f.decay)
                 .update()
@@ -133,15 +135,15 @@ public class FunctionSelectionView extends BaseStage {
             defaults().padBottom(15);
         }
 
-        public ParamTable<T> addParam(String name, float defaultValue, BiConsumer<T, Float> writeFunction, MapFunction<T, Float> readFunction){
-            VisLabel label = new VisLabel(name);
+        public ParamTable<T> addParam(String name, float defaultValue, BiConsumer<T, Double> writeFunction, MapFunction<T, Double> readFunction){
+            VisLabel label = new VisLabel(name, Color.BLACK);
             VisTextField field = new VisValidatableTextField(new Validators.FloatValidator());
             field.setText(String.valueOf(defaultValue));
             field.addChangeListener(() -> {
                 String text = field.getText();
-                float val = 0;
+                double val = 0;
                 try {
-                    val = Float.parseFloat(text);
+                    val = Double.parseDouble(text);
                 } catch (NumberFormatException e) {}
 
                 writeFunction.consume(function, val);

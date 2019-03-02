@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class DampedSineWaveFunction implements GraphFunction {
 
-    public float amp;
-    public float waveLen;
-    public float shift;
-    public float decay;
+    public double amp;
+    public double waveLen;
+    public double shift;
+    public double decay;
 
     /**
      * @param amp Amplitude
@@ -15,7 +15,7 @@ public class DampedSineWaveFunction implements GraphFunction {
      * @param shift shift in Y position
      * @param decay 0..1 speed of decay
      */
-    public DampedSineWaveFunction(float amp, float waveLen, float shift, float decay) {
+    public DampedSineWaveFunction(double amp, double waveLen, double shift, double decay) {
         this.amp = amp;
         this.waveLen = waveLen;
         this.shift = shift;
@@ -23,7 +23,7 @@ public class DampedSineWaveFunction implements GraphFunction {
     }
 
     @Override
-    public float f(float x) {
-        return (float)(amp * Math.pow(MathUtils.E, (-decay * x)) * MathUtils.sin((2* MathUtils.PI * x/waveLen))+shift);
+    public double f(double x) {
+        return (amp * Math.pow(MathUtils.E, (-decay * x)) * Math.sin((2 * MathUtils.PI * x/waveLen)) + shift);
     }
 }

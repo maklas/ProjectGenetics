@@ -9,15 +9,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import ru.maklas.genetics.engine.B;
-import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
-import ru.maklas.genetics.engine.genetics.EntityUtils;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
-import ru.maklas.genetics.engine.rendering.CameraMode;
+import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
+import ru.maklas.genetics.statics.EntityType;
+import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.FunctionSelectionView;
 import ru.maklas.genetics.utils.functions.GraphFunction;
 import ru.maklas.genetics.utils.functions.LinearFunction;
@@ -66,7 +66,10 @@ public class FunctionSelectionState extends AbstractEngineState {
 
     @Override
     protected void addSystems(Engine engine) {
-        engine.add(new FunctionRenderSystem());
+        engine.add(new FunctionRenderSystem()
+                .setNetColor(Color.BLACK)
+                .setNumberColor(Color.BLACK)
+                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new EntityDebugSystem().setTextInfoEnabled(false));
         engine.add(new CameraSystem());
         engine.add(new FunctionTrackingRenderSystem());
@@ -74,10 +77,11 @@ public class FunctionSelectionState extends AbstractEngineState {
 
     @Override
     protected void addDefaultEntities(Engine engine) {
-        engine.add(EntityUtils.camera(cam, CameraMode.BUTTON_CONTROLLED));
-        Entity function = EntityUtils.function(0, selectedFunction, Color.GREEN, 1, true);
-        engine.add(function);
-        fc = function.get(M.fun);
+        engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
+        fc = new FunctionComponent(selectedFunction);
+        fc.color.set(0.75f, 0.23f, 0.23f, 1);
+        fc.lineWidth = 2f;
+        engine.add(new Entity().add(fc));
     }
 
     @Override
@@ -109,6 +113,9 @@ public class FunctionSelectionState extends AbstractEngineState {
     @Override
     protected void render(Batch batch) {
         cam.update();
+        sr.setProjectionMatrix(cam.combined);
+        batch.setProjectionMatrix(cam.combined);
+
         engine.render();
         view.draw();
     }

@@ -65,7 +65,6 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         if (trackResults.size > 0) {
 
             Gdx.gl.glEnable(GL20.GL_BLEND);
-            sr.setProjectionMatrix(cam.combined);
             sr.begin(ShapeRenderer.ShapeType.Line);
 
             for (TrackResult tr : trackResults) {
@@ -85,7 +84,6 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
 
 
             if (printXY) {
-                batch.setProjectionMatrix(cam.combined);
                 batch.begin();
                 BitmapFont font = A.images.font;
 
@@ -95,7 +93,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
                     font.setColor(tr.trackColor);
                     font.getColor().a = 1;
                     int precision = cam.zoom > 3 ? 1 : cam.zoom > 0.01f ? 2 : 3;
-                    font.draw(batch, "(" + StringUtils.ff(tr.xVal, precision) + ", " + StringUtils.ff(tr.yVal, precision) + ")", tr.textPos.x, tr.textPos.y, 10, Align.left, false);
+                    font.draw(batch, "(" + StringUtils.df(tr.xVal, precision) + ", " + StringUtils.df(tr.yVal, precision) + ")", tr.textPos.x, tr.textPos.y, 10, Align.left, false);
                 }
 
                 batch.end();
@@ -119,16 +117,19 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
     private TrackResult createTrack(FunctionComponent fc, Vector2 mouse) {
         TrackResult tr = trackResultPool.obtain();
         tr.lineFrom.set(mouse);
-        float y = fc.graphFunction.f(mouse.x);
-        float clampY = clampY(y);
-        tr.lineTo.set(mouse.x, clampY);
+        double y = fc.graphFunction.f(mouse.x);
+        double clampY = MathUtils.clamp(y, Utils.camBotY(cam), Utils.camTopY(cam));
+        tr.lineTo.set(mouse.x, ((float) clampY));
         tr.trackColor.set(fc.color);
         tr.yVal = y;
         tr.xVal = mouse.x;
-        tr.textPos.set(mouse.x, clampY);
+        tr.textPos.set(mouse.x, ((float) clampY));
+        if (clampY < Utils.camBotY(cam) + (15 * cam.zoom)){
+            tr.textPos.y += 15 * cam.zoom;
+        }
         if (clampY == y){
             tr.drawPoint = true;
-            tr.point.set(mouse.x, y);
+            tr.point.set(mouse.x, ((float) y));
         }
         return tr;
     }
@@ -153,8 +154,8 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         final Vector2 textPos = new Vector2();
         final Color trackColor = new Color();
         boolean drawPoint = false;
-        float yVal;
-        float xVal;
+        double yVal;
+        double xVal;
 
         @Override
         public void reset() {

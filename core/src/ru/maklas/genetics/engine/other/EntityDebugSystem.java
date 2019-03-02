@@ -42,8 +42,8 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private Batch batch;
     private OrthographicCamera cam;
     private static final float range = 30;
-    private static final float minCamZoom = 0.0001f;
-    private static final float maxCamZoom = 100f;
+    private static final float minCamZoom = 0.0009765625f;
+    private static final float maxCamZoom = 128f;
     private TextureRegion entityCircle;
     boolean paused = false;
     boolean highlightEntities = false;
@@ -171,11 +171,14 @@ public class EntityDebugSystem extends RenderEntitySystem {
         } else {
             color = Color.GREEN;
         }
-        String s = StringUtils.addSpacesLeft(Math.round(framePercentVal * 100) + "%", 4);
-        float x = Utils.camRightX(cam) - (35f * cam.zoom);
+        String s = StringUtils.addSpacesLeft(Math.round(framePercentVal * 100) + "%", 8);
+        float x = Utils.camRightX(cam) - (62f * cam.zoom);
         float y = Utils.camTopY(cam) - (5 * cam.zoom);
         font.setColor(color);
         font.getData().setScale(cam.zoom);
+        font.draw(batch, s, x, y, 10, Align.left, false);
+        y -= 16 * cam.zoom;
+        s = StringUtils.addSpacesLeft("x" + StringUtils.ff(cam.zoom, cam.zoom > 1 ? 1 : -(int) Math.floor(Math.log10(cam.zoom))), 8);
         font.draw(batch, s, x, y, 10, Align.left, false);
     }
 
@@ -222,6 +225,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         float oldZoom = cam.zoom;
         float newZoom = cam.zoom * 0.5f;
         if (newZoom < minCamZoom) newZoom = minCamZoom;
+        if (MathUtils.isEqual(oldZoom, newZoom)) return;
 
         ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
 
@@ -240,6 +244,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         float oldZoom = cam.zoom;
         float newZoom = cam.zoom * 2f;
         if (newZoom > maxCamZoom) newZoom = maxCamZoom;
+        if (MathUtils.isEqual(oldZoom, newZoom)) return;
 
         ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
 
@@ -341,7 +346,6 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private void printEntity(Entity e) {
-        batch.setProjectionMatrix(cam.combined);
         Array<Component> components = e.getComponents();
 
         float scale = 1f * getSafeCamZoom();
@@ -352,7 +356,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
         font.getData().setScale(scale);
 
-        font.draw(batch, "id: "  + e.id + ", type: " + EntityType.typeToString(e.type) + ", x: " + ff(e.x) + ", y: " + ff(e.y) + ", ang: " + ff(e.getAngle()), x, y, 10, Align.left, false);
+        font.draw(batch, "id: "  + e.id + ", type: " + EntityType.typeToString(e.type) + ", x: " + (int) e.x + ", y: " + (int) e.y + ", ang: " + (int) e.getAngle(), x, y, 10, Align.left, false);
         for (Component c : components) {
             y -= dy;
             font.draw(batch, StringUtils.componentToString(c), x, y,10, Align.left, false);
@@ -388,7 +392,4 @@ public class EntityDebugSystem extends RenderEntitySystem {
         return Math.max(minCamZoom, cam.zoom);
     }
 
-    private String ff(float f){
-        return Integer.toString(((int) f));
-    }
 }

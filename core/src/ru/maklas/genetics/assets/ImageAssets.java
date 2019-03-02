@@ -11,6 +11,7 @@ public class ImageAssets extends Asset{
 
     public TextureRegion empty;
     public TextureRegion cell;
+    public TextureRegion circle;
     public TextureRegion laserStart, laserMiddle, laserEnd, laserEffect;
     public TextureRegion background;
     public BitmapFont font;
@@ -22,6 +23,7 @@ public class ImageAssets extends Asset{
         empty = new TextureRegion(new Texture("default.png"));
         cell = new TextureRegion(new Texture("cell.png"));
         background = new TextureRegion(new Texture("background.png"));
+        circle = new TextureRegion(new Texture("circle.png"));
 
         laserStart = new TextureRegion(new Texture("laser/laser_start.png"));
         laserMiddle = new TextureRegion(new Texture("laser/laser_middle.png"));

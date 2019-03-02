@@ -9,7 +9,7 @@ public class FunctionComponent implements Component {
     public GraphFunction graphFunction;
     public Color color = Color.WHITE.cpy();
     public boolean trackMouse = true;
-    public float precision = 1f;
+    public double precision = 1d;
     public float lineWidth = 1f; //1..2
 
     public FunctionComponent(GraphFunction graphFunction) {

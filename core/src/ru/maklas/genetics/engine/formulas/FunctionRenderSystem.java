@@ -2,13 +2,11 @@ package ru.maklas.genetics.engine.formulas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.assets.A;
@@ -21,11 +19,6 @@ import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.Arrays;
-
 public class FunctionRenderSystem extends RenderEntitySystem {
 
     private ShapeRenderer sr;
@@ -36,6 +29,7 @@ public class FunctionRenderSystem extends RenderEntitySystem {
 
     private boolean drawNet;
     private boolean drawPortions;
+    private boolean drawFunctions;
     private boolean fillNet;
     private boolean drawNumbers;
     private Color netColor = Color.WHITE;
@@ -43,12 +37,13 @@ public class FunctionRenderSystem extends RenderEntitySystem {
     private Color numberColor = Color.WHITE;
 
     public FunctionRenderSystem() {
-        this(true, true, true, true);
+        this(true, true, true, true, true);
     }
 
-    public FunctionRenderSystem(boolean drawNet, boolean drawPortions, boolean drawNumbers, boolean fillNet) {
+    public FunctionRenderSystem(boolean drawNet, boolean drawPortions, boolean drawFunctions, boolean drawNumbers, boolean fillNet) {
         this.drawNet = drawNet;
         this.drawPortions = drawPortions;
+        this.drawFunctions = drawFunctions;
         this.drawNumbers = drawNumbers;
         this.fillNet = fillNet;
     }
@@ -66,7 +61,6 @@ public class FunctionRenderSystem extends RenderEntitySystem {
     @Override
     public void render() {
         Gdx.gl.glLineWidth(1);
-        sr.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
         if (drawNet){
@@ -79,7 +73,8 @@ public class FunctionRenderSystem extends RenderEntitySystem {
                 sr.setColor(fillColor);
                 float minDelta = Math.min(rightX - leftX, topY - botY);
                 double log = Math.log10(minDelta);
-                double portionStep = Math.pow(10, Math.floor(log)) * (log - Math.floor(log) > 0.5f ? 1 : 0.5f);
+                int logFloor = (int) (log > 0 ? Math.floor(log) : Math.ceil(log));
+                double portionStep = Math.pow(10, logFloor - 1) * (log - logFloor > 0.5f ? 1 : 0.5f);
 
                 double xStart = (Math.ceil(leftX / portionStep) * portionStep);
                 while (xStart < rightX){
@@ -101,7 +96,8 @@ public class FunctionRenderSystem extends RenderEntitySystem {
                 float portionThickness = cam.zoom * 4;
                 float minDelta = Math.min(rightX - leftX, topY - botY);
                 double log = Math.log10(minDelta);
-                double portionStep = Math.pow(10, Math.floor(log)) * (log - Math.floor(log) > 0.5f ? 1 : 0.5f);
+                int logFloor = (int) (log > 0 ? Math.floor(log) : Math.ceil(log));
+                double portionStep = Math.pow(10, logFloor - 1) * (log - logFloor > 0.5f ? 1 : 0.5f);
 
                 if (topY > -portionThickness && botY < portionThickness) {
                     double xStart = (Math.ceil(leftX / portionStep) * portionStep);
@@ -128,15 +124,18 @@ public class FunctionRenderSystem extends RenderEntitySystem {
         }
 
         float currentLineWidth = 1f;
-        for (Entity formula : formulas) {
-            FunctionComponent fc = formula.get(M.fun);
-            if (!MathUtils.isEqual(currentLineWidth, fc.lineWidth)){
-                sr.flush();
-                Gdx.gl.glLineWidth(fc.lineWidth);
-                currentLineWidth = fc.lineWidth;
+
+        if (drawFunctions) {
+            for (Entity formula : formulas) {
+                FunctionComponent fc = formula.get(M.fun);
+                if (!MathUtils.isEqual(currentLineWidth, fc.lineWidth)) {
+                    sr.flush();
+                    Gdx.gl.glLineWidth(fc.lineWidth);
+                    currentLineWidth = fc.lineWidth;
+                }
+                sr.setColor(fc.color);
+                draw(sr, fc.graphFunction, fc.precision);
             }
-            sr.setColor(fc.color);
-            draw(sr, fc.graphFunction, fc.precision);
         }
 
         sr.end();
@@ -151,7 +150,6 @@ public class FunctionRenderSystem extends RenderEntitySystem {
             float botY = Utils.camBotY(cam);
             float topY = Utils.camTopY(cam);
 
-            batch.setProjectionMatrix(cam.combined);
             batch.begin();
             font.setColor(numberColor);
             font.getData().setScale(cam.zoom * 0.75f);
@@ -159,7 +157,7 @@ public class FunctionRenderSystem extends RenderEntitySystem {
             float portionThickness = cam.zoom * 4;
             float minDelta = Math.min(rightX - leftX, topY - botY);
             double log = Math.log10(minDelta);
-            int logFloor = (int) Math.floor(log);
+            int logFloor = (int) (log > 0 ? Math.floor(log) : Math.ceil(log));
             double portionStep = Math.pow(10, logFloor) * (log - logFloor > 0.5f ? 1 : 0.5f);
 
             if (topY > -portionThickness && botY < portionThickness) {
@@ -167,7 +165,7 @@ public class FunctionRenderSystem extends RenderEntitySystem {
                 while (xStart < rightX){
                     float x = (float) xStart;
 
-                    String number = log >= 0 ? Long.toString(Math.round(xStart)) : StringUtils.df(xStart, -logFloor);
+                    String number = log > 0.5d ? Long.toString(Math.round(xStart)) : StringUtils.df(xStart, -(logFloor - 1));
                     font.draw(batch, number, x + 2 * cam.zoom, 15 * cam.zoom, 10, Align.left, false);
                     xStart += portionStep;
                 }
@@ -178,7 +176,7 @@ public class FunctionRenderSystem extends RenderEntitySystem {
                 while (yStart < topY){
                     float y = (float) yStart;
                     if (!MathUtils.isEqual(y, 0)) {
-                        String number = log >= 0 ? Long.toString(Math.round(yStart)) : StringUtils.df(yStart, -logFloor);
+                        String number = log > 0.5d ? Long.toString(Math.round(yStart)) : StringUtils.df(yStart, -(logFloor - 1));
                         font.draw(batch, number, 5 * cam.zoom, y + 15 * cam.zoom, 10, Align.left, false);
                     }
                     yStart += portionStep;
@@ -190,17 +188,47 @@ public class FunctionRenderSystem extends RenderEntitySystem {
 
     }
 
-    private void draw(ShapeRenderer sr, GraphFunction fun, float precision) {
-        float min = Utils.camLeftX(cam);
-        float max = Utils.camRightX(cam);
-        float step = cam.zoom * precision;
+    /** Uses while loop, which is not safe **/
+    @Deprecated
+    private void drawWhile(ShapeRenderer sr, GraphFunction fun, double precision) {
+        double min = Utils.camLeftX(cam);
+        double max = Utils.camRightX(cam);
+        double step = cam.zoom * precision;
 
-        float previousX = 0;
-        float x = min;
+        double previousX = min;
+        double previousY = fun.f(min);
+        double x = previousX;
+        double y = previousY;
+
         while (x < max) {
-            previousX = x;
             x += step;
-            drawLine(fun, sr, previousX, x);
+            y = fun.f(x);
+            sr.line(((float) previousX), ((float) previousY), ((float) x), ((float) y));
+            previousX = x;
+            previousY = y;
+        }
+    }
+
+    private void draw(ShapeRenderer sr, GraphFunction fun, double precision) {
+        double min = Utils.camLeftX(cam);
+        double max = Utils.camRightX(cam);
+        double step = cam.zoom * precision;
+
+        double fullLength = max - min;
+        double totalSteps = fullLength / step;
+
+
+        double previousX = min;
+        double previousY = fun.f(min);
+        double x = previousX;
+        double y = previousY;
+
+        for (int i = 1; i < totalSteps; i++) {
+            x = ((i / totalSteps) * fullLength) + min;
+            y = fun.f(x);
+            sr.line(((float) previousX), ((float) previousY), ((float) x), ((float) y));
+            previousX = x;
+            previousY = y;
         }
     }
 
@@ -211,6 +239,11 @@ public class FunctionRenderSystem extends RenderEntitySystem {
 
     public FunctionRenderSystem setDrawPortions(boolean draw){
         this.drawPortions = draw;
+        return this;
+    }
+
+    public FunctionRenderSystem setDrawFunctions(boolean draw){
+        this.drawFunctions = draw;
         return this;
     }
 
@@ -232,13 +265,5 @@ public class FunctionRenderSystem extends RenderEntitySystem {
     public FunctionRenderSystem setNumberColor(Color color){
         this.numberColor = color;
         return this;
-    }
-
-
-
-    private void drawLine(GraphFunction fun, ShapeRenderer sr, float previousX, float x) {
-        float prevY = fun.f(previousX);
-        float y = fun.f(x);
-        sr.line(previousX, prevY, x, y);
     }
 }
