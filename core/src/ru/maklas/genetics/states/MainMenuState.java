@@ -35,6 +35,7 @@ public class MainMenuState extends State {
                 params.setReproductionFunction(new CrossoverReproductionFunction(mm.getCrossingPoints()));
                 params.setMutationFunction(new RandomBitChangeMutation(mm.getBitMutationMin(), mm.getBitMutationMax()));
                 params.setFitnessFunction(new FunctionMinimalValueFitnessFunction(mm.getQ()));
+                params.setGenerationDistribution(mm.getGenerationDistribution());
                 pushState(new GeneticsGenerationState(params));
             }
         });

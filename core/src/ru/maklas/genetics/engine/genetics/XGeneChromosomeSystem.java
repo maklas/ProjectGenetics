@@ -42,8 +42,8 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
 
     @Override
     protected void reset(ResetEvolutionRequest req) {
-        generations.cpyArray().foreach(engine::remove);
-        chromosomes.cpyArray().foreach(engine::remove);
+        engine.removeAll(M.generation);
+        engine.removeAll(M.chromosome);
 
         generationMemory.clear();
         currentGenerationNumber = 0;
@@ -54,7 +54,7 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
             chromosome.add(new Gene(params.getBitsPerGene())
                     .setName(GeneNames.X)
                     .setMinMaxDouble(params.getMinValue(), params.getMaxValue())
-                    .randomize());
+                    .randomize(params.getGenerationDistribution()));
 
             Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
             newChromosomes.add(e);

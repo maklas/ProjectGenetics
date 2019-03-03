@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
+import ru.maklas.genetics.states.GenerationDistribution;
 
 public class MainMenuView extends BaseStage {
 
@@ -19,6 +20,7 @@ public class MainMenuView extends BaseStage {
     private final VisValidatableTextField bitMutMax;
     private final VisValidatableTextField bitsPerGeneField;
     private final VisValidatableTextField qField;
+    private final VisSelectBox<GenerationDistribution> generationDistributionBox;
 
     public MainMenuView() {
         VisTable table = new VisTable();
@@ -40,6 +42,9 @@ public class MainMenuView extends BaseStage {
         bitMutMax = new VisValidatableTextField(new Validators.IntegerValidator());
         bitsPerGeneField = new VisValidatableTextField(new Validators.IntegerValidator());
         qField = new VisValidatableTextField(new Validators.FloatValidator());
+        generationDistributionBox = new VisSelectBox<>();
+        generationDistributionBox.setItems(GenerationDistribution.values());
+        generationDistributionBox.setSelected(GenerationDistribution.EVEN);
 
 
         table.add(selectFunction).padRight(10);
@@ -57,9 +62,13 @@ public class MainMenuView extends BaseStage {
         table.add(populationSizeField).width(75);
         table.row();
 
-        table.add(label("Min-Max")).right();
+        table.add(label("Min-Max value")).right();
         table.add(minField).width(75);
         table.add(maxField).width(75).left();
+        table.row();
+
+        table.add(label("Generation destribution")).right();
+        table.add(generationDistributionBox).width(75);
         table.row();
 
         table.add(label("Generation memory")).right();
@@ -156,6 +165,14 @@ public class MainMenuView extends BaseStage {
 
     public double getQ(){
         return getFloat(qField);
+    }
+
+    public GenerationDistribution getGenerationDistribution(){
+        return generationDistributionBox.getSelected();
+    }
+
+    public void setGenerationDistribution(GenerationDistribution distribution){
+        generationDistributionBox.setSelected(distribution);
     }
 
     public void setQ(double q){

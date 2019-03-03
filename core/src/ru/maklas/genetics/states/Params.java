@@ -17,6 +17,7 @@ public class Params {
     private ReproductionFunction reproductionFunction;
     private MutationFunction mutationFunction;
     private FitnessFunction fitnessFunction;
+    private GenerationDistribution generationDistribution;
 
 
     public GraphFunction getFunction() {
@@ -94,5 +95,13 @@ public class Params {
 
     public void setFitnessFunction(FitnessFunction fitnessFunction) {
         this.fitnessFunction = fitnessFunction;
+    }
+
+    public GenerationDistribution getGenerationDistribution() {
+        return generationDistribution;
+    }
+
+    public void setGenerationDistribution(GenerationDistribution generationDistribution) {
+        this.generationDistribution = generationDistribution;
     }
 }

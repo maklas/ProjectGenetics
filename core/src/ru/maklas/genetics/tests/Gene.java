@@ -1,5 +1,7 @@
 package ru.maklas.genetics.tests;
 
+import com.badlogic.gdx.math.MathUtils;
+import ru.maklas.genetics.states.GenerationDistribution;
 import ru.maklas.genetics.utils.BitArray;
 import ru.maklas.genetics.utils.Utils;
 
@@ -62,6 +64,27 @@ public class Gene {
     public Gene randomize() {
         for (int i = 0; i < bits.length(); i++) {
             bits.set(i, Utils.rand.nextBoolean());
+        }
+        return this;
+    }
+
+    public Gene randomize(GenerationDistribution distribution) {
+        switch (distribution){
+            case EVEN:
+                randomize();
+                break;
+            case RIGHT:
+                set(MathUtils.randomTriangular(((float) (getMinDouble() + ((getMaxDouble() - getMinDouble()) / 2d))), ((float) getMaxDouble()), ((float) getMaxDouble())));
+                break;
+            case LEFT:
+                float center = (float) (getMinDouble() + ((getMaxDouble() - getMinDouble()) / 2d));
+                set(MathUtils.randomTriangular(((float) getMinDouble()), center, center));
+                break;
+            case CENTER:
+                float middleLeft = (float) (getMinDouble() + ((getMaxDouble() - getMinDouble()) / 4d));
+                float middleRight = (float) (getMaxDouble() - ((getMaxDouble() - getMinDouble()) / 4d));
+                set(MathUtils.randomTriangular(middleLeft, middleRight));
+                break;
         }
         return this;
     }
