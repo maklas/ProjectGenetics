@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ImmutableArray;
+import ru.maklas.genetics.engine.genetics.GenerationComponent;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.genetics.engine.rendering.Animation;
@@ -38,6 +40,16 @@ public class EngineUtils {
         Animation animation = new Animation(regions, ru, cycleTime);
         ac.add(animation);
         return animation;
+    }
+
+    public static Entity getGeneration(Engine engine, int generation) {
+        ImmutableArray<Entity> generations = engine.entitiesFor(GenerationComponent.class);
+        for (Entity entity : generations) {
+            if (entity.get(M.generation).generation == generation){
+                return entity;
+            }
+        }
+        return null;
     }
 
     public boolean batchSmartBegin(Batch batch){

@@ -18,6 +18,7 @@ public class MainMenuView extends BaseStage {
     private final VisValidatableTextField bitMutMin;
     private final VisValidatableTextField bitMutMax;
     private final VisValidatableTextField bitsPerGeneField;
+    private final VisValidatableTextField qField;
 
     public MainMenuView() {
         VisTable table = new VisTable();
@@ -38,6 +39,7 @@ public class MainMenuView extends BaseStage {
         bitMutMin = new VisValidatableTextField(new Validators.IntegerValidator());
         bitMutMax = new VisValidatableTextField(new Validators.IntegerValidator());
         bitsPerGeneField = new VisValidatableTextField(new Validators.IntegerValidator());
+        qField = new VisValidatableTextField(new Validators.FloatValidator());
 
 
         table.add(selectFunction).padRight(10);
@@ -71,6 +73,10 @@ public class MainMenuView extends BaseStage {
         table.add(label("Bit mutations min-max")).right();
         table.add(bitMutMin).width(75);
         table.add(bitMutMax).width(75).left();
+        table.row();
+
+        table.add(label("Q")).right();
+        table.add(qField).width(75);
         table.row();
     }
     
@@ -148,6 +154,14 @@ public class MainMenuView extends BaseStage {
         bitMutMax.setText(String.valueOf(max));
     }
 
+    public double getQ(){
+        return getFloat(qField);
+    }
+
+    public void setQ(double q){
+        qField.setText(String.valueOf(q));
+    }
+
     private static int getInt(VisTextField field){
         try {
             return Integer.parseInt(field.getText().replaceAll("[^\\d-]", ""));
@@ -158,7 +172,7 @@ public class MainMenuView extends BaseStage {
 
     private static float getFloat(VisTextField field){
         try {
-            return Float.parseFloat(field.getText().replaceAll("[^\\d-]", ""));
+            return Float.parseFloat(field.getText().replaceAll("[^\\d-.]", ""));
         } catch (NumberFormatException e) {
             return 0;
         }

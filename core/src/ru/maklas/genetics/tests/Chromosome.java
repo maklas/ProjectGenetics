@@ -1,6 +1,7 @@
 package ru.maklas.genetics.tests;
 
 import com.badlogic.gdx.utils.Array;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Хромосома (особь, генотип).
@@ -15,7 +16,7 @@ public class Chromosome {
         return this;
     }
 
-    public Gene get(String geneName){
+    public Gene get(@MagicConstant(flagsFromClass = GeneNames.class) String geneName){
         if (geneName == null) return null;
         for (Gene gene : genes) {
             if (geneName.equals(gene.getName())){

@@ -23,7 +23,7 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
     public Array<Entity> reproduce(Engine engine, Params params, int generationNumber, int populationSize, Counter idCounter, Array<Entity> parents) {
         Array<Entity> nextGen = new Array<>();
 
-        if (populationSize < 2) throw new RuntimeException("Not enough chromosomes to evolve");
+        if (parents.size < 2) throw new RuntimeException("Not enough chromosomes to evolve from");
 
         for (int i = 0; i < populationSize; i++) {
             Entity a = parents.random();

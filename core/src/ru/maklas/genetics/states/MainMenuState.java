@@ -34,7 +34,7 @@ public class MainMenuState extends State {
                 params.setGenerationMemory(mm.getGenerationMemory());
                 params.setReproductionFunction(new CrossoverReproductionFunction(mm.getCrossingPoints()));
                 params.setMutationFunction(new RandomBitChangeMutation(mm.getBitMutationMin(), mm.getBitMutationMax()));
-                params.setFitnessFunction(new FunctionMinimalValueFitnessFunction());
+                params.setFitnessFunction(new FunctionMinimalValueFitnessFunction(mm.getQ()));
                 pushState(new GeneticsGenerationState(params));
             }
         });
@@ -47,6 +47,7 @@ public class MainMenuState extends State {
         mm.setCrossingPoints(1);
         mm.setGenerationMemory(10);
         mm.setMinMax(-150, 150);
+        mm.setQ(1);
         MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
     }
 
@@ -81,6 +82,11 @@ public class MainMenuState extends State {
         }
         if (mm.getBitMutationMin() > mm.getBitMutationMax()){
             gsm.print("Bit mutations min < Bit mutations max");
+            return false;
+        }
+
+        if (mm.getQ() <= 0){
+            gsm.print("Q > 0");
             return false;
         }
 
