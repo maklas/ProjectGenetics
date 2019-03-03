@@ -1,9 +1,12 @@
 package ru.maklas.genetics.tests;
 
 
+import com.badlogic.gdx.math.CumulativeDistribution;
 import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.utils.*;
+
+import java.util.Arrays;
 
 /**
  * Created by maklas on 04-Jan-18.
@@ -12,12 +15,18 @@ import ru.maklas.genetics.utils.*;
 public class Test {
 
     public static void main(String[] args){
-        Chromosome a = new Chromosome().add(new Gene(4)).add(new Gene(4));
-        Chromosome b = new Chromosome().add(new Gene(4).fill(true)).add(new Gene(4).fill(true));
-        System.out.println(a.byteCode());
-        System.out.println(b.byteCode());
-        System.out.println("-------------");
-        System.out.println(new Crossover().cross(a, b, new int[]{2, 4}).byteCode());
+        CumulativeDistribution<Integer> cd = new CumulativeDistribution<>();
+        for (int i = 0; i < 10; i++) {
+            cd.add(i, (i + 1) / 10f);
+        }
+        cd.generate();
+        int [] counts = new int[10];
+        for (int i = 0; i < 1_000_000; i++) {
+            Integer value = cd.value(Utils.rand.nextFloat() * 5.5f);
+            counts[value]++;
+        }
+
+        System.out.println(Arrays.toString(counts));
     }
 
     private static String toString(BitArray bits){

@@ -156,7 +156,7 @@ public abstract class ChromosomeSystem extends EntitySystem {
             ParentsComponent pc = target.get(M.parents);
             if (pc != null){
                 for (Entity parent : pc.parents) {
-                    if (mouse.dst2(parent.x, parent.y) < parentCollectionRange * parentCollectionRange * cam.zoom){
+                    if (mouse.dst2(parent.x, parent.y) < parentCollectionRange * parentCollectionRange * cam.zoom * cam.zoom){
                         entities.add(parent);
                     }
                 }
