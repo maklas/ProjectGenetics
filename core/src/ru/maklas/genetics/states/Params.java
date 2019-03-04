@@ -4,11 +4,11 @@ import ru.maklas.genetics.engine.genetics.FitnessFunction;
 import ru.maklas.genetics.engine.genetics.MutationFunction;
 import ru.maklas.genetics.engine.genetics.ReproductionFunction;
 import ru.maklas.genetics.utils.functions.GraphFunction;
-import ru.maklas.genetics.utils.functions.LinearFunction;
+import ru.maklas.genetics.utils.functions.ParabolaFunction;
 
 public class Params {
 
-    private GraphFunction function = new LinearFunction(1, 0);
+    private GraphFunction function = new ParabolaFunction(0.1, 0, 0);
     private int bitsPerGene = 16;
     private int populationSize = 10;
     private double minValue = 0;

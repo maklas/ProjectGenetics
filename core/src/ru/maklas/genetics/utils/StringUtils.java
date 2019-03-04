@@ -27,6 +27,16 @@ public class StringUtils {
         return String.format(Locale.ENGLISH, "%.0"+ numbersAfterComma + "f", d);
     }
 
+    /**
+     * If double is more than zero, uses default digit after point.
+     * If does is less than 0, gets to significant points specified.
+     */
+    public static String dfSigDigits(double d, int defaultDigitsAfterPoint, int significantDigits){
+        int logFloor = (int) Math.floor(Math.log10(d));
+        if (logFloor >= 0) return df(d, defaultDigitsAfterPoint);
+        return StringUtils.df(d, -(logFloor - (significantDigits - 1)));
+    }
+
     public static String df(double d){
         return df(d, 2);
     }

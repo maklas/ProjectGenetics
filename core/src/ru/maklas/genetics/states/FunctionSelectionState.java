@@ -13,6 +13,7 @@ import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
+import ru.maklas.genetics.engine.input.TouchDownEvent;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
@@ -20,7 +21,6 @@ import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.FunctionSelectionView;
 import ru.maklas.genetics.utils.functions.GraphFunction;
-import ru.maklas.genetics.utils.functions.LinearFunction;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -33,11 +33,6 @@ public class FunctionSelectionState extends AbstractEngineState {
     private FunctionSelectionView view;
     private ShapeRenderer sr;
     private OrthographicCamera cam;
-
-
-    public FunctionSelectionState() {
-        selectedFunction = new LinearFunction(1, 0);
-    }
 
     public FunctionSelectionState(GraphFunction selectedFunction) {
         this.selectedFunction = selectedFunction;
@@ -86,7 +81,9 @@ public class FunctionSelectionState extends AbstractEngineState {
 
     @Override
     protected void start() {
-
+        engine.subscribe(TouchDownEvent.class, e -> {
+            view.unfocusAll();
+        });
     }
 
     @Override

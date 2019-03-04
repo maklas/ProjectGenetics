@@ -13,14 +13,11 @@ import ru.maklas.genetics.utils.persistance.BiConsumer;
 public class FunctionSelectionView extends BaseStage {
 
     VisTable mainTable;
-    VisSelectBox<String> selectBox;
+    VisSelectBox<FunctionDefenition> selectBox;
     Container<ParamTable> paramTableContainer;
     Consumer<GraphFunction> changeListener = f -> {};
 
-    ParamTable<LinearFunction> linearFunctionTable;
-    ParamTable<ParabolaFunction> quadraticFunctionTable;
-    ParamTable<SineFunction> sinFunctionTable;
-    ParamTable<DampedSineWaveFunction> dampedSinFunctionTable;
+    Array<FunctionDefenition> functionDefenitions = new Array<>();
 
     public FunctionSelectionView(GraphFunction function) {
 
@@ -29,8 +26,6 @@ public class FunctionSelectionView extends BaseStage {
         mainTable.top();
 
         selectBox = new VisSelectBox<>();
-        selectBox.setItems("Linear", "Quadratic", "Sin", "Damped Sin");
-        selectBox.setSelected("Linear");
 
         paramTableContainer = new Container<>();
 
@@ -39,73 +34,58 @@ public class FunctionSelectionView extends BaseStage {
         mainTable.add().width(200);
         mainTable.add(paramTableContainer).right();
 
-
-        linearFunctionTable = new ParamTable<>(new LinearFunction(1, 0))
-                .addParam("k", 1, (f, k) -> f.k = k, f -> f.k)
-                .addParam("b", 1, (f, b) -> f.b = b, f -> f.b)
-                .update()
-                .onChanged(f -> changeListener.accept(getFunction()));
-
-        quadraticFunctionTable = new ParamTable<>(new ParabolaFunction(1, 1, 1))
+        functionDefenitions.add(new FunctionDefenition<>("Quadratic", new ParabolaFunction(0.1f, 0, 0))
                 .addParam("a", 1, (f, a) -> f.a = a, f -> f.a)
                 .addParam("b", 1, (f, b) -> f.b = b, f -> f.b)
                 .addParam("c", 1, (f, c) -> f.c = c, f -> f.c)
-                .update()
-                .onChanged(f -> changeListener.accept(getFunction()));
+                .update());
 
-        sinFunctionTable = new ParamTable<>(new SineFunction(10, 5, 0))
-                .addParam("amp", 10, (f, a) -> f.amp = a, f -> f.amp)
-                .addParam("wave length", 5, (f, l) -> f.waveLen = l, f -> f.waveLen)
-                .addParam("shift", 0, (f, s) -> f.shift = s, f -> f.shift)
-                .update()
-                .onChanged(f -> changeListener.accept(getFunction()));
-
-        dampedSinFunctionTable = new ParamTable<>(new DampedSineWaveFunction(100, 10, 0, 0.01f))
-                .addParam("amp", 10, (f, a) -> f.amp = a, f -> f.amp)
-                .addParam("wave length", 3, (f, l) -> f.waveLen = l, f -> f.waveLen)
+        functionDefenitions.add(new FunctionDefenition<>("Sine wave", new SineWaveFunction(50, 75, 0, 0))
+                .addParam("Amp", 10, (f, a) -> f.amp = a, f -> f.amp)
+                .addParam("Wave length", 3, (f, l) -> f.waveLen = l, f -> f.waveLen)
                 .addParam("Y-shift", 1, (f, s) -> f.shift = s, f -> f.shift)
-                .addParam("decay", 1, (f, d) -> f.decay = d, f -> f.decay)
-                .update()
-                .onChanged(f -> changeListener.accept(getFunction()));
+                .addParam("Decay", 1, (f, d) -> f.decay = d, f -> f.decay)
+                .update());
 
-        paramTableContainer.setActor(linearFunctionTable);
-        mainTable = linearFunctionTable;
+        functionDefenitions.add(new FunctionDefenition<>("Triangle wave", new TriangleWaveFunction(50, 1 / 50d, 25, 0))
+                .addParam("Amp", 10, (f, a) -> f.amp = a, f -> f.amp)
+                .addParam("Wave length", 3, (f, l) -> f.freq = 1.0 / l, f -> 1.0 / f.freq)
+                .addParam("Offset", 1, (f, s) -> f.offset = s, f -> f.offset)
+                .addParam("Phase", 1, (f, d) -> f.phase = d, f -> f.phase)
+                .update());
+
+        functionDefenitions.add(new FunctionDefenition<>("AM function", new SinusoidalAMFunction(new SineWaveFunction(15, 1000), new SineWaveFunction(5, 20)))
+                .addParam("Signal: Amplitude", 10, (f, a) -> f.signal.amp = a, f -> f.signal.amp)
+                .addParam("Signal: Wave length", 3, (f, l) -> f.signal.waveLen = l, f -> f.signal.waveLen)
+                .addParam("Carrier: Amplitude", 10, (f, a) -> f.carrier.amp = a, f -> f.carrier.amp)
+                .addParam("Carrier: Wave length", 3, (f, l) -> f.carrier.waveLen = l, f -> f.carrier.waveLen)
+                .update());
+
+        functionDefenitions.add(new FunctionDefenition<>("Custom", new CustomFunction())
+                .update());
 
 
-        if (function instanceof LinearFunction){
-            selectBox.setSelected("Linear");
-            linearFunctionTable.function = (LinearFunction) function;
-            set("Linear");
-        } else if (function instanceof ParabolaFunction){
-            selectBox.setSelected("Quadratic");
-            quadraticFunctionTable.function = (ParabolaFunction) function;
-            set("Quadratic");
-        } else if (function instanceof SineFunction){
-            selectBox.setSelected("Sin");
-            sinFunctionTable.function = (SineFunction) function;
-            set("Sin");
-        } else if (function instanceof DampedSineWaveFunction){
-            selectBox.setSelected("Damped Sin");
-            dampedSinFunctionTable.function = (DampedSineWaveFunction) function;
-            set("Damped Sin");
-        }
+        selectBox.setItems(functionDefenitions);
 
-        paramTableContainer.getActor().update();
+        setFrom(function);
+
         selectBox.addChangeListener(this::set);
     }
 
-
-    private void set(String choice){
-        ParamTable table;
-        switch (choice){
-            default:
-            case "Linear": table = linearFunctionTable; break;
-            case "Quadratic": table = quadraticFunctionTable; break;
-            case "Sin": table = sinFunctionTable; break;
-            case "Damped Sin": table = dampedSinFunctionTable; break;
+    private void setFrom(GraphFunction function){
+        for (FunctionDefenition functionDefenition : functionDefenitions) {
+            if (functionDefenition.clazz.isAssignableFrom(function.getClass())){
+                selectBox.setSelected(functionDefenition);
+                functionDefenition.paramTable.function = function;
+                set(functionDefenition);
+                functionDefenition.paramTable.update();
+                return;
+            }
         }
+    }
 
-        paramTableContainer.setActor(table);
+    private void set(FunctionDefenition functionDefenition){
+        paramTableContainer.setActor(functionDefenition.paramTable);
         if (changeListener != null){
             changeListener.accept(getFunction());
         }
@@ -122,6 +102,33 @@ public class FunctionSelectionView extends BaseStage {
 
 
 
+    private class FunctionDefenition<T extends GraphFunction> {
+
+        ParamTable<T> paramTable;
+        String name;
+        Class<T> clazz;
+
+        public FunctionDefenition(String name, T instance) {
+            this.name = name;
+            clazz = (Class<T>) instance.getClass();
+            paramTable = new ParamTable<>(instance).onChanged(f -> changeListener.accept(f));
+        }
+
+        public FunctionDefenition<T> addParam(String name, float defaultValue, BiConsumer<T, Double> writeFunction, MapFunction<T, Double> readFunction){
+            paramTable.addParam(name, defaultValue, writeFunction, readFunction);
+            return this;
+        }
+
+        public FunctionDefenition update(){
+            paramTable.update();
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
     private class ParamTable<T extends GraphFunction> extends VisTable {
 
@@ -185,7 +192,7 @@ public class FunctionSelectionView extends BaseStage {
                 field.setText(String.valueOf(readFunction.map(function)));
             }
         }
-    }
 
+    }
 
 }

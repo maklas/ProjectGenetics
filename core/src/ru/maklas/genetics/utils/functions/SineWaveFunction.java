@@ -2,7 +2,7 @@ package ru.maklas.genetics.utils.functions;
 
 import com.badlogic.gdx.math.MathUtils;
 
-public class DampedSineWaveFunction implements GraphFunction {
+public class SineWaveFunction implements GraphFunction {
 
     public double amp;
     public double waveLen;
@@ -12,10 +12,18 @@ public class DampedSineWaveFunction implements GraphFunction {
     /**
      * @param amp Amplitude
      * @param waveLen distance between peaks
+     */
+    public SineWaveFunction(double amp, double waveLen) {
+        this(amp, waveLen, 0, 0);
+    }
+
+    /**
+     * @param amp Amplitude
+     * @param waveLen distance between peaks
      * @param shift shift in Y position
      * @param decay 0..1 speed of decay
      */
-    public DampedSineWaveFunction(double amp, double waveLen, double shift, double decay) {
+    public SineWaveFunction(double amp, double waveLen, double shift, double decay) {
         this.amp = amp;
         this.waveLen = waveLen;
         this.shift = shift;

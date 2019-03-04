@@ -2,7 +2,6 @@ package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.genetics.CrossoverReproductionFunction;
 import ru.maklas.genetics.engine.genetics.FunctionMinimalValueFitnessFunction;
@@ -13,15 +12,10 @@ import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.functions.*;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
-import java.math.BigInteger;
-
-import static ru.maklas.genetics.utils.StringUtils.df;
-import static ru.maklas.genetics.utils.StringUtils.ff;
-
 public class MainMenuState extends State {
 
     MainMenuView mm;
-    GraphFunction function = new SineFunction(150, 300, 0);
+    GraphFunction function = new SineWaveFunction(50, 75, 0, 0.001);
 
     @Override
     protected void onCreate() {
@@ -105,21 +99,20 @@ public class MainMenuState extends State {
 
     private void setFunDesc(GraphFunction function) {
         String s;
-        if (function instanceof LinearFunction){
-            s = "Linear: " + df(((LinearFunction) function).k) + "x + " + df(((LinearFunction) function).b);
-        } else
         if (function instanceof ParabolaFunction){
-            s = "Quadratic: " + df(((ParabolaFunction) function).a) + "x^2 + " + df(((ParabolaFunction) function).b) + "x + " + df(((ParabolaFunction) function).c);
+            s = "Quadratic";
         } else
-        if (function instanceof SineFunction){
-            s = "Sine: " + df(((SineFunction) function).amp) + " * sin(x + " + df(((SineFunction) function).shift)+ ")";
+        if (function instanceof SineWaveFunction){
+            s = "Sine wave";
         } else
-        if (function instanceof DampedSineWaveFunction){
-            s = "Damped Sine: " + df(((DampedSineWaveFunction) function).amp) + " * sin(x); Decay = " + df(((DampedSineWaveFunction) function).decay);
+        if (function instanceof TriangleWaveFunction){
+            s = "Triangle wave";
         } else
-        if (function instanceof OnlyPositiveFunction){
-            setFunDesc(((OnlyPositiveFunction) function).delegate);
-            return;
+        if (function instanceof CustomFunction){
+            s = "Custom";
+        } else
+        if (function instanceof SinusoidalAMFunction){
+            s = "AM function";
         } else {
             s = function.getClass().getSimpleName();
         }

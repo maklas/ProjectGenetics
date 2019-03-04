@@ -37,6 +37,14 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
 
         updateGenerationMemoryQueue();
 
+        updateChromosomesPositionsIfDirty(newChromosomes);
+        if (params.getFunction() != null) {
+            updateChromosomesFunctionValue(params.getFunction(), newChromosomes);
+        }
+        if (params.getFitnessFunction() != null){
+            params.getFitnessFunction().calculateFitness(engine, newChromosomes);
+        }
+
         dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration));
     }
 
@@ -64,6 +72,13 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
         currentGeneration = EntityUtils.generation(1000 + currentGenerationNumber, currentGenerationNumber, null, newChromosomes);
         engine.add(currentGeneration);
         generationMemory.addLast(currentGeneration);
+        updateChromosomesPositionsIfDirty(newChromosomes);
+        if (params.getFunction() != null) {
+            updateChromosomesFunctionValue(params.getFunction(), newChromosomes);
+        }
+        if (params.getFitnessFunction() != null){
+            params.getFitnessFunction().calculateFitness(engine, newChromosomes);
+        }
         dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration));
     }
 }

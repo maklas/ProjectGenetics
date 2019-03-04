@@ -14,6 +14,7 @@ import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.tests.Gene;
 import ru.maklas.genetics.tests.GeneNames;
 import ru.maklas.genetics.utils.Utils;
+import ru.maklas.genetics.utils.functions.GraphFunction;
 import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -96,7 +97,6 @@ public abstract class ChromosomeSystem extends EntitySystem {
             dispatch(new ChromosomeSelectedEvent(null));
         }
         updateChromosomesUnderMouse();
-        updateChromosomePositionsIfDirty();
     }
 
     protected final void updateGenerationMemoryQueue() {
@@ -114,7 +114,7 @@ public abstract class ChromosomeSystem extends EntitySystem {
         }
     }
 
-    protected final void updateChromosomePositionsIfDirty() {
+    protected final void updateChromosomesPositionsIfDirty(Array<Entity> chromosomes) {
         for (Entity chromosome : chromosomes) {
             ChromosomeComponent cc = chromosome.get(M.chromosome);
             if (cc.dirty){
@@ -128,6 +128,13 @@ public abstract class ChromosomeSystem extends EntitySystem {
                     chromosome.y = 0;
                 }
             }
+        }
+    }
+
+    protected final void updateChromosomesFunctionValue(GraphFunction function, Array<Entity> chromosomes){
+        for (Entity chromosome : chromosomes) {
+            ChromosomeComponent cc = chromosome.get(M.chromosome);
+            cc.functionValue = function.f(cc.chromosome.get(GeneNames.X).decodeAsDouble());
         }
     }
 

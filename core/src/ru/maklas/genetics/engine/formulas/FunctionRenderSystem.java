@@ -188,7 +188,7 @@ public class FunctionRenderSystem extends RenderEntitySystem {
 
     }
 
-    /** Uses while loop, which is not safe **/
+    /** @deprecated Uses while loop, which is not safe **/
     @Deprecated
     private void drawWhile(ShapeRenderer sr, GraphFunction fun, double precision) {
         double min = Utils.camLeftX(cam);

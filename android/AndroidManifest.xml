@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools" package="ru.maklas.genetics" >
 
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="27" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
