@@ -115,10 +115,14 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         batch.setColor(chromosomeColor);
         batch.begin();
 
+        float left = Utils.camLeftX(cam);
+        float right = Utils.camRightX(cam);
 
         GenerationComponent gc = generation.get(M.generation);
         for (Entity chromosome : gc.chromosomes) {
-            drawChromosome(batch, chromosome);
+            if (chromosome.x > left && chromosome.x < right) {
+                drawChromosome(batch, chromosome);
+            }
         }
 
         if (chromosomeSystem.bestChromosomeOfGeneration != null) {

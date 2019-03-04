@@ -67,7 +67,7 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
         Vector2 start = new Vector2(chromosome.x, chromosome.y);
         Vector2 end = new Vector2(chromosome.x, ((float) chromosome.get(M.chromosome).functionValue));
         sr.line(start, end);
-        sr.circle(end.x, end.y, 3 * cam.zoom, 12);
+        //sr.circle(end.x, end.y, 3 * cam.zoom, 12);
     }
 
     public ChromosomeTrackingRenderSystem setMode(ChromosomeTrackMode mode) {
