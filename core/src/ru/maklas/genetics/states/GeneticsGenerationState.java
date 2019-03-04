@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
@@ -36,7 +35,11 @@ import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.mengine.*;
+import ru.maklas.genetics.utils.functions.FunctionFromPoints;
+import ru.maklas.mengine.Bundler;
+import ru.maklas.mengine.Engine;
+import ru.maklas.mengine.Entity;
+import ru.maklas.mengine.TestEngine;
 
 public class GeneticsGenerationState extends AbstractEngineState {
 
@@ -46,6 +49,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
     private CornerView view;
     private ControlTable controlTable;
     private ChromosomeInfoTable chromosomeInfo;
+    private FunctionFromPoints functionFromPoints;
 
     public GeneticsGenerationState(Params params) {
         this.params = params;
@@ -59,6 +63,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view = new CornerView();
         controlTable = new ControlTable(true);
         chromosomeInfo = new ChromosomeInfoTable();
+        functionFromPoints = new FunctionFromPoints();
     }
 
     @Override
@@ -75,7 +80,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void addSystems(Engine engine) {
         engine.add(new XGeneChromosomeSystem());
         engine.add(new ChromosomeRenderSystem());
-        engine.add(new UpdatableEntitySystem());
         engine.add(new EntityDebugSystem()
                 .setTextInfoEnabled(false)
                 .addHelp("R", "Restart")
@@ -137,13 +141,19 @@ public class GeneticsGenerationState extends AbstractEngineState {
             cam.setPosition(0, 0);
             cam.zoom = 1;
         });
+        controlTable.addButton("History", () -> pushState(new HistoryState(functionFromPoints)));
 
         view.bottomRight.setActor(chromosomeInfo);
-
 
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
         engine.subscribe(GenerationChangedEvent.class, e -> bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(e.getBestChromosome().get(M.chromosome).functionValue, 3, 3)));
+        engine.subscribe(GenerationChangedEvent.class, e -> {
+            if (e.getGenerationNumber() == 0){
+                functionFromPoints.clear();
+            }
+            functionFromPoints.add(((float) e.getBestChromosome().get(M.chromosome).functionValue));
+        });
 
         engine.dispatch(new ResetEvolutionRequest());
     }

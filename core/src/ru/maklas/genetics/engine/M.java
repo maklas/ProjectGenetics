@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
+import ru.maklas.genetics.engine.formulas.HistoryRenderSystem;
 import ru.maklas.genetics.engine.genetics.*;
 import ru.maklas.genetics.engine.other.*;
 import ru.maklas.genetics.engine.rendering.*;
@@ -53,6 +54,7 @@ public class M {
         map.put(CameraSystem.class, i++);
         map.put(RenderingSystem.class, i++);
         map.put(FunctionRenderSystem.class, i++);
+        map.put(HistoryRenderSystem.class, i++);
         map.put(ChromosomeTrackingRenderSystem.class, i++);
         map.put(FunctionTrackingRenderSystem.class, i++);
         map.put(ChromosomeRenderSystem.class, i++);

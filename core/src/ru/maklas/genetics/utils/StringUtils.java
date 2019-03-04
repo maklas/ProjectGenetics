@@ -32,7 +32,7 @@ public class StringUtils {
      * If does is less than 0, gets to significant points specified.
      */
     public static String dfSigDigits(double d, int defaultDigitsAfterPoint, int significantDigits){
-        int logFloor = (int) Math.floor(Math.log10(d));
+        int logFloor = d == 0d ? 0 : (int) Math.floor(Math.log10(d));
         if (logFloor >= 0) return df(d, defaultDigitsAfterPoint);
         return StringUtils.df(d, -(logFloor - (significantDigits - 1)));
     }
