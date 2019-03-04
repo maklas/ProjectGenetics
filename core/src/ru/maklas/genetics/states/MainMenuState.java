@@ -46,7 +46,7 @@ public class MainMenuState extends State {
         mm.setCrossingPoints(1);
         mm.setGenerationMemory(10);
         mm.setMinMax(-150, 150);
-        mm.setQ(1);
+        mm.setQ(2);
         MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
     }
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
@@ -108,6 +109,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
     protected void start() {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
+        Label bestValueLabel = controlTable.addLabel("");
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
         controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
@@ -141,6 +143,19 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
+        engine.subscribe(GenerationChangedEvent.class, e -> {
+            Array<Entity> chromosomes = e.getGeneration().get(M.generation).chromosomes;
+            Entity best = chromosomes.get(0);
+            double bestFitness = best.get(M.chromosome).fitness;
+            for (Entity chromosome : chromosomes) {
+                double f = chromosome.get(M.chromosome).fitness;
+                if (f > bestFitness){
+                    bestFitness = f;
+                    best = chromosome;
+                }
+            }
+            bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(best.get(M.chromosome).functionValue, 3, 3));
+        });
 
         engine.dispatch(new ResetEvolutionRequest());
     }

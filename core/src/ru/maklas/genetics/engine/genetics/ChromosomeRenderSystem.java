@@ -2,6 +2,7 @@ package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
+import ru.maklas.genetics.states.Params;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -20,11 +22,15 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     private static Color chromosomeColor = Color.GREEN;
     private static Color parentColor = Color.BROWN;
     private static Color arrowColor = Color.RED;
+    private static Color minMaxColor;
 
     private ShapeRenderer sr;
     private Batch batch;
     private OrthographicCamera cam;
     private ChromosomeSystem chromosomeSystem;
+    private Params params;
+
+    private boolean renderMinMax = true;
 
     @Override
     public void onAddedToEngine(Engine engine) {
@@ -34,16 +40,45 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         sr = engine.getBundler().getAssert(B.sr);
         cam = engine.getBundler().getAssert(B.cam);
         batch = engine.getBundler().getAssert(B.batch);
+        params = engine.getBundler().getAssert(B.params);
+        minMaxColor = Color.VIOLET;
+        minMaxColor.a = 0.6f;
     }
 
     @Override
     public void render() {
+        if (renderMinMax) {
+            renderMinMax();
+        }
         if (chromosomeSystem.selectedChromosome != null){
             renderSelectedChromosome(chromosomeSystem.selectedChromosome);
         } else if (chromosomeSystem.currentGeneration != null){
             renderGeneration(chromosomeSystem.currentGeneration);
         }
 
+    }
+
+    private void renderMinMax() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.setColor(minMaxColor);
+        float leftX = Utils.camLeftX(cam);
+        float rightX = Utils.camRightX(cam);
+        float topY = Utils.camTopY(cam);
+        float botY = Utils.camBotY(cam);
+
+        if (params.getMinValue() > leftX && params.getMinValue() < rightX) {
+            renderVerticalDotted(sr, params.getMinValue(), topY, botY);
+        }
+        if (params.getMaxValue() > leftX && params.getMaxValue() < rightX) {
+            renderVerticalDotted(sr, params.getMaxValue(), topY, botY);
+        }
+        sr.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    private void renderVerticalDotted(ShapeRenderer sr, double x, float topY, float botY) {
+        sr.line(((float) x), botY, ((float) x), topY);
     }
 
     private void renderSelectedChromosome(Entity chromosome) {
@@ -86,6 +121,11 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         }
 
         batch.end();
+    }
+
+    public ChromosomeRenderSystem setRenderMinMax(boolean enabled){
+        renderMinMax = enabled;
+        return this;
     }
 
 

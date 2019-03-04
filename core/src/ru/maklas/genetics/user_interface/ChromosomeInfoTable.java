@@ -36,6 +36,7 @@ public class ChromosomeInfoTable extends VisTable {
             label("   " + gene.getName() + ": " + gene.getRawData().toStringSmart(4));
         }
         label("Fitness: " + StringUtils.dfSigDigits(entity.get(M.chromosome).fitness, 2, 2));
+        label("Function value: " + StringUtils.dfSigDigits(entity.get(M.chromosome).functionValue, 2, 2));
     }
 
     private void label(String text){
