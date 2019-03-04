@@ -1,5 +1,7 @@
 package ru.maklas.genetics.utils;
 
+import java.util.regex.Pattern;
+
 public class BitArray {
 
     private String value;
@@ -97,6 +99,15 @@ public class BitArray {
         return toString(groups);
     }
 
+    public void fill(boolean set) {
+        char c = set ? '1' : '0';
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(c);
+        }
+        this.value = sb.toString();
+    }
+
     public static BitArray with(BitArray... arrays){
         StringBuilder sb = new StringBuilder();
         for (BitArray array : arrays) {
@@ -105,12 +116,9 @@ public class BitArray {
         return new BitArray(sb.toString());
     }
 
-    public void fill(boolean set) {
-        char c = set ? '1' : '0';
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(c);
-        }
-        this.value = sb.toString();
+    private static final Pattern badPattern = Pattern.compile("[^01]");
+    public static BitArray fromString(String s){
+        if (badPattern.matcher(s).find()) throw new RuntimeException("Bad input. Should only contain zeros and ones");
+        return new BitArray(s);
     }
 }

@@ -2,15 +2,19 @@ package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.math.CumulativeDistribution;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Sort;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.states.Params;
 import ru.maklas.genetics.tests.Chromosome;
 import ru.maklas.genetics.tests.Crossover;
-import ru.maklas.genetics.tests.Gene;
+import ru.maklas.genetics.utils.Log;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
+
+import java.util.Arrays;
 
 public class CrossoverReproductionFunction implements ReproductionFunction {
 
@@ -28,33 +32,53 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
 
         if (parents.size < 2) throw new RuntimeException("Not enough chromosomes to evolve from");
 
-        float fitnessSumm = 0;
+        float fitnessSum = 0;
         FitnessFunction ff = params.getFitnessFunction();
         CumulativeDistribution<Entity> distribution = new CumulativeDistribution<>();
         for (Entity parent : parents) {
             float fitness = (float) ff.calculateFitness(engine, parent, parents);
             distribution.add(parent, fitness);
-            fitnessSumm += fitness;
+            fitnessSum += fitness;
         }
         distribution.generate();
 
         while (nextGen.size < populationSize) {
-            Entity a = distribution.value(Utils.rand.nextFloat() * fitnessSumm);
-            Entity b = distribution.value(Utils.rand.nextFloat() * fitnessSumm);
+            Entity a = distribution.value(Utils.rand.nextFloat() * fitnessSum);
+            Entity b = distribution.value(Utils.rand.nextFloat() * fitnessSum);
             while (a == b){
-                b = distribution.value(Utils.rand.nextFloat() * fitnessSumm);
+                b = distribution.value(Utils.rand.nextFloat() * fitnessSum);
             }
 
             Chromosome chromosomeA = a.get(M.chromosome).chromosome;
             Chromosome chromosomeB = b.get(M.chromosome).chromosome;
-            Chromosome newChromosomeA = crossover.cross(chromosomeA, chromosomeB, Utils.rand.nextInt(chromosomeA.length()));
-            nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosomeA, generationNumber, a, b));
+            Crossover.Children children = crossover.cross(chromosomeA, chromosomeB, randPoints(chromosomeA.length()));
+
+            nextGen.add(EntityUtils.chromosome(idCounter.next(), children.childA, generationNumber, a, b));
             if (nextGen.size < populationSize) {
-                Chromosome newChromosomeB = new Crossover().cross(chromosomeB, chromosomeA, Utils.rand.nextInt(chromosomeA.length()));
-                nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosomeB, generationNumber, b, a));
+                nextGen.add(EntityUtils.chromosome(idCounter.next(), children.childB, generationNumber, b, a));
             }
         }
 
         return nextGen;
+    }
+
+    IntArray intArrayCache = new IntArray();
+    private int[] randPoints(int chromosomeLength){
+        if (chromosomeLength == 1){
+            return new int[]{Utils.rand.nextInt(chromosomeLength)};
+        }
+        IntArray intArray = this.intArrayCache;
+        intArray.clear();
+        for (int i = 0; i < crossPoints; i++) {
+            int val = Utils.rand.nextInt(chromosomeLength + 1);
+            while (intArray.contains(val)){
+                val = Utils.rand.nextInt(chromosomeLength + 1);
+            }
+            intArray.add(val);
+        }
+
+        intArray.sort();
+        Log.debug("Crossover points: " + intArray);
+        return intArray.toArray();
     }
 }

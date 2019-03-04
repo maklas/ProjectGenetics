@@ -25,6 +25,10 @@ public class Gene {
         this.maxDouble = gene.maxDouble;
     }
 
+    public Gene(BitArray bitArray) {
+        this.bits = bitArray.cpy();
+    }
+
     /** Данные в коде грея, так как они хранятся **/
     public BitArray getRawData() {
         return bits;
