@@ -49,13 +49,13 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
             }
             if (chromosomeSystem.bestChromosomeOfGeneration != null) {
                 sr.setColor(bestLineColor);
-                draw(sr, chromosomeSystem.bestChromosomeOfGeneration);
+                drawWithCircle(sr, chromosomeSystem.bestChromosomeOfGeneration);
             }
         } else if ((trackMode == ChromosomeTrackMode.SELECTED || trackMode == ChromosomeTrackMode.CURRENT_GEN) && chromosomeSystem.selectedChromosome != null){
             if (chromosomeSystem.selectedChromosome == chromosomeSystem.bestChromosomeOfGeneration){
                 sr.setColor(bestLineColor);
             }
-            draw(sr, chromosomeSystem.selectedChromosome);
+            drawWithCircle(sr, chromosomeSystem.selectedChromosome);
         }
 
         sr.end();
@@ -67,7 +67,13 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
         Vector2 start = new Vector2(chromosome.x, chromosome.y);
         Vector2 end = new Vector2(chromosome.x, ((float) chromosome.get(M.chromosome).functionValue));
         sr.line(start, end);
-        //sr.circle(end.x, end.y, 3 * cam.zoom, 12);
+    }
+
+    private void drawWithCircle(ShapeRenderer sr, Entity chromosome) {
+        Vector2 start = new Vector2(chromosome.x, chromosome.y);
+        Vector2 end = new Vector2(chromosome.x, ((float) chromosome.get(M.chromosome).functionValue));
+        sr.line(start, end);
+        sr.circle(end.x, end.y, 3 * cam.zoom, 12);
     }
 
     public ChromosomeTrackingRenderSystem setMode(ChromosomeTrackMode mode) {
