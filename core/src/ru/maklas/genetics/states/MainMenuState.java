@@ -113,6 +113,9 @@ public class MainMenuState extends State {
         } else
         if (function instanceof SinusoidalAMFunction){
             s = "AM function";
+        } else
+        if (function instanceof DeBroglieFunction){
+            s = "De Broglie matter wave";
         } else {
             s = function.getClass().getSimpleName();
         }

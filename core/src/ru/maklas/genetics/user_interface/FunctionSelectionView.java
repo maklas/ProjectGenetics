@@ -61,6 +61,20 @@ public class FunctionSelectionView extends BaseStage {
                 .addParam("Carrier: Wave length", 3, (f, l) -> f.carrier.waveLen = l, f -> f.carrier.waveLen)
                 .update());
 
+        functionDefenitions.add(new FunctionDefenition<>("De Broglie matter wave", new DeBroglieFunction())
+                .addParam("A", 10, (f, a) -> f.A = a, f -> f.A)
+                .addParam("c", 10, (f, a) -> f.c = a, f -> f.c)
+                .addParam("n0", 10, (f, a) -> f.n0 = a, f -> f.n0)
+                .addParam("n", 10, (f, a) -> f.n = a, f -> f.n)
+                .addParam("v", 10, (f, a) -> f.v = a, f -> f.v)
+                .addParam("t", 10, (f, a) -> f.t = a, f -> f.t)
+                .addParam("r", 10, (f, a) -> f.r = a, f -> f.r)
+                .addParam("a", 10, (f, a) -> f.a = a, f -> f.a)
+                .addParam("s", 10, (f, a) -> f.s = a, f -> f.s)
+                .addParam("u", 10, (f, a) -> f.u = a, f -> f.u)
+                .addParam("dk", 10, (f, a) -> f.dk = a, f -> f.dk)
+                .update());
+
         functionDefenitions.add(new FunctionDefenition<>("Custom", new CustomFunction())
                 .update());
 
