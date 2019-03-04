@@ -63,4 +63,9 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
         sr.line(start, end);
         sr.circle(end.x, end.y, 3 * cam.zoom, 12);
     }
+
+    public ChromosomeTrackingRenderSystem setMode(ChromosomeTrackMode mode) {
+        this.trackMode = mode;
+        return this;
+    }
 }

@@ -16,6 +16,7 @@ import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
 import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.ChromosomeRenderSystem;
+import ru.maklas.genetics.engine.genetics.ChromosomeTrackMode;
 import ru.maklas.genetics.engine.genetics.ChromosomeTrackingRenderSystem;
 import ru.maklas.genetics.engine.genetics.XGeneChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
@@ -87,9 +88,10 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new FunctionRenderSystem()
                 .setNetColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
+                .setFillNet(false)
                 .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
-        engine.add(new ChromosomeTrackingRenderSystem());
+        engine.add(new ChromosomeTrackingRenderSystem().setMode(ChromosomeTrackMode.CURRENT_GEN));
 
     }
 
@@ -107,7 +109,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
-        controlTable.addCheckBox("Draw net", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
+        controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
         ChromosomeTrackingRenderSystem system = engine.getSystemManager().getSystem(ChromosomeTrackingRenderSystem.class);
