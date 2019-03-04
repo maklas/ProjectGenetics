@@ -143,19 +143,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
-        engine.subscribe(GenerationChangedEvent.class, e -> {
-            Array<Entity> chromosomes = e.getGeneration().get(M.generation).chromosomes;
-            Entity best = chromosomes.get(0);
-            double bestFitness = best.get(M.chromosome).fitness;
-            for (Entity chromosome : chromosomes) {
-                double f = chromosome.get(M.chromosome).fitness;
-                if (f > bestFitness){
-                    bestFitness = f;
-                    best = chromosome;
-                }
-            }
-            bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(best.get(M.chromosome).functionValue, 3, 3));
-        });
+        engine.subscribe(GenerationChangedEvent.class, e -> bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(e.getBestChromosome().get(M.chromosome).functionValue, 3, 3)));
 
         engine.dispatch(new ResetEvolutionRequest());
     }

@@ -19,6 +19,8 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
     private ChromosomeSystem chromosomeSystem;
     private ShapeRenderer sr;
     private OrthographicCamera cam;
+    private Color lineColor = Color.BLUE;
+    private Color bestLineColor = Color.CORAL;
 
 
     @Override
@@ -36,7 +38,7 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         sr.begin(ShapeRenderer.ShapeType.Line);
 
-        sr.setColor(Color.BLUE);
+        sr.setColor(lineColor);
         if (trackMode == ChromosomeTrackMode.CURRENT_GEN && chromosomeSystem.selectedChromosome == null){
             float left = Utils.camLeftX(cam);
             float right = Utils.camRightX(cam);
@@ -45,7 +47,14 @@ public class ChromosomeTrackingRenderSystem extends RenderEntitySystem {
                     draw(sr, chromosome);
                 }
             }
+            if (chromosomeSystem.bestChromosomeOfGeneration != null) {
+                sr.setColor(bestLineColor);
+                draw(sr, chromosomeSystem.bestChromosomeOfGeneration);
+            }
         } else if ((trackMode == ChromosomeTrackMode.SELECTED || trackMode == ChromosomeTrackMode.CURRENT_GEN) && chromosomeSystem.selectedChromosome != null){
+            if (chromosomeSystem.selectedChromosome == chromosomeSystem.bestChromosomeOfGeneration){
+                sr.setColor(bestLineColor);
+            }
             draw(sr, chromosomeSystem.selectedChromosome);
         }
 

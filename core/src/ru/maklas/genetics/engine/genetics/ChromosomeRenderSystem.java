@@ -19,6 +19,7 @@ import ru.maklas.mengine.RenderEntitySystem;
 
 public class ChromosomeRenderSystem extends RenderEntitySystem {
 
+    private static Color bestChromosomeColor = Color.CORAL;
     private static Color chromosomeColor = Color.GREEN;
     private static Color parentColor = Color.BROWN;
     private static Color arrowColor = Color.RED;
@@ -104,7 +105,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
             batch.begin();
         }
 
-        batch.setColor(chromosomeColor);
+        batch.setColor(chromosomeSystem.bestChromosomeOfGeneration == chromosome ? bestChromosomeColor : chromosomeColor);
         drawChromosome(batch, chromosome);
 
         batch.end();
@@ -118,6 +119,11 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         GenerationComponent gc = generation.get(M.generation);
         for (Entity chromosome : gc.chromosomes) {
             drawChromosome(batch, chromosome);
+        }
+
+        if (chromosomeSystem.bestChromosomeOfGeneration != null) {
+            batch.setColor(bestChromosomeColor);
+            drawChromosome(batch, chromosomeSystem.bestChromosomeOfGeneration);
         }
 
         batch.end();

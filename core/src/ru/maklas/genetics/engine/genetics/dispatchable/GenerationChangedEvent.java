@@ -7,10 +7,12 @@ public class GenerationChangedEvent implements Event {
 
     int generationNumber;
     Entity generation;
+    Entity bestChromosome;
 
-    public GenerationChangedEvent(int generationNumber, Entity generation) {
+    public GenerationChangedEvent(int generationNumber, Entity generation, Entity bestChromosome) {
         this.generationNumber = generationNumber;
         this.generation = generation;
+        this.bestChromosome = bestChromosome;
     }
 
     public int getGenerationNumber() {
@@ -19,5 +21,9 @@ public class GenerationChangedEvent implements Event {
 
     public Entity getGeneration() {
         return generation;
+    }
+
+    public Entity getBestChromosome() {
+        return bestChromosome;
     }
 }

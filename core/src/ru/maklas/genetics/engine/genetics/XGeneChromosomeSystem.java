@@ -44,8 +44,8 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
         if (params.getFitnessFunction() != null){
             params.getFitnessFunction().calculateFitness(engine, newChromosomes);
         }
-
-        dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration));
+        bestChromosomeOfGeneration = selectBestChromosomeOfGeneration(newChromosomes);
+        dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration, bestChromosomeOfGeneration));
     }
 
     @Override
@@ -79,6 +79,7 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
         if (params.getFitnessFunction() != null){
             params.getFitnessFunction().calculateFitness(engine, newChromosomes);
         }
-        dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration));
+        bestChromosomeOfGeneration = selectBestChromosomeOfGeneration(newChromosomes);
+        dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration, bestChromosomeOfGeneration));
     }
 }

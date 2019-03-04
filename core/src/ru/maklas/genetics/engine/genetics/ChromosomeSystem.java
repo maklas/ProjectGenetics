@@ -33,6 +33,7 @@ public abstract class ChromosomeSystem extends EntitySystem {
     protected Counter chromosomeIdCounter = ID.counterForChromosomes();
 
     public Entity selectedChromosome;
+    public Entity bestChromosomeOfGeneration;
     public Array<Entity> chromosomesUnderMouse = new Array<>();
     public float collectionRange = 7;
     public float parentCollectionRange = 10;
@@ -129,6 +130,19 @@ public abstract class ChromosomeSystem extends EntitySystem {
                 }
             }
         }
+    }
+
+    protected final Entity selectBestChromosomeOfGeneration(Array<Entity> chromosomes){
+        Entity best = chromosomes.get(0);
+        double bestFitness = best.get(M.chromosome).fitness;
+        for (Entity chromosome : chromosomes) {
+            double f = chromosome.get(M.chromosome).fitness;
+            if (f > bestFitness){
+                bestFitness = f;
+                best = chromosome;
+            }
+        }
+        return best;
     }
 
     protected final void updateChromosomesFunctionValue(GraphFunction function, Array<Entity> chromosomes){
