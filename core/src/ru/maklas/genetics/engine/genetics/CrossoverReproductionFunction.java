@@ -62,7 +62,7 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
         return nextGen;
     }
 
-    IntArray intArrayCache = new IntArray();
+    private IntArray intArrayCache = new IntArray();
     private int[] randPoints(int chromosomeLength){
         if (chromosomeLength == 1){
             return new int[]{Utils.rand.nextInt(chromosomeLength)};
@@ -78,7 +78,6 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
         }
 
         intArray.sort();
-        Log.debug("Crossover points: " + intArray);
         return intArray.toArray();
     }
 }
