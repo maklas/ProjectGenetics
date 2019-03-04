@@ -21,6 +21,7 @@ public class MainMenuView extends BaseStage {
     private final VisValidatableTextField bitsPerGeneField;
     private final VisValidatableTextField qField;
     private final VisSelectBox<GenerationDistribution> generationDistributionBox;
+    private final VisLabel precisionLabel;
 
     public MainMenuView() {
         VisTable table = new VisTable();
@@ -45,6 +46,7 @@ public class MainMenuView extends BaseStage {
         generationDistributionBox = new VisSelectBox<>();
         generationDistributionBox.setItems(GenerationDistribution.values());
         generationDistributionBox.setSelected(GenerationDistribution.EVEN);
+        precisionLabel = label("");
 
 
         table.add(selectFunction).padRight(10);
@@ -56,6 +58,7 @@ public class MainMenuView extends BaseStage {
 
         table.add(label("Gene length")).right();
         table.add(bitsPerGeneField).width(75);
+        table.add(precisionLabel);
         table.row();
 
         table.add(label("Population size")).right();
@@ -167,16 +170,16 @@ public class MainMenuView extends BaseStage {
         return getFloat(qField);
     }
 
+    public void setQ(double q){
+        qField.setText(String.valueOf(q));
+    }
+
     public GenerationDistribution getGenerationDistribution(){
         return generationDistributionBox.getSelected();
     }
 
     public void setGenerationDistribution(GenerationDistribution distribution){
         generationDistributionBox.setSelected(distribution);
-    }
-
-    public void setQ(double q){
-        qField.setText(String.valueOf(q));
     }
 
     private static int getInt(VisTextField field){
@@ -193,6 +196,10 @@ public class MainMenuView extends BaseStage {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public void setPrecision(String s){
+        precisionLabel.setText("Precision: " + s);
     }
 
 }

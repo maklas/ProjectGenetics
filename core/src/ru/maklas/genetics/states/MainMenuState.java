@@ -2,14 +2,18 @@ package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.genetics.CrossoverReproductionFunction;
 import ru.maklas.genetics.engine.genetics.FunctionMinimalValueFitnessFunction;
 import ru.maklas.genetics.engine.genetics.RandomBitChangeMutation;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.user_interface.MainMenuView;
+import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.functions.*;
 import ru.maklas.genetics.utils.gsm_lib.State;
+
+import java.math.BigInteger;
 
 import static ru.maklas.genetics.utils.StringUtils.df;
 import static ru.maklas.genetics.utils.StringUtils.ff;
@@ -85,6 +89,10 @@ public class MainMenuState extends State {
             gsm.print("Bit mutations min < Bit mutations max");
             return false;
         }
+        if (mm.getBitMutationMax() >= mm.getBitsPerGene()){
+            gsm.print("Bit mutations max < Bits per gene");
+            return false;
+        }
 
         if (mm.getQ() <= 0){
             gsm.print("Q > 0");
@@ -122,6 +130,24 @@ public class MainMenuState extends State {
     @Override
     protected void update(float dt) {
         mm.act(dt);
+
+        mm.setPrecision(calculatePrecision());
+    }
+
+    private String calculatePrecision() {
+        int bitsPerGene = mm.getBitsPerGene();
+        double max = mm.getMax();
+        double min = mm.getMin();
+        double width = max - min;
+        if (width <= 0d || bitsPerGene < 1 || bitsPerGene >= 64){
+            return "err";
+        }
+
+        double totalPlaces = Math.pow(2, bitsPerGene);
+        double precision = width / totalPlaces;
+        int logFloor = (int) Math.floor(Math.log10(precision));
+        if (logFloor >= 0) return StringUtils.df(precision, 2);
+        return StringUtils.df(precision, -(logFloor - 1));
     }
 
     @Override

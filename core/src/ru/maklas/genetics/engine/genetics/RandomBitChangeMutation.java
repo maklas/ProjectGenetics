@@ -10,6 +10,7 @@ public class RandomBitChangeMutation implements MutationFunction {
 
     int bitsToMutateMin = 1;
     int bitsToMutateMax = 1;
+    IntArray memory = new IntArray();
 
     public RandomBitChangeMutation() {
 
@@ -26,9 +27,8 @@ public class RandomBitChangeMutation implements MutationFunction {
 
     @Override
     public void mutate(Engine engine, Chromosome child, Chromosome parentA, Chromosome parentB) {
+        memory.clear();
         int bitsToMutate = MathUtils.random(bitsToMutateMin, bitsToMutateMax);
-
-        IntArray memory = new IntArray();
 
         for (int i = 0; i < bitsToMutate; i++) {
             int bitId = Utils.rand.nextInt(child.length());

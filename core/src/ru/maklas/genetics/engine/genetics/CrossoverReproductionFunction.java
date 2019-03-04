@@ -15,9 +15,11 @@ import ru.maklas.mengine.Entity;
 public class CrossoverReproductionFunction implements ReproductionFunction {
 
     private final int crossPoints;
+    private Crossover crossover;
 
     public CrossoverReproductionFunction(int crossPoints) {
         this.crossPoints = crossPoints;
+        crossover = new Crossover();
     }
 
     @Override
@@ -43,31 +45,14 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
                 b = distribution.value(Utils.rand.nextFloat() * fitnessSumm);
             }
 
-
             Chromosome chromosomeA = a.get(M.chromosome).chromosome;
             Chromosome chromosomeB = b.get(M.chromosome).chromosome;
-            Chromosome newChromosomeA = new Crossover().cross(chromosomeA, chromosomeB, Utils.rand.nextInt(chromosomeA.length()));
-            Chromosome newChromosomeB = new Crossover().cross(chromosomeB, chromosomeA, Utils.rand.nextInt(chromosomeA.length()));
-
-
-
-            //Random mutation part
-            for (Gene gene : newChromosomeA.getGenes()) {
-                int numberOfMutations = Utils.rand.nextInt(1);
-                for (int j = 0; j < numberOfMutations; j++) {
-                    gene.setBit(Utils.rand.nextInt(gene.length()), Utils.rand.nextBoolean());
-                }
-            }
+            Chromosome newChromosomeA = crossover.cross(chromosomeA, chromosomeB, Utils.rand.nextInt(chromosomeA.length()));
             nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosomeA, generationNumber, a, b));
             if (nextGen.size < populationSize) {
-                for (Gene gene : newChromosomeB.getGenes()) {
-                    int numberOfMutations = Utils.rand.nextInt(1);
-                    for (int j = 0; j < numberOfMutations; j++) {
-                        gene.setBit(Utils.rand.nextInt(gene.length()), Utils.rand.nextBoolean());
-                    }
-                }
+                Chromosome newChromosomeB = new Crossover().cross(chromosomeB, chromosomeA, Utils.rand.nextInt(chromosomeA.length()));
+                nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosomeB, generationNumber, b, a));
             }
-            nextGen.add(EntityUtils.chromosome(idCounter.next(), newChromosomeB, generationNumber, b, a));
         }
 
         return nextGen;
