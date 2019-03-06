@@ -1,7 +1,8 @@
-package ru.maklas.genetics.states;
+package ru.maklas.genetics.engine.genetics;
 
 public enum GenerationDistribution {
 
+    RANDOM,
     EVEN,
     RIGHT,
     LEFT,
@@ -11,6 +12,8 @@ public enum GenerationDistribution {
     @Override
     public String toString(){
         switch (this){
+            case RANDOM:
+                return "Random";
             case EVEN:
                 return "Even";
             case RIGHT:

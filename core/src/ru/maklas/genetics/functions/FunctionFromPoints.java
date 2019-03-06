@@ -1,4 +1,4 @@
-package ru.maklas.genetics.utils.functions;
+package ru.maklas.genetics.functions;
 
 import com.badlogic.gdx.utils.FloatArray;
 

@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.utils.functions.FunctionFromPoints;
+import ru.maklas.genetics.functions.FunctionFromPoints;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;

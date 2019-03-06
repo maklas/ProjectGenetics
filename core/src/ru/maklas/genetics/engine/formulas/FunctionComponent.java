@@ -1,7 +1,7 @@
 package ru.maklas.genetics.engine.formulas;
 
 import com.badlogic.gdx.graphics.Color;
-import ru.maklas.genetics.utils.functions.GraphFunction;
+import ru.maklas.genetics.functions.GraphFunction;
 import ru.maklas.mengine.Component;
 
 public class FunctionComponent implements Component {

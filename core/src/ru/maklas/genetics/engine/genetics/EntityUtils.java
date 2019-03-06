@@ -8,8 +8,7 @@ import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraMode;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.Layers;
-import ru.maklas.genetics.tests.Chromosome;
-import ru.maklas.genetics.utils.functions.GraphFunction;
+import ru.maklas.genetics.functions.GraphFunction;
 import ru.maklas.mengine.Entity;
 
 public class EntityUtils {

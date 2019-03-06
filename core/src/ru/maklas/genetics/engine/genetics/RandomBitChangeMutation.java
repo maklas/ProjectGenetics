@@ -2,7 +2,6 @@ package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.IntArray;
-import ru.maklas.genetics.tests.Chromosome;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Engine;
 

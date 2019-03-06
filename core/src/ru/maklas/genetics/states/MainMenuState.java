@@ -9,7 +9,7 @@ import ru.maklas.genetics.engine.genetics.RandomBitChangeMutation;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.user_interface.MainMenuView;
 import ru.maklas.genetics.utils.StringUtils;
-import ru.maklas.genetics.utils.functions.*;
+import ru.maklas.genetics.functions.*;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
 public class MainMenuState extends State {

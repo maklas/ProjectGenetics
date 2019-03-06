@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.ChromosomeComponent;
-import ru.maklas.genetics.tests.Gene;
+import ru.maklas.genetics.engine.genetics.Gene;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.mengine.Entity;
 

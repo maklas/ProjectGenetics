@@ -5,9 +5,6 @@ import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
-import ru.maklas.genetics.tests.Chromosome;
-import ru.maklas.genetics.tests.Gene;
-import ru.maklas.genetics.tests.GeneNames;
 import ru.maklas.mengine.Entity;
 
 public class XGeneChromosomeSystem extends ChromosomeSystem {
@@ -59,10 +56,15 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
 
         for (int i = 0; i < params.getPopulationSize(); i++) {
             Chromosome chromosome = new Chromosome();
-            chromosome.add(new Gene(params.getBitsPerGene())
+            Gene gene = new Gene(params.getBitsPerGene())
                     .setName(GeneNames.X)
-                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue())
-                    .randomize(params.getGenerationDistribution()));
+                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
+            if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
+                gene.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+            } else {
+                gene.randomize(params.getGenerationDistribution());
+            }
+            chromosome.add(gene);
 
             Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
             newChromosomes.add(e);

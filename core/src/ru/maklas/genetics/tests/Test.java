@@ -2,6 +2,9 @@ package ru.maklas.genetics.tests;
 
 
 import com.badlogic.gdx.math.Vector2;
+import ru.maklas.genetics.engine.genetics.Chromosome;
+import ru.maklas.genetics.engine.genetics.Crossover;
+import ru.maklas.genetics.engine.genetics.Gene;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.utils.BitArray;
 import ru.maklas.genetics.utils.ClassUtils;

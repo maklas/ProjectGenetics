@@ -1,6 +1,5 @@
 package ru.maklas.genetics.engine.genetics;
 
-import ru.maklas.genetics.tests.Chromosome;
 import ru.maklas.mengine.components.IRenderComponent;
 
 /** Specifies that this Entity is chromosome **/

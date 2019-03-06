@@ -1,4 +1,4 @@
-package ru.maklas.genetics.tests;
+package ru.maklas.genetics.engine.genetics;
 
 public class GeneNames {
 

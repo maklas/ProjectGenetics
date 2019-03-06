@@ -14,7 +14,7 @@ import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.utils.functions.GraphFunction;
+import ru.maklas.genetics.functions.GraphFunction;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;

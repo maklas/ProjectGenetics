@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Consumer;
 import com.badlogic.gdx.utils.MapFunction;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
-import ru.maklas.genetics.utils.functions.*;
+import ru.maklas.genetics.functions.*;
 import ru.maklas.genetics.utils.persistance.BiConsumer;
 
 public class FunctionSelectionView extends BaseStage {

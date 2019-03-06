@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
-import ru.maklas.genetics.states.GenerationDistribution;
+import ru.maklas.genetics.engine.genetics.GenerationDistribution;
 
 public class MainMenuView extends BaseStage {
 
@@ -45,7 +45,7 @@ public class MainMenuView extends BaseStage {
         qField = new VisValidatableTextField(new Validators.FloatValidator());
         generationDistributionBox = new VisSelectBox<>();
         generationDistributionBox.setItems(GenerationDistribution.values());
-        generationDistributionBox.setSelected(GenerationDistribution.EVEN);
+        generationDistributionBox.setSelected(GenerationDistribution.RANDOM);
         precisionLabel = label("");
 
 

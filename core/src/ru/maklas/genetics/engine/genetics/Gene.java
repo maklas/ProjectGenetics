@@ -1,7 +1,6 @@
-package ru.maklas.genetics.tests;
+package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.math.MathUtils;
-import ru.maklas.genetics.states.GenerationDistribution;
 import ru.maklas.genetics.utils.BitArray;
 import ru.maklas.genetics.utils.Utils;
 
@@ -74,7 +73,8 @@ public class Gene {
 
     public Gene randomize(GenerationDistribution distribution) {
         switch (distribution){
-            case EVEN:
+            default:
+            case RANDOM:
                 randomize();
                 break;
             case RIGHT:

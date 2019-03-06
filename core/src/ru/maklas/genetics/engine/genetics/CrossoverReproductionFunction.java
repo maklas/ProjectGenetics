@@ -3,18 +3,12 @@ package ru.maklas.genetics.engine.genetics;
 import com.badlogic.gdx.math.CumulativeDistribution;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.Sort;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.states.Params;
-import ru.maklas.genetics.tests.Chromosome;
-import ru.maklas.genetics.tests.Crossover;
-import ru.maklas.genetics.utils.Log;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.libs.Counter;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
-
-import java.util.Arrays;
 
 public class CrossoverReproductionFunction implements ReproductionFunction {
 

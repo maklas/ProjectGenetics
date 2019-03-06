@@ -19,7 +19,7 @@ import ru.maklas.genetics.engine.rendering.CameraComponent;
 import ru.maklas.genetics.engine.rendering.CameraSystem;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
-import ru.maklas.genetics.utils.functions.FunctionFromPoints;
+import ru.maklas.genetics.functions.FunctionFromPoints;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;

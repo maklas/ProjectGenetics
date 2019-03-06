@@ -1,10 +1,11 @@
 package ru.maklas.genetics.states;
 
 import ru.maklas.genetics.engine.genetics.FitnessFunction;
+import ru.maklas.genetics.engine.genetics.GenerationDistribution;
 import ru.maklas.genetics.engine.genetics.MutationFunction;
 import ru.maklas.genetics.engine.genetics.ReproductionFunction;
-import ru.maklas.genetics.utils.functions.GraphFunction;
-import ru.maklas.genetics.utils.functions.ParabolaFunction;
+import ru.maklas.genetics.functions.GraphFunction;
+import ru.maklas.genetics.functions.ParabolaFunction;
 
 public class Params {
 

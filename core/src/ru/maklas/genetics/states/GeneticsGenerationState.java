@@ -35,7 +35,7 @@ import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.utils.functions.FunctionFromPoints;
+import ru.maklas.genetics.functions.FunctionFromPoints;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
