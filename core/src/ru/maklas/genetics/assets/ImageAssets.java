@@ -3,6 +3,7 @@ package ru.maklas.genetics.assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Consumer;
@@ -83,5 +84,17 @@ public class ImageAssets extends Asset{
         pixmap.setColor(borderColor);
         pixmap.drawRectangle(1, 1, width,  height);
         return new TextureRegion(new Texture(pixmap));
+    }
+
+    public static void draw(Batch batch, TextureRegion region, float x, float y, float pivotX, float pivotY, float scaleX, float scaleY, float angle){
+        float originX = region.getRegionWidth() * pivotX;
+        float originY = region.getRegionHeight() * pivotY;
+
+        batch.draw(region,
+                x - originX, y - originY,
+                originX, originY,
+                region.getRegionWidth(), region.getRegionHeight(),
+                scaleX, scaleY,
+                angle);
     }
 }

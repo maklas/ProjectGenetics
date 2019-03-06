@@ -87,6 +87,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
                 .addHelp("U", "Evolve 60 per sec")
                 .addHelp("Y", "Max evolution")
                 .addHelp("LMB", "Select Chromosome")
+                .addHelp("LEFT/RIGHT", "Change selected")
         );
         engine.add(new CameraSystem());
         engine.add(new TTLSystem());

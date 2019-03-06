@@ -41,7 +41,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private BitmapFont font;
     private Batch batch;
     private OrthographicCamera cam;
-    private static final float range = 30;
+    private static final float range = 12;
     private static final float minCamZoom = 0.0009765625f;
     private static final float maxCamZoom = 128f;
     private TextureRegion entityCircle;
@@ -85,11 +85,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
         subscribe(ScrollEvent.class, this::onScroll);
 
         int intRange = (int) range;
-        entityCircle = ImageAssets.createImage(intRange * 2, intRange * 2, Color.CYAN, p ->{
-            p.drawCircle(intRange, intRange, intRange);
-            p.drawCircle(intRange, intRange, intRange - 1);
-            p.drawCircle(intRange, intRange, intRange - 2);
-        });
+        entityCircle = ImageAssets.createCircleImageNoFill(intRange, Color.CYAN);
         defaultZoom = cam.zoom;
     }
 
@@ -271,13 +267,14 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private void drawHelp() {
-        float scale = 1 * cam.zoom;
+        float scale = cam.zoom;
 
-        float x = cam.position.x - (cam.viewportWidth/2) * getSafeCamZoom() + 10;
-        float y = cam.position.y - (cam.viewportHeight/2) * getSafeCamZoom() + 10 + (helps.size * 16 * scale);
+        float x = cam.position.x - (cam.viewportWidth/2) * cam.zoom + 10 * cam.zoom;
+        float y = cam.position.y + (cam.viewportHeight/2) * cam.zoom - 10 * cam.zoom;
         float dy = 16 * scale;
 
         font.getData().setScale(scale);
+        font.setColor(Color.BLACK);
 
 
         for (int i = 0; i < helps.size; i++) {
@@ -366,7 +363,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     private void drawCirclesOnEntities(){
         ImmutableArray<Entity> entities = engine.getEntities();
         for (Entity entity : entities) {
-            batch.draw(entityCircle, entity.x - range, entity.y - range);
+            ImageAssets.draw(batch, entityCircle, entity.x, entity.y, 0.5f, 0.5f, cam.zoom, cam.zoom, 0);
         }
     }
 

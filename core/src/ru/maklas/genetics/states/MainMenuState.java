@@ -51,8 +51,8 @@ public class MainMenuState extends State {
     }
 
     private boolean validate() {
-        if (mm.getBitsPerGene() > 63) {
-            gsm.print("Bits per gene [1..63]");
+        if (mm.getBitsPerGene() > 62) {
+            gsm.print("Bits per gene [1..62]");
             return false;
         }
         if (mm.getPopulationSize() < 2){
@@ -135,7 +135,7 @@ public class MainMenuState extends State {
         double max = mm.getMax();
         double min = mm.getMin();
         double width = max - min;
-        if (width <= 0d || bitsPerGene < 1 || bitsPerGene >= 64){
+        if (width <= 0d || bitsPerGene < 1 || bitsPerGene >= 63){
             return "err";
         }
 

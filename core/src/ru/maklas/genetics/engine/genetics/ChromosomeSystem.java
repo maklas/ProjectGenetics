@@ -1,11 +1,14 @@
 package ru.maklas.genetics.engine.genetics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import com.badlogic.gdx.utils.Queue;
 import ru.maklas.genetics.engine.B;
+import ru.maklas.genetics.engine.EngineUtils;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.*;
 import ru.maklas.genetics.engine.input.TouchDownEvent;
@@ -54,8 +57,9 @@ public abstract class ChromosomeSystem extends EntitySystem {
 
     private void generationChanged(GenerationChangedEvent e) {
         if (selectedChromosome != null) {
-            selectedChromosome = null;
-            dispatch(new ChromosomeSelectedEvent(null));
+            Entity oldChromosome = this.selectedChromosome;
+            this.selectedChromosome = null;
+            dispatch(new ChromosomeSelectedEvent(oldChromosome, null));
         }
     }
 
@@ -79,23 +83,53 @@ public abstract class ChromosomeSystem extends EntitySystem {
                         }
                     }
                 }
-                selectedChromosome = selectedParent;
-                dispatch(new ChromosomeSelectedEvent(selectedParent));
+                Entity oldChromosome = this.selectedChromosome;
+                this.selectedChromosome = selectedParent;
+                dispatch(new ChromosomeSelectedEvent(oldChromosome, selectedParent));
 
             }
         } else {
             selectedChromosome = chromosomesUnderMouse.size == 0 ? null : chromosomesUnderMouse.get(0);
-            dispatch(new ChromosomeSelectedEvent(selectedChromosome));
+            dispatch(new ChromosomeSelectedEvent(null, selectedChromosome));
         }
     }
 
     @Override
     public void update(float dt) {
         if (selectedChromosome != null && !selectedChromosome.isInEngine()) {
-            selectedChromosome = null;
-            dispatch(new ChromosomeSelectedEvent(null));
+            Entity oldChromosome = this.selectedChromosome;
+            this.selectedChromosome = null;
+            dispatch(new ChromosomeSelectedEvent(oldChromosome, null));
         }
         updateChromosomesUnderMouse();
+        updateInput();
+    }
+
+    private void updateInput() {
+        if (selectedChromosome == null) return;
+        int selectedChromosomeGeneration = selectedChromosome.get(M.chromosome).generation;
+        Entity generation = EngineUtils.getGeneration(engine, selectedChromosomeGeneration);
+        if (generation == null) return;
+        Array<Entity> chromosomes = generation.get(M.generation).chromosomes;
+        int index = chromosomes.indexOf(selectedChromosome, true);
+        if (index < 0) return;
+
+        boolean right = Gdx.input.isKeyJustPressed(Input.Keys.RIGHT);
+        boolean left = Gdx.input.isKeyJustPressed(Input.Keys.LEFT);
+        if (right || left) {
+            int targetIndex;
+            if (left) {
+                targetIndex = index == 0 ? chromosomes.size - 1 : index - 1;
+            } else {
+                targetIndex = index == chromosomes.size - 1 ? 0 : index + 1;
+            }
+            Entity newSelection = chromosomes.get(targetIndex);
+            if (newSelection != selectedChromosome){
+                Entity oldChromosome = selectedChromosome;
+                selectedChromosome = newSelection;
+                dispatch(new ChromosomeSelectedEvent(oldChromosome, newSelection));
+            }
+        }
     }
 
     protected final void updateGenerationMemoryQueue() {
