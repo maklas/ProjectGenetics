@@ -1,4 +1,4 @@
-package ru.maklas.genetics.engine.formulas;
+package ru.maklas.genetics.engine.rendering;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
+import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.genetics.functions.FunctionFromPoints;
 import ru.maklas.mengine.Engine;

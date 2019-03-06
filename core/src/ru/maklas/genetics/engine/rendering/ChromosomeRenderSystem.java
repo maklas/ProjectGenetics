@@ -1,4 +1,4 @@
-package ru.maklas.genetics.engine.genetics;
+package ru.maklas.genetics.engine.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
+import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
+import ru.maklas.genetics.engine.genetics.GenerationComponent;
+import ru.maklas.genetics.engine.genetics.ParentsComponent;
 import ru.maklas.genetics.states.Params;
 import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Engine;

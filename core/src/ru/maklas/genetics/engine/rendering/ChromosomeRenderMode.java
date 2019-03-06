@@ -1,4 +1,4 @@
-package ru.maklas.genetics.engine.genetics;
+package ru.maklas.genetics.engine.rendering;
 
 public enum ChromosomeRenderMode {
 

@@ -3,9 +3,9 @@ package ru.maklas.genetics.engine;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
-import ru.maklas.genetics.engine.formulas.FunctionRenderSystem;
-import ru.maklas.genetics.engine.formulas.FunctionTrackingRenderSystem;
-import ru.maklas.genetics.engine.formulas.HistoryRenderSystem;
+import ru.maklas.genetics.engine.rendering.FunctionRenderSystem;
+import ru.maklas.genetics.engine.rendering.FunctionTrackingRenderSystem;
+import ru.maklas.genetics.engine.rendering.HistoryRenderSystem;
 import ru.maklas.genetics.engine.genetics.*;
 import ru.maklas.genetics.engine.other.*;
 import ru.maklas.genetics.engine.rendering.*;
