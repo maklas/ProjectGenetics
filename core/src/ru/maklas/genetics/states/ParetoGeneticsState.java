@@ -12,10 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
-import ru.maklas.genetics.engine.formulas.FunctionComponent;
-import ru.maklas.genetics.engine.rendering.*;
 import ru.maklas.genetics.engine.genetics.ChromosomeTrackMode;
-import ru.maklas.genetics.engine.genetics.XGeneChromosomeSystem;
+import ru.maklas.genetics.engine.genetics.XyGeneChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
@@ -23,6 +21,7 @@ import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
+import ru.maklas.genetics.engine.rendering.*;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
@@ -30,23 +29,23 @@ import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
-import ru.maklas.genetics.functions.FunctionFromPoints;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.TestEngine;
 
-public class GeneticsGenerationState extends AbstractEngineState {
+public class ParetoGeneticsState extends AbstractEngineState {
 
-    private final Params params;
+
     private ShapeRenderer sr;
     private OrthographicCamera cam;
     private CornerView view;
     private ControlTable controlTable;
     private ChromosomeInfoTable chromosomeInfo;
-    private FunctionFromPoints functionFromPoints;
+    private Params params;
 
-    public GeneticsGenerationState(Params params) {
+
+    public ParetoGeneticsState(Params params) {
         this.params = params;
     }
 
@@ -58,7 +57,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view = new CornerView();
         controlTable = new ControlTable(true);
         chromosomeInfo = new ChromosomeInfoTable();
-        functionFromPoints = new FunctionFromPoints();
     }
 
     @Override
@@ -73,7 +71,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
 
     @Override
     protected void addSystems(Engine engine) {
-        engine.add(new XGeneChromosomeSystem());
+        engine.add(new XyGeneChromosomeSystem());
         engine.add(new ChromosomeRenderSystem());
         engine.add(new EntityDebugSystem()
                 .setTextInfoEnabled(false)
@@ -89,20 +87,14 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.add(new FunctionRenderSystem()
                 .setNetColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillNet(false)
+                .setFillNet(true)
                 .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
-        engine.add(new ChromosomeTrackingRenderSystem().setMode(ChromosomeTrackMode.CURRENT_GEN));
-
     }
 
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
-        FunctionComponent fc = new FunctionComponent(params.getFunction());
-        fc.color.set(0.75f, 0.23f, 0.23f, 1);
-        fc.lineWidth = 1.5f;
-        engine.add(new Entity().add(fc));
     }
 
     @Override
@@ -114,11 +106,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
         controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
-        ChromosomeTrackingRenderSystem system = engine.getSystemManager().getSystem(ChromosomeTrackingRenderSystem.class);
-        controlTable.addButton(system.trackMode.asText(), (b) -> {
-            system.trackMode = Utils.next(system.trackMode);
-            b.setText(system.trackMode.asText());
-        });
         controlTable.addCheckBox("Print XY", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setPrintXY(e));
         controlTable.addCheckBox("Draggable camera", false, drag -> {
             ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
@@ -137,19 +124,11 @@ public class GeneticsGenerationState extends AbstractEngineState {
             cam.setPosition(0, 0);
             cam.zoom = 1;
         });
-        controlTable.addButton("History", () -> pushState(new HistoryState(functionFromPoints)));
-
         view.bottomRight.setActor(chromosomeInfo);
 
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
         engine.subscribe(GenerationChangedEvent.class, e -> bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(e.getBestChromosome().get(M.chromosome).functionValue, 3, 3)));
-        engine.subscribe(GenerationChangedEvent.class, e -> {
-            if (e.getGenerationNumber() == 0){
-                functionFromPoints.clear();
-            }
-            functionFromPoints.add(((float) e.getBestChromosome().get(M.chromosome).functionValue));
-        });
 
         engine.dispatch(new ResetEvolutionRequest());
     }
@@ -178,6 +157,7 @@ public class GeneticsGenerationState extends AbstractEngineState {
         view.act();
     }
 
+
     @Override
     protected InputProcessor getInput() {
         return new InputMultiplexer(view, new EngineInputAdapter(engine, cam));
@@ -199,7 +179,6 @@ public class GeneticsGenerationState extends AbstractEngineState {
         engine.render();
         view.draw();
     }
-
 
     @Override
     protected void dispose() {

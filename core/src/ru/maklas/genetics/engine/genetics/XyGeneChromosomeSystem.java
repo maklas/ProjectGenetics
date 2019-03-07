@@ -7,7 +7,7 @@ import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.mengine.Entity;
 
-public class XGeneChromosomeSystem extends ChromosomeSystem {
+public class XyGeneChromosomeSystem extends ChromosomeSystem {
 
     @Override
     protected void evolve(EvolveRequest req) {
@@ -55,15 +55,24 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
 
         for (int i = 0; i < params.getPopulationSize(); i++) {
             Chromosome chromosome = new Chromosome();
-            Gene gene = new Gene(params.getBitsPerGene())
+            Gene geneX = new Gene(params.getBitsPerGene())
                     .setName(GeneNames.X)
                     .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
             if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
-                gene.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+                geneX.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
             } else {
-                gene.randomize(params.getGenerationDistribution());
+                geneX.randomize(params.getGenerationDistribution());
             }
-            chromosome.add(gene);
+            Gene geneY = new Gene(params.getBitsPerGene())
+                    .setName(GeneNames.Y)
+                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
+            if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
+                geneY.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+            } else {
+                geneY.randomize(params.getGenerationDistribution());
+            }
+            chromosome.add(geneX);
+            chromosome.add(geneY);
 
             Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
             newChromosomes.add(e);
@@ -83,4 +92,5 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
         bestChromosomeOfGeneration = selectBestChromosomeOfGeneration(newChromosomes);
         dispatch(new GenerationChangedEvent(currentGenerationNumber, currentGeneration, bestChromosomeOfGeneration));
     }
+
 }
