@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
+import ru.maklas.genetics.engine.genetics.GeneNames;
 import ru.maklas.genetics.engine.rendering.*;
 import ru.maklas.genetics.engine.genetics.ChromosomeTrackMode;
 import ru.maklas.genetics.engine.genetics.XGeneChromosomeSystem;
@@ -23,6 +25,7 @@ import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
 import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
+import ru.maklas.genetics.functions.FunctionUtils;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
@@ -110,6 +113,10 @@ public class FunctionGeneticsState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         Label bestValueLabel = controlTable.addLabel("");
+        double lowestX = FunctionUtils.findMinimalPoint(params.getFunction(), params.getMinValue(), params.getMaxValue(), (params.getMaxValue() - params.getMinValue()) / 1_000_000, 2);
+        double lowestY = params.getFunction().f(lowestX);
+        controlTable.addLabel("Target: (" + StringUtils.dfSigDigits(lowestX, 5, 3) + ", " + StringUtils.dfSigDigits(lowestY, 5, 3) + ")");
+        Label errorLabel = controlTable.addLabel("Error: (" + StringUtils.dfSigDigits(lowestX, 5, 3) + ", " + StringUtils.dfSigDigits(lowestY, 5, 3) + ")");
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
         controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
@@ -149,6 +156,11 @@ public class FunctionGeneticsState extends AbstractEngineState {
                 functionFromPoints.clear();
             }
             functionFromPoints.add(((float) e.getBestChromosome().get(M.chromosome).functionValue));
+        });
+        engine.subscribe(GenerationChangedEvent.class, e -> {
+            double target = lowestX;
+            double best = e.getBestChromosome().get(M.chromosome).chromosome.get(GeneNames.X).decodeAsDouble();
+            errorLabel.setText("Error: " + StringUtils.dfSigDigits(Math.abs(target - best), 3, 3));
         });
 
         engine.dispatch(new ResetEvolutionRequest());
