@@ -72,7 +72,7 @@ public class ParetoGeneticsState extends AbstractEngineState {
     @Override
     protected void addSystems(Engine engine) {
         engine.add(new XyGeneChromosomeSystem());
-        engine.add(new ChromosomeRenderSystem());
+        engine.add(new ChromosomeRenderSystem().setRenderMinMaxHorizontal(true));
         engine.add(new EntityDebugSystem()
                 .setTextInfoEnabled(false)
                 .addHelp("R", "Restart")

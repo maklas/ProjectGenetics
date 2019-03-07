@@ -35,6 +35,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
     private Params params;
 
     private boolean renderMinMax = true;
+    private boolean renderMinMaxY = false;
 
     @Override
     public void onAddedToEngine(Engine engine) {
@@ -45,8 +46,8 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         cam = engine.getBundler().getAssert(B.cam);
         batch = engine.getBundler().getAssert(B.batch);
         params = engine.getBundler().getAssert(B.params);
-        minMaxColor = Color.VIOLET;
-        minMaxColor.a = 0.6f;
+        minMaxColor = Color.SCARLET;
+        minMaxColor.a = 0.65f;
     }
 
     @Override
@@ -64,6 +65,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
 
     private void renderMinMax() {
         Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glLineWidth(2f);
         sr.begin(ShapeRenderer.ShapeType.Line);
         sr.setColor(minMaxColor);
         float leftX = Utils.camLeftX(cam);
@@ -72,17 +74,34 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         float botY = Utils.camBotY(cam);
 
         if (params.getMinValue() > leftX && params.getMinValue() < rightX) {
-            renderVerticalDotted(sr, params.getMinValue(), topY, botY);
+            renderVerticalDotted(sr, params.getMinValue(), renderMinMaxY ? (Math.min(topY, ((float) params.getMaxValue()))) : topY, renderMinMaxY ? (Math.max(botY, ((float) params.getMinValue()))) : botY);
         }
+
         if (params.getMaxValue() > leftX && params.getMaxValue() < rightX) {
-            renderVerticalDotted(sr, params.getMaxValue(), topY, botY);
+            renderVerticalDotted(sr, params.getMaxValue(), renderMinMaxY ? (Math.min(topY, ((float) params.getMaxValue()))) : topY, renderMinMaxY ? (Math.max(botY, ((float) params.getMinValue()))) : botY);
         }
+
+        if (renderMinMaxY) {
+            if (params.getMinValue() > botY && params.getMinValue() < topY) {
+                renderHorizontalDotted(sr, params.getMinValue(), Math.max(leftX, ((float) params.getMinValue())), Math.min(rightX, ((float) params.getMaxValue())));
+            }
+
+            if (params.getMaxValue() > botY && params.getMaxValue() < topY) {
+                renderHorizontalDotted(sr, params.getMaxValue(),  Math.max(leftX, ((float) params.getMinValue())), Math.min(rightX, ((float) params.getMaxValue())));
+            }
+        }
+
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glLineWidth(1f);
     }
 
     private void renderVerticalDotted(ShapeRenderer sr, double x, float topY, float botY) {
         sr.line(((float) x), botY, ((float) x), topY);
+    }
+
+    private void renderHorizontalDotted(ShapeRenderer sr, double y, float leftX, float rightX) {
+        sr.line(leftX, ((float) y), rightX, ((float) y));
     }
 
     private void renderSelectedChromosome(Entity chromosome) {
@@ -138,6 +157,11 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
 
     public ChromosomeRenderSystem setRenderMinMax(boolean enabled){
         renderMinMax = enabled;
+        return this;
+    }
+
+    public ChromosomeRenderSystem setRenderMinMaxHorizontal(boolean enabled){
+        renderMinMaxY = enabled;
         return this;
     }
 
