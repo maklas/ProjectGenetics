@@ -121,6 +121,11 @@ public class Gene {
         return (((maxDouble - minDouble) / maxVal) * i) + minDouble;
     }
 
+    /** Декодирует данные и возвращает процент между минимальным и максимальным значением 0..1**/
+    public double decodeAsPercent(){
+        return (decodeAsDouble() - minDouble) / (maxDouble - minDouble);
+    }
+
     /** Перекодируем Double в GrayCode и помещаем в ген xxxx000...**/
     public void set(double d){
         bits.setAsLong(fromDouble(d, minDouble, maxDouble, length()));
