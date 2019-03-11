@@ -6,10 +6,13 @@ import ru.maklas.genetics.engine.genetics.MutationFunction;
 import ru.maklas.genetics.engine.genetics.ReproductionFunction;
 import ru.maklas.genetics.functions.GraphFunction;
 import ru.maklas.genetics.functions.ParabolaFunction;
+import ru.maklas.genetics.functions.bi_functions.GraphBiFunction;
 
 public class Params {
 
     private GraphFunction function = new ParabolaFunction(0.1, 0, 0);
+    private GraphBiFunction biFunction1;
+    private GraphBiFunction biFunction2;
     private int bitsPerGene = 16;
     private int populationSize = 10;
     private double minValue = 0;
@@ -27,6 +30,22 @@ public class Params {
 
     public void setFunction(GraphFunction function) {
         this.function = function;
+    }
+
+    public GraphBiFunction getBiFunction1() {
+        return biFunction1;
+    }
+
+    public void setBiFunction1(GraphBiFunction biFunction1) {
+        this.biFunction1 = biFunction1;
+    }
+
+    public GraphBiFunction getBiFunction2() {
+        return biFunction2;
+    }
+
+    public void setBiFunction2(GraphBiFunction biFunction2) {
+        this.biFunction2 = biFunction2;
     }
 
     public int getBitsPerGene() {

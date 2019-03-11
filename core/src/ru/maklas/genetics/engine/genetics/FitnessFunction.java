@@ -20,7 +20,8 @@ public interface FitnessFunction {
      * Можно сортировать массив для оптимизации.
      */
     default void calculateFitness(Engine e, Array<Entity> chromosomes){
-        for (Entity chromosome : chromosomes) {
+        for (int i = 0; i < chromosomes.size; i++) {
+            Entity chromosome = chromosomes.get(i);
             chromosome.get(M.chromosome).fitness = calculateFitness(e, chromosome, chromosomes);
         }
     }

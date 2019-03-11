@@ -13,6 +13,7 @@ public class ImageAssets extends Asset{
     public TextureRegion empty;
     public TextureRegion cell;
     public TextureRegion circle;
+    public TextureRegion pixel;
     public TextureRegion laserStart, laserMiddle, laserEnd, laserEffect;
     public TextureRegion background;
     public BitmapFont font;
@@ -36,6 +37,7 @@ public class ImageAssets extends Asset{
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         whiteBox10px = createRectangleImage(10, 10, Color.WHITE);
         whiteBox10pxHalfAlpha = createRectangleImage(10, 10, new Color(1, 1, 1, 0.5f));
+        pixel = createRectangleImage(1, 1, Color.WHITE);
     }
 
     @Override
@@ -72,17 +74,17 @@ public class ImageAssets extends Asset{
     public static TextureRegion createRectangleImage(int width, int height, Color color){
         Pixmap pixmap = new Pixmap(width , height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
-        pixmap.fillRectangle(0, 0, width, height);
+        pixmap.fill();
         return new TextureRegion(new Texture(pixmap));
     }
 
 
-    public static TextureRegion createRectangleImage(int width, int height, Color color, Color borderColor){
-        Pixmap pixmap = new Pixmap(width + 2, height + 2, Pixmap.Format.RGBA8888);
+    public static TextureRegion createRectangleImage(int width, int height, int pad, Color color, Color borderColor){
+        Pixmap pixmap = new Pixmap(width + 2 * pad, height + 2 * pad, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
-        pixmap.fillRectangle(1, 1, width, height);
+        pixmap.fillRectangle(pad, pad, width, height);
         pixmap.setColor(borderColor);
-        pixmap.drawRectangle(1, 1, width,  height);
+        pixmap.drawRectangle(pad, pad, width,  height);
         return new TextureRegion(new Texture(pixmap));
     }
 

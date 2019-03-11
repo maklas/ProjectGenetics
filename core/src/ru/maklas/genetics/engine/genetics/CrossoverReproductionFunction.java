@@ -29,7 +29,7 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
         float fitnessSum = 0;
         FitnessFunction ff = params.getFitnessFunction();
         CumulativeDistribution<Entity> distribution = new CumulativeDistribution<>();
-        for (Entity parent : parents) {
+        for (Entity parent : new Array.ArrayIterable<>(parents)) {
             float fitness = (float) ff.calculateFitness(engine, parent, parents);
             distribution.add(parent, fitness);
             fitnessSum += fitness;

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
-import ru.maklas.genetics.engine.genetics.ChromosomeTrackMode;
+import ru.maklas.genetics.engine.formulas.BiFunctionComponent;
 import ru.maklas.genetics.engine.genetics.XyGeneChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
@@ -22,13 +22,14 @@ import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
 import ru.maklas.genetics.engine.rendering.*;
+import ru.maklas.genetics.functions.bi_functions.CustomBiFunction;
+import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
 import ru.maklas.genetics.user_interface.ChromosomeInfoTable;
 import ru.maklas.genetics.user_interface.ControlTable;
 import ru.maklas.genetics.user_interface.CornerView;
 import ru.maklas.genetics.utils.StringUtils;
-import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Bundler;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -87,14 +88,21 @@ public class ParetoGeneticsState extends AbstractEngineState {
         engine.add(new FunctionRenderSystem()
                 .setNetColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillNet(true)
+                .setFillNet(false)
                 .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
+        engine.add(new BiFunctionRenderSystem());
     }
 
     @Override
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
+        if (params.getBiFunction1() != null){
+            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction1()).setColor(new Color(0.75f, 0.23f, 0.23f, 1)).setParams(2, 1).setName("f(x)1")));
+        }
+        if (params.getBiFunction2() != null){
+            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction2()).setColor(new Color(0.23f, 0.23f, 0.75f, 1)).setParams(2, 1).setName("f(x)2")));
+        }
     }
 
     @Override

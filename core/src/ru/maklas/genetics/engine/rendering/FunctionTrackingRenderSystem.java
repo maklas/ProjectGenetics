@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Pool;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
+import ru.maklas.genetics.engine.formulas.BiFunctionComponent;
 import ru.maklas.genetics.engine.formulas.FunctionComponent;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.Utils;
@@ -26,6 +27,7 @@ import ru.maklas.mengine.RenderEntitySystem;
 public class FunctionTrackingRenderSystem extends RenderEntitySystem {
 
     private ImmutableArray<Entity> functions;
+    private ImmutableArray<Entity> biFunctions;
     private OrthographicCamera cam;
     private ShapeRenderer sr;
     private Batch batch;
@@ -44,6 +46,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
     public void onAddedToEngine(Engine engine) {
         super.onAddedToEngine(engine);
         functions = entitiesFor(FunctionComponent.class);
+        biFunctions = entitiesFor(BiFunctionComponent.class);
         cam = engine.getBundler().get(B.cam);
         sr = engine.getBundler().get(B.sr);
         batch = engine.getBundler().get(B.batch);
@@ -102,6 +105,22 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
 
             trackResultPool.freeAll(trackResults);
             trackResults.clear();
+        }
+
+        if (printXY && biFunctions.size() > 0){
+
+            batch.begin();
+
+            for (Entity biFunction : biFunctions) {
+                BiFunctionComponent bfc = biFunction.get(M.biFun);
+                A.images.font.setColor(bfc.color);
+                if (bfc.fun.absF(mouse.x, mouse.y) < cam.zoom * bfc.resolutionMultiplier * bfc.thickness){
+                    batch.setColor(bfc.color);
+                    A.images.font.draw(batch, StringUtils.isEmpty(bfc.fun.name()) ? bfc.name : bfc.fun.name(), mouse.x + 15 * cam.zoom, mouse.y + 15 * cam.zoom, 10, Align.left, false);
+                }
+            }
+
+            batch.end();
         }
     }
 
