@@ -13,6 +13,12 @@ import ru.maklas.mengine.Entity;
 
 public class EntityUtils {
 
+    public static Chromosome chromosome(int bits, double min, double max, double x, double y){
+        Gene xGene = new Gene(bits).setMinMaxDouble(min, max).setName(GeneNames.X).set(x);
+        Gene yGene = new Gene(bits).setMinMaxDouble(min, max).setName(GeneNames.Y).set(y);
+        return new Chromosome().add(xGene).add(yGene);
+    }
+
     public static Entity chromosome(int id, Chromosome chromosome, int generation){
         return new Entity(id, EntityType.CHROMOSOME, 0, 0, Layers.chromosome)
                 .add(new ChromosomeComponent(chromosome, generation))

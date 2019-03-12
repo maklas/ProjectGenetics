@@ -127,9 +127,10 @@ public class Gene {
     }
 
     /** Перекодируем Double в GrayCode и помещаем в ген xxxx000...**/
-    public void set(double d){
+    public Gene set(double d){
         bits.setAsLong(fromDouble(d, minDouble, maxDouble, length()));
         bits = bits.binToGray();
+        return this;
     }
 
     public boolean getBit(int position) {

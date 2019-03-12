@@ -23,6 +23,12 @@ public class ParetoSetupState extends State {
         params.setBitsPerGene(32);
         params.setGenerationDistribution(GenerationDistribution.RANDOM);
         params.setPopulationSize(50);
+
+        Chromosome c1 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 10, 10);
+        Chromosome c2 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 40, 30);
+        Chromosome c3 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 30, 60);
+        Chromosome c4 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 60, 65);
+        params.getInitialPopulation().addAll(c1, c2, c3, c4);
         pushState(new ParetoGeneticsState(params));
     }
 

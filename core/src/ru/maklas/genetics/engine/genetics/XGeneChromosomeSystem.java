@@ -53,21 +53,31 @@ public class XGeneChromosomeSystem extends ChromosomeSystem {
         currentGenerationNumber = 0;
         Array<Entity> newChromosomes = new Array<>();
 
-        for (int i = 0; i < params.getPopulationSize(); i++) {
-            Chromosome chromosome = new Chromosome();
-            Gene gene = new Gene(params.getBitsPerGene())
-                    .setName(GeneNames.X)
-                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
-            if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
-                gene.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
-            } else {
-                gene.randomize(params.getGenerationDistribution());
-            }
-            chromosome.add(gene);
 
-            Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
-            newChromosomes.add(e);
-            engine.add(e);
+        if (params.getInitialPopulation().isEmpty()) {
+
+            for (int i = 0; i < params.getPopulationSize(); i++) {
+                Chromosome chromosome = new Chromosome();
+                Gene gene = new Gene(params.getBitsPerGene())
+                        .setName(GeneNames.X)
+                        .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
+                if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
+                    gene.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+                } else {
+                    gene.randomize(params.getGenerationDistribution());
+                }
+                chromosome.add(gene);
+
+                Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
+                newChromosomes.add(e);
+                engine.add(e);
+            }
+        } else {
+            for (Chromosome chromosome : params.getInitialPopulation()) {
+                Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
+                newChromosomes.addAll(e);
+                engine.add(e);
+            }
         }
 
         currentGeneration = EntityUtils.generation(1000 + currentGenerationNumber, currentGenerationNumber, null, newChromosomes);

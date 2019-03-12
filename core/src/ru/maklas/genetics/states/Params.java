@@ -1,18 +1,17 @@
 package ru.maklas.genetics.states;
 
-import ru.maklas.genetics.engine.genetics.FitnessFunction;
-import ru.maklas.genetics.engine.genetics.GenerationDistribution;
-import ru.maklas.genetics.engine.genetics.MutationFunction;
-import ru.maklas.genetics.engine.genetics.ReproductionFunction;
+import com.badlogic.gdx.utils.Array;
+import ru.maklas.genetics.engine.genetics.*;
 import ru.maklas.genetics.functions.GraphFunction;
 import ru.maklas.genetics.functions.ParabolaFunction;
 import ru.maklas.genetics.functions.bi_functions.GraphBiFunction;
 
 public class Params {
 
-    private GraphFunction function = new ParabolaFunction(0.1, 0, 0);
+    private GraphFunction function;
     private GraphBiFunction biFunction1;
     private GraphBiFunction biFunction2;
+    private final Array<Chromosome> initialPopulation = new Array<>();
     private int bitsPerGene = 16;
     private int populationSize = 10;
     private double minValue = 0;
@@ -46,6 +45,10 @@ public class Params {
 
     public void setBiFunction2(GraphBiFunction biFunction2) {
         this.biFunction2 = biFunction2;
+    }
+
+    public Array<Chromosome> getInitialPopulation() {
+        return initialPopulation;
     }
 
     public int getBitsPerGene() {

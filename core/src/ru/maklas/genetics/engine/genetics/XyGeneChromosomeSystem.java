@@ -53,30 +53,39 @@ public class XyGeneChromosomeSystem extends ChromosomeSystem {
         currentGenerationNumber = 0;
         Array<Entity> newChromosomes = new Array<>();
 
-        for (int i = 0; i < params.getPopulationSize(); i++) {
-            Chromosome chromosome = new Chromosome();
-            Gene geneX = new Gene(params.getBitsPerGene())
-                    .setName(GeneNames.X)
-                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
-            if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
-                geneX.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
-            } else {
-                geneX.randomize(params.getGenerationDistribution());
-            }
-            Gene geneY = new Gene(params.getBitsPerGene())
-                    .setName(GeneNames.Y)
-                    .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
-            if (params.getGenerationDistribution() == GenerationDistribution.EVEN){
-                geneY.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
-            } else {
-                geneY.randomize(params.getGenerationDistribution());
-            }
-            chromosome.add(geneX);
-            chromosome.add(geneY);
+        if (params.getInitialPopulation().isEmpty()) {
 
-            Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
-            newChromosomes.add(e);
-            engine.add(e);
+            for (int i = 0; i < params.getPopulationSize(); i++) {
+                Chromosome chromosome = new Chromosome();
+                Gene geneX = new Gene(params.getBitsPerGene())
+                        .setName(GeneNames.X)
+                        .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
+                if (params.getGenerationDistribution() == GenerationDistribution.EVEN) {
+                    geneX.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+                } else {
+                    geneX.randomize(params.getGenerationDistribution());
+                }
+                Gene geneY = new Gene(params.getBitsPerGene())
+                        .setName(GeneNames.Y)
+                        .setMinMaxDouble(params.getMinValue(), params.getMaxValue());
+                if (params.getGenerationDistribution() == GenerationDistribution.EVEN) {
+                    geneY.set(params.getMinValue() + ((params.getMaxValue() - params.getMinValue()) * ((i + 0.5) / params.getPopulationSize())));
+                } else {
+                    geneY.randomize(params.getGenerationDistribution());
+                }
+                chromosome.add(geneX);
+                chromosome.add(geneY);
+
+                Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
+                newChromosomes.add(e);
+                engine.add(e);
+            }
+        } else {
+            for (Chromosome chromosome : params.getInitialPopulation()) {
+                Entity e = EntityUtils.chromosome(chromosomeIdCounter.next(), chromosome, currentGenerationNumber);
+                newChromosomes.addAll(e);
+                engine.add(e);
+            }
         }
 
         currentGeneration = EntityUtils.generation(1000 + currentGenerationNumber, currentGenerationNumber, null, newChromosomes);

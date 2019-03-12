@@ -41,6 +41,6 @@ public class ParetoFitnessFunction implements FitnessFunction {
             }
         }
 
-        return 1.0 / (Math.pow(1.0 + (Math.max(better1, better2) / (generation.size - 1.0)), q));
+        return 1.0 / (Math.pow(1.0 + (Math.min(better1, better2) / (generation.size - 1.0)), q));
     }
 }
