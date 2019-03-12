@@ -4,14 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.genetics.CrossoverReproductionFunction;
 import ru.maklas.genetics.engine.genetics.FunctionMinimalValueFitnessFunction;
 import ru.maklas.genetics.engine.genetics.RandomBitChangeMutation;
-import ru.maklas.genetics.mnw.MNW;
+import ru.maklas.genetics.functions.*;
 import ru.maklas.genetics.user_interface.FunctionGeneticsView;
 import ru.maklas.genetics.utils.StringUtils;
-import ru.maklas.genetics.functions.*;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
 public class FunctionGeneticsSetupState extends State {
@@ -21,7 +19,6 @@ public class FunctionGeneticsSetupState extends State {
 
     @Override
     protected void onCreate() {
-        A.skins.load();
         mm = new FunctionGeneticsView();
 
         mm.onStart(() -> {
