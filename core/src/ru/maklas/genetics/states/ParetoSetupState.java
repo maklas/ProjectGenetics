@@ -8,6 +8,7 @@ import ru.maklas.genetics.engine.genetics.*;
 import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.user_interface.ParetoView;
 import ru.maklas.genetics.utils.StringUtils;
+import ru.maklas.genetics.utils.Utils;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
 public class ParetoSetupState extends State {
@@ -22,8 +23,17 @@ public class ParetoSetupState extends State {
             if (validate()) {
                 Params params = new Params();
 
-                params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
-                params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.2, 0.8));
+                if (view.getRandomizeFunctions()){
+                    double aX = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
+                    double aY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
+                    double bX = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
+                    double bY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
+                    params.setBiFunction1(new SerovNashBiFunction(aX, aY, 0.2, 0.8));
+                    params.setBiFunction2(new SerovNashBiFunction(bX, bY, 0.2, 0.8));
+                } else {
+                    params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
+                    params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.2, 0.8));
+                }
                 params.setFitnessFunction(new ParetoFitnessFunction(view.getQ()));
                 params.setBitsPerGene(view.getBitsPerGene());
                 params.setPopulationSize(view.getPopulationSize());
@@ -31,6 +41,7 @@ public class ParetoSetupState extends State {
                 params.setGenerationMemory(view.getGenerationMemory());
                 params.setReproductionFunction(new CrossoverReproductionFunction(view.getCrossingPoints()));
                 params.setMutationFunction(new RandomBitChangeMutation(view.getBitMutationMin(), view.getBitMutationMax()));
+                params.setMutationChance(view.getMutationChance());
 
 
 
@@ -51,6 +62,8 @@ public class ParetoSetupState extends State {
         view.setGenerationMemory(10);
         view.setMinMax(0, 80);
         view.setQ(2);
+        view.setMutationChance(90);
+
     }
 
     private boolean validate() {

@@ -21,6 +21,7 @@ public class Params {
     private MutationFunction mutationFunction;
     private FitnessFunction fitnessFunction;
     private GenerationDistribution generationDistribution;
+    private int mutationChance = 100;
 
 
     public GraphFunction getFunction() {
@@ -126,5 +127,14 @@ public class Params {
 
     public void setGenerationDistribution(GenerationDistribution generationDistribution) {
         this.generationDistribution = generationDistribution;
+    }
+
+    public void setMutationChance(int mutationChance) {
+        this.mutationChance = mutationChance;
+    }
+
+    /**0..100**/
+    public int getMutationChance() {
+        return mutationChance;
     }
 }

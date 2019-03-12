@@ -5,6 +5,7 @@ import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
+import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Entity;
 
 public class XyGeneChromosomeSystem extends ChromosomeSystem {
@@ -20,11 +21,13 @@ public class XyGeneChromosomeSystem extends ChromosomeSystem {
         Entity currGen = generationMemory.last();
         GenerationComponent gc = currGen.get(M.generation);
         Array<Entity> newChromosomes = params.getReproductionFunction().reproduce(engine, params, currentGenerationNumber + 1, params.getPopulationSize(), chromosomeIdCounter, gc.chromosomes);
-        MutationFunction mutationFunction = params.getMutationFunction();
-        newChromosomes.foreach(c -> {
-            ParentsComponent pc = c.get(M.parents);
-            mutationFunction.mutate(engine, c.get(M.chromosome).chromosome, pc.parents.get(0).get(M.chromosome).chromosome, pc.parents.get(1).get(M.chromosome).chromosome);
-        });
+        if (Utils.rand.nextInt(100) < params.getMutationChance()) {
+            MutationFunction mutationFunction = params.getMutationFunction();
+            newChromosomes.foreach(c -> {
+                ParentsComponent pc = c.get(M.parents);
+                mutationFunction.mutate(engine, c.get(M.chromosome).chromosome, pc.parents.get(0).get(M.chromosome).chromosome, pc.parents.get(1).get(M.chromosome).chromosome);
+            });
+        }
         engine.addAll(newChromosomes);
         currentGenerationNumber++;
         currentGeneration = EntityUtils.generation(1000 + currentGenerationNumber, currentGenerationNumber, currGen, newChromosomes);

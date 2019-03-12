@@ -2,6 +2,7 @@ package ru.maklas.genetics.user_interface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Consumer;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import ru.maklas.genetics.engine.genetics.GenerationDistribution;
@@ -18,6 +19,8 @@ public class FunctionGeneticsView extends BaseStage {
     private final VisValidatableTextField crossPointField;
     private final VisValidatableTextField bitMutMin;
     private final VisValidatableTextField bitMutMax;
+    private final VisSlider mutationChanceSlider;
+    private final VisLabel mutationChanceLabel;
     private final VisValidatableTextField bitsPerGeneField;
     private final VisValidatableTextField qField;
     private final VisSelectBox<GenerationDistribution> generationDistributionBox;
@@ -31,16 +34,23 @@ public class FunctionGeneticsView extends BaseStage {
         table.defaults().padBottom(10).padRight(5).left();
         addActor(table);
 
+        start = new VisTextButton("Start");
+        start.setColor(Color.GREEN);
         selectFunction = new VisTextButton("Функция");
         functionDescription = label("");
-        start = new VisTextButton("start");
         populationSizeField = new VisValidatableTextField(new Validators.IntegerValidator());
         minField = new VisValidatableTextField(new Validators.FloatValidator());
         maxField = new VisValidatableTextField(new Validators.FloatValidator());
+        minField.setAlignment(Align.center);
+        maxField.setAlignment(Align.center);
         generationMemoryField = new VisValidatableTextField(new Validators.IntegerValidator());
         crossPointField = new VisValidatableTextField(new Validators.IntegerValidator());
         bitMutMin = new VisValidatableTextField(new Validators.IntegerValidator());
         bitMutMax = new VisValidatableTextField(new Validators.IntegerValidator());
+        bitMutMin.setAlignment(Align.center);
+        bitMutMax.setAlignment(Align.center);
+        mutationChanceSlider = new VisSlider(0, 100, 1, false);
+        mutationChanceLabel = label("100%");
         bitsPerGeneField = new VisValidatableTextField(new Validators.IntegerValidator());
         qField = new VisValidatableTextField(new Validators.FloatValidator());
         generationDistributionBox = new VisSelectBox<>();
@@ -49,16 +59,16 @@ public class FunctionGeneticsView extends BaseStage {
         precisionLabel = label("");
 
 
+        table.add(start).padBottom(35);
+        table.row();
+
         table.add(selectFunction).padRight(10);
         table.add(functionDescription).colspan(4);
         table.row();
 
-        table.add(start);
-        table.row();
 
         table.add(label("Gene length")).right();
-        table.add(bitsPerGeneField).width(75);
-        table.add(precisionLabel);
+        table.add(inTable(t -> { t.add(bitsPerGeneField).width(75).padRight(10); t.add(precisionLabel);}));
         table.row();
 
         table.add(label("Population size")).right();
@@ -66,11 +76,10 @@ public class FunctionGeneticsView extends BaseStage {
         table.row();
 
         table.add(label("Min-Max value")).right();
-        table.add(minField).width(75);
-        table.add(maxField).width(75).left();
+        table.add(inTable(t -> { t.defaults().padRight(5); t.add(minField).width(75); t.add(label("-")); t.add(maxField).width(75).left();}));
         table.row();
 
-        table.add(label("Generation destribution")).right();
+        table.add(label("Generation distribution")).right();
         table.add(generationDistributionBox).width(75);
         table.row();
 
@@ -82,14 +91,25 @@ public class FunctionGeneticsView extends BaseStage {
         table.add(crossPointField).width(75);
         table.row();
 
+        VisTable mutationTable = new VisTable();
+        mutationTable.defaults().padRight(10);
+        mutationTable.add(bitMutMin).width(30).padRight(5);
+        mutationTable.add(label("-")).padRight(5);
+        mutationTable.add(bitMutMax).width(30).left();
+        mutationTable.add(label("Chance:")).left();
+        mutationTable.add(mutationChanceSlider).width(100).left();
+        mutationTable.add(mutationChanceLabel).width(100).left();
+
         table.add(label("Bit mutations min-max")).right();
-        table.add(bitMutMin).width(75);
-        table.add(bitMutMax).width(75).left();
+        table.add(mutationTable).left();
         table.row();
 
         table.add(label("Q")).right();
         table.add(qField).width(75);
         table.row();
+
+
+        mutationChanceSlider.addChangeLsitener(c -> mutationChanceLabel.setText(String.valueOf(c.intValue())));
     }
     
     private VisLabel label(String text){
@@ -166,6 +186,14 @@ public class FunctionGeneticsView extends BaseStage {
         bitMutMax.setText(String.valueOf(max));
     }
 
+    public int getMutationChance(){
+        return ((int) mutationChanceSlider.getValue());
+    }
+
+    public void setMutationChance(int chance){
+        mutationChanceSlider.setValue(chance);
+    }
+
     public double getQ(){
         return getFloat(qField);
     }
@@ -202,4 +230,10 @@ public class FunctionGeneticsView extends BaseStage {
         precisionLabel.setText("Precision: " + s);
     }
 
+
+    private VisTable inTable(Consumer<VisTable> t){
+        VisTable table = new VisTable();
+        t.accept(table);
+        return table;
+    }
 }

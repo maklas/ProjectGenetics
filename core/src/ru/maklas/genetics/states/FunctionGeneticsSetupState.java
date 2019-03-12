@@ -31,6 +31,7 @@ public class FunctionGeneticsSetupState extends State {
                 params.setGenerationMemory(mm.getGenerationMemory());
                 params.setReproductionFunction(new CrossoverReproductionFunction(mm.getCrossingPoints()));
                 params.setMutationFunction(new RandomBitChangeMutation(mm.getBitMutationMin(), mm.getBitMutationMax()));
+                params.setMutationChance(mm.getMutationChance());
                 params.setFitnessFunction(new FunctionMinimalValueFitnessFunction(mm.getQ()));
                 params.setGenerationDistribution(mm.getGenerationDistribution());
                 pushState(new FunctionGeneticsState(params));
@@ -46,6 +47,7 @@ public class FunctionGeneticsSetupState extends State {
         mm.setGenerationMemory(10);
         mm.setMinMax(-150, 150);
         mm.setQ(2);
+        mm.setMutationChance(90);
     }
 
     private boolean validate() {
