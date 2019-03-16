@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.Consumer;
 import com.badlogic.gdx.utils.MapFunction;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
+import ru.maklas.expression.Compiler;
+import ru.maklas.expression.Expression;
+import ru.maklas.expression.ExpressionEvaluationException;
 import ru.maklas.genetics.functions.*;
 import ru.maklas.genetics.utils.persistance.BiConsumer;
 
@@ -78,6 +81,22 @@ public class FunctionSelectionView extends BaseStage {
         functionDefenitions.add(new FunctionDefenition<>("Custom", new CustomFunction())
                 .update());
 
+        FunctionDefenition<CustomExpressionFunction> customExpressionDefenition = new FunctionDefenition<>("CustomExpression", new CustomExpressionFunction("x"));
+        functionDefenitions.add(customExpressionDefenition
+                .addStringParam("Expression", "x", (f, e) -> {
+                    try {
+                        Expression compile = Compiler.compile(e);
+                        f.setExpression(compile);
+                        customExpressionDefenition.paramTable.getField("Expression").getStyle().fontColor = Color.WHITE;
+                    } catch (ExpressionEvaluationException ignore) {
+                        customExpressionDefenition.paramTable.getField("Expression").getStyle().fontColor = Color.RED;
+                    }
+                }, f -> {
+                    Expression exp = f.getExpression();
+                    return exp == null ? "" : exp.toString();
+                })
+                .update());
+
 
         selectBox.setItems(functionDefenitions);
 
@@ -133,6 +152,11 @@ public class FunctionSelectionView extends BaseStage {
             return this;
         }
 
+        public FunctionDefenition<T> addStringParam(String name, String defaultValue, BiConsumer<T, String> writeFunction, MapFunction<T, String> readFunction){
+            paramTable.addStringParam(name, defaultValue, writeFunction, readFunction);
+            return this;
+        }
+
         public FunctionDefenition update(){
             paramTable.update();
             return this;
@@ -149,6 +173,7 @@ public class FunctionSelectionView extends BaseStage {
         private T function;
         private Consumer<T> changeListener;
         private Array<ValueReader> readers = new Array<>();
+        private Array<VisTextField> fields = new Array<>();
 
         public ParamTable(T function) {
             this.function = function;
@@ -159,6 +184,8 @@ public class FunctionSelectionView extends BaseStage {
         public ParamTable<T> addParam(String name, float defaultValue, BiConsumer<T, Double> writeFunction, MapFunction<T, Double> readFunction){
             VisLabel label = new VisLabel(name, Color.BLACK);
             VisTextField field = new VisValidatableTextField(new Validators.FloatValidator());
+            field.setUserObject(name);
+            fields.add(field);
             field.setText(String.valueOf(defaultValue));
             field.addChangeListener(() -> {
                 String text = field.getText();
@@ -168,6 +195,26 @@ public class FunctionSelectionView extends BaseStage {
                 } catch (NumberFormatException e) {}
 
                 writeFunction.consume(function, val);
+                if (changeListener != null){
+                    changeListener.accept(function);
+                }
+            });
+            field.setUserObject(name);
+            readers.add(new ValueReader(field, readFunction));
+            add(label).padRight(10);
+            add(field).width(150);
+            row();
+            return this;
+        }
+
+        public ParamTable<T> addStringParam(String name, String defaultValue, BiConsumer<T, String> writeFunction, MapFunction<T, String> readFunction){
+            VisLabel label = new VisLabel(name, Color.BLACK);
+            VisTextField field = new VisTextField(defaultValue);
+            field.setUserObject(name);
+            fields.add(field);
+            field.addChangeListener(() -> {
+                String text = field.getText();
+                writeFunction.consume(function, text);
                 if (changeListener != null){
                     changeListener.accept(function);
                 }
@@ -187,6 +234,15 @@ public class FunctionSelectionView extends BaseStage {
         ParamTable<T> update(){
             readers.foreach(ValueReader::read);
             return this;
+        }
+
+        public VisTextField getField(String name){
+            for (VisTextField field : fields) {
+                if (name.equals(field.getUserObject())){
+                    return field;
+                }
+            }
+            return null;
         }
 
         public T getFunction() {
