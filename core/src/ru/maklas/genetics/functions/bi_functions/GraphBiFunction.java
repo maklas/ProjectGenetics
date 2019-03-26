@@ -6,6 +6,8 @@ public abstract class GraphBiFunction {
 
     public abstract double f(double x1, double x2);
 
+    public abstract double g(double x1, double x2);
+
     public final double absF(double x1, double x2){
         return Math.abs(f(x1, x2));
     }

@@ -62,8 +62,11 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
 
             for (double x = leftX; x < rightX; x += step * resolutionMultiplier) {
                 for (double y = botY; y < topY; y += step * resolutionMultiplier) {
-                    double val = bfc.fun.f(x, y);
+                    /*double val = bfc.fun.f(x, y);
                     if (val < valMinMax && val > -valMinMax){
+                        ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
+                    }*/
+                    if (bfc.fun.absF(x, y) < (bfc.fun.g(x, y) * valMinMax)){
                         ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
                     }
                 }

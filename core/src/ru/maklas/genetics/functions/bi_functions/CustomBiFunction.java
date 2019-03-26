@@ -12,6 +12,10 @@ public class CustomBiFunction extends GraphBiFunction {
         return lemniscate(x1, x2);
     }
 
+    public double g(double x1, double x2){
+        return 0;
+    }
+
     protected double woah(double x1, double x2) {
         return sin(sin(x1) + cos(x2)) - cos(sin(x1 * x2) + cos(x1));
     }
