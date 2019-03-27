@@ -25,9 +25,9 @@ public class SerovNashBiFunction extends GraphBiFunction {
 
     @Override
     public double g(double x1, double x2) {
-        double xPart = (2 * xA) * (x1 - x);
-        double yPart = (2 * yA) * (x2 - y);
-        return Math.sqrt(xPart * xPart + yPart * yPart);
+        double dx = (2 * xA) * (x1 - x);
+        double dy = (2 * yA) * (x2 - y);
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     @Override

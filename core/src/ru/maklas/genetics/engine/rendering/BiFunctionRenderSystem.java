@@ -62,13 +62,30 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
 
             for (double x = leftX; x < rightX; x += step * resolutionMultiplier) {
                 for (double y = botY; y < topY; y += step * resolutionMultiplier) {
-                    /*double val = bfc.fun.f(x, y);
-                    if (val < valMinMax && val > -valMinMax){
-                        ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
-                    }*/
-                    if (bfc.fun.absF(x, y) < (bfc.fun.g(x, y) * valMinMax)){
+                    double val = bfc.fun.absF(x, y);
+                    double gradient = bfc.fun.g(x, y);
+/*
+
+                    if ((val < valMinMax * 10 && val > valMinMax * 9) || val < valMinMax){
                         ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
                     }
+*/
+                    int gradientLines = 5;
+                    double gradValue = 50;
+                    double gradDelta = 125;
+
+                    boolean hits = val < gradient * valMinMax;
+                    if (!hits){
+                        for (int i = 0; i < gradientLines; i++) {
+                            hits = val - gradValue < (gradient * valMinMax) && val - (gradValue - (valMinMax * gradient)) > gradient * valMinMax;
+                            gradValue += gradDelta;
+                            if (hits) break;
+                        }
+                    }
+                    if (hits){
+                        ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
+                    }
+
                 }
             }
         }

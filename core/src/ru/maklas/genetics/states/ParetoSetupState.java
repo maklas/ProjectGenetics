@@ -28,11 +28,15 @@ public class ParetoSetupState extends State {
                     double aY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
                     double bX = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
                     double bY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
-                    params.setBiFunction1(new SerovNashBiFunction(aX, aY, 0.2, 0.8));
-                    params.setBiFunction2(new SerovNashBiFunction(bX, bY, 0.2, 0.8));
+                    double c1 = Utils.rand.nextDouble();
+                    double d1 = Utils.rand.nextDouble();
+                    double c2 = Utils.rand.nextDouble();
+                    double d2 = Utils.rand.nextDouble();
+                    params.setBiFunction1(new SerovNashBiFunction(aX, aY, c1, d1));
+                    params.setBiFunction2(new SerovNashBiFunction(bX, bY, c2, d2));
                 } else {
                     params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
-                    params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.2, 0.8));
+                    params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.8, 0.2));
                 }
                 params.setFitnessFunction(new ParetoFitnessFunction(view.getQ()));
                 params.setBitsPerGene(view.getBitsPerGene());
