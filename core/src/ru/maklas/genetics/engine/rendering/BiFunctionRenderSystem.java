@@ -40,9 +40,11 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
     }
 
     private void renderWithBatch(){
-        Batch batch = this.batch;
-        TextureRegion img = A.images.pixel;
-        batch.begin();
+        sr.begin(ShapeRenderer.ShapeType.Point);
+
+        //Batch batch = this.batch;
+        //TextureRegion img = A.images.pixel;
+        //batch.begin();
 
         double rightX = Utils.camRightX(cam);
         double leftX = Utils.camLeftX(cam);
@@ -54,7 +56,8 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
 
         for (Entity function : functions) {
             BiFunctionComponent bfc = function.get(M.biFun);
-            batch.setColor(bfc.color);
+            //batch.setColor(bfc.color);
+            sr.setColor(bfc.color);
             double resolutionMultiplier = bfc.resolutionMultiplier;
             double thickness = bfc.thickness;
             float imageScale = (float) (scale * thickness);
@@ -64,12 +67,7 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
                 for (double y = botY; y < topY; y += step * resolutionMultiplier) {
                     double val = bfc.fun.absF(x, y);
                     double gradient = bfc.fun.g(x, y);
-/*
 
-                    if ((val < valMinMax * 10 && val > valMinMax * 9) || val < valMinMax){
-                        ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
-                    }
-*/
                     int gradientLines = 5;
                     double gradValue = 50;
                     double gradDelta = 125;
@@ -83,14 +81,23 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
                         }
                     }
                     if (hits){
-                        ImageAssets.draw(batch, img, (float) x, (float) y, 0.5f, 0.5f, imageScale, imageScale, 0);
+                        //drawBatch(batch, x, y, imageScale);
+                        drawSr(sr, x, y, 1);
                     }
 
                 }
             }
         }
 
-        batch.end();
+        sr.end();
+        //batch.end();
+    }
+    private static void drawBatch(Batch batch, double x, double y, float scale){
+        ImageAssets.draw(batch, A.images.pixel, (float) x, (float) y, 0.5f, 0.5f, scale, scale, 0);
+    }
+
+    private static void drawSr(ShapeRenderer renderer, double x, double y, float scale){
+        renderer.point(((float) x), (float) y, 0);
     }
 
     private void renderWithSr(){
