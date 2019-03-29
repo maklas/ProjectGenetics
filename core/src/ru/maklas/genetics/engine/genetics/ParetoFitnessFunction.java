@@ -32,7 +32,9 @@ public class ParetoFitnessFunction implements FitnessFunction {
         for (Entity entity : generation) {
             if (entity == chromosome) continue;
             Chromosome ec = entity.get(M.chromosome).chromosome;
-            if (f1.f(ec.get(GeneNames.X).decodeAsDouble(), y) < val_1 && f2.f(x, ec.get(GeneNames.Y).decodeAsDouble()) < val_2){
+            double eX = ec.get(GeneNames.X).decodeAsDouble();
+            double eY = ec.get(GeneNames.Y).decodeAsDouble();
+            if (val_1 > f1.f(eX, y) && val_2 > f2.f(x, eY)){ //Если оба параметра нашей хромосомы лучше соседа
                 better++;
             }
         }

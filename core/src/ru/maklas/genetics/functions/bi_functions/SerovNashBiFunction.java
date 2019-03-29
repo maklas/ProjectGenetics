@@ -1,5 +1,7 @@
 package ru.maklas.genetics.functions.bi_functions;
 
+import ru.maklas.genetics.utils.Utils;
+
 import static ru.maklas.genetics.utils.StringUtils.df;
 
 public class SerovNashBiFunction extends GraphBiFunction {
@@ -14,6 +16,14 @@ public class SerovNashBiFunction extends GraphBiFunction {
         this.y = y;
         this.xA = xA;
         this.yA = yA;
+    }
+
+    public static SerovNashBiFunction rand(double minValue, double maxValue) {
+        double x = Utils.rand.nextDouble() * (maxValue - minValue) + minValue;
+        double y = Utils.rand.nextDouble() * (maxValue - minValue) + minValue;
+        double c = Utils.rand.nextDouble();
+        double d = Utils.rand.nextDouble();
+        return new SerovNashBiFunction(x, y, c, d);
     }
 
     @Override

@@ -24,19 +24,17 @@ public class ParetoSetupState extends State {
                 Params params = new Params();
 
                 if (view.getRandomizeFunctions()){
-                    double aX = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
-                    double aY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
-                    double bX = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
-                    double bY = Utils.rand.nextDouble() * (view.getMax() - view.getMin()) + view.getMin();
-                    double c1 = Utils.rand.nextDouble();
-                    double d1 = Utils.rand.nextDouble();
-                    double c2 = Utils.rand.nextDouble();
-                    double d2 = Utils.rand.nextDouble();
-                    params.setBiFunction1(new SerovNashBiFunction(aX, aY, c1, d1));
-                    params.setBiFunction2(new SerovNashBiFunction(bX, bY, c2, d2));
+                    params.setBiFunction1(SerovNashBiFunction.rand(view.getMin(), view.getMax()));
+                    params.setBiFunction2(SerovNashBiFunction.rand(view.getMin(), view.getMax()));
                 } else {
                     params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
                     params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.8, 0.2));
+
+                    Chromosome c1 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 10, 10);
+                    Chromosome c2 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 40, 30);
+                    Chromosome c3 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 30, 60);
+                    Chromosome c4 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 60, 65);
+                    params.getInitialPopulation().addAll(c1, c2, c3, c4);
                 }
                 params.setFitnessFunction(new ParetoFitnessFunction(view.getQ()));
                 params.setBitsPerGene(view.getBitsPerGene());
@@ -46,14 +44,7 @@ public class ParetoSetupState extends State {
                 params.setReproductionFunction(new CrossoverReproductionFunction(view.getCrossingPoints()));
                 params.setMutationFunction(new RandomBitChangeMutation(view.getBitMutationMin(), view.getBitMutationMax()));
                 params.setMutationChance(view.getMutationChance());
-
-
-
-                Chromosome c1 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 10, 10);
-                Chromosome c2 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 40, 30);
-                Chromosome c3 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 30, 60);
-                Chromosome c4 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 60, 65);
-                params.getInitialPopulation().addAll(c1, c2, c3, c4);
+                params.setGenerationDistribution(GenerationDistribution.RANDOM);
 
                 pushState(new ParetoGeneticsState(params));
             }
@@ -67,6 +58,7 @@ public class ParetoSetupState extends State {
         view.setMinMax(0, 80);
         view.setQ(2);
         view.setMutationChance(90);
+        view.setRandomizeFunctions(true);
 
     }
 

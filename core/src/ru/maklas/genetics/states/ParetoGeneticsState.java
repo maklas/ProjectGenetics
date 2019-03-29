@@ -146,6 +146,13 @@ public class ParetoGeneticsState extends AbstractEngineState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) popState();
         if (Gdx.input.isKeyJustPressed(Input.Keys.END) && engine instanceof TestEngine) System.out.println(((TestEngine) engine).captureResults());
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
+            if (params.getInitialPopulation().size == 0) {
+                engine.removeAll(M.biFun);
+                params.setBiFunction1(SerovNashBiFunction.rand(params.getMinValue(), params.getMaxValue()));
+                params.setBiFunction2(SerovNashBiFunction.rand(params.getMinValue(), params.getMaxValue()));
+                engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction1()).setColor(new Color(0.75f, 0.23f, 0.23f, 1)).setParams(1, 1).setName("f(x)1")));
+                engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction2()).setColor(new Color(0.23f, 0.23f, 0.75f, 1)).setParams(1, 1).setName("f(x)2")));
+            }
             engine.dispatch(new ResetEvolutionRequest());
         } else
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)){
