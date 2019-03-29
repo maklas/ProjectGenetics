@@ -2,7 +2,6 @@ package ru.maklas.genetics.engine.rendering;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.assets.A;
@@ -10,7 +9,9 @@ import ru.maklas.genetics.assets.ImageAssets;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.BiFunctionComponent;
+import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.utils.Utils;
+import ru.maklas.libs.Timer;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.RenderEntitySystem;
@@ -19,10 +20,13 @@ import static java.lang.Math.*;
 
 public class BiFunctionRenderSystem extends RenderEntitySystem {
 
+    private static final double MAX_DRAWING_LOOSENESS = 4;
     private OrthographicCamera cam;
     private ShapeRenderer sr;
     private Batch batch;
     private ImmutableArray<Entity> functions;
+    private double drawingLooseness = 1;
+    private Timer drawingPrecisionStabilizationTimer;
 
     @Override
     public void onAddedToEngine(Engine engine) {
@@ -31,12 +35,33 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
         sr = engine.getBundler().get(B.sr);
         batch = engine.getBundler().get(B.batch);
         functions = entitiesFor(BiFunctionComponent.class);
+        drawingPrecisionStabilizationTimer = new Timer(0.3f, false, () -> drawingLooseness = 1);
+        drawingPrecisionStabilizationTimer.setEnabled(false);
+        engine.subscribe(EvolveRequest.class, e -> {
+            drawingLooseness = MAX_DRAWING_LOOSENESS;
+            drawingPrecisionStabilizationTimer.reset();
+        });
     }
 
     @Override
     public void render() {
+        updatePrecision();
         renderWithBatch();
         //renderWithSr();
+    }
+
+    private void updatePrecision() {
+        drawingPrecisionStabilizationTimer.update(engine.getLastDt());
+        ImmutableArray<Entity> cameras = engine.entitiesFor(CameraComponent.class);
+        if (cameras.size() == 0) {
+            drawingLooseness = 1;
+        } else {
+            CameraComponent cc = cameras.get(0).get(M.camera);
+            if (cc.vX != 0 || cc.vY != 0){
+                drawingLooseness = MAX_DRAWING_LOOSENESS;
+                drawingPrecisionStabilizationTimer.reset();
+            }
+        }
     }
 
     private void renderWithBatch(){
@@ -58,7 +83,7 @@ public class BiFunctionRenderSystem extends RenderEntitySystem {
             BiFunctionComponent bfc = function.get(M.biFun);
             //batch.setColor(bfc.color);
             sr.setColor(bfc.color);
-            double resolutionMultiplier = bfc.resolutionMultiplier;
+            double resolutionMultiplier = bfc.resolutionMultiplier * drawingLooseness;
             double thickness = bfc.thickness;
             float imageScale = (float) (scale * thickness);
             double valMinMax = step * resolutionMultiplier * thickness;

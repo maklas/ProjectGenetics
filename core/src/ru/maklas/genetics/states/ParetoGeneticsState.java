@@ -98,10 +98,10 @@ public class ParetoGeneticsState extends AbstractEngineState {
     protected void addDefaultEntities(Engine engine) {
         engine.add(new Entity(ID.camera, EntityType.BACKGROUND, 0, 0, 0).add(new CameraComponent(cam).setControllable()));
         if (params.getBiFunction1() != null){
-            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction1()).setColor(new Color(0.75f, 0.23f, 0.23f, 1)).setParams(2, 1).setName("f(x)1")));
+            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction1()).setColor(new Color(0.75f, 0.23f, 0.23f, 1)).setParams(1, 1).setName("f(x)1")));
         }
         if (params.getBiFunction2() != null){
-            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction2()).setColor(new Color(0.23f, 0.23f, 0.75f, 1)).setParams(2, 1).setName("f(x)2")));
+            engine.add(new Entity().add(new BiFunctionComponent(params.getBiFunction2()).setColor(new Color(0.23f, 0.23f, 0.75f, 1)).setParams(1, 1).setName("f(x)2")));
         }
     }
 
