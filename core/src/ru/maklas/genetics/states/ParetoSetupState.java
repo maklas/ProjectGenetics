@@ -8,7 +8,6 @@ import ru.maklas.genetics.engine.genetics.*;
 import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.user_interface.ParetoView;
 import ru.maklas.genetics.utils.StringUtils;
-import ru.maklas.genetics.utils.Utils;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
 public class ParetoSetupState extends State {
@@ -30,10 +29,10 @@ public class ParetoSetupState extends State {
                     params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
                     params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.8, 0.2));
 
-                    Chromosome c1 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 10, 10);
-                    Chromosome c2 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 40, 30);
-                    Chromosome c3 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 30, 60);
-                    Chromosome c4 = EntityUtils.chromosome(params.getBitsPerGene(), params.getMinValue(), params.getMaxValue(), 60, 65);
+                    Chromosome c1 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 10, 10);
+                    Chromosome c2 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 40, 30);
+                    Chromosome c3 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 30, 60);
+                    Chromosome c4 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 60, 65);
                     params.getInitialPopulation().addAll(c1, c2, c3, c4);
                 }
                 params.setFitnessFunction(new ParetoFitnessFunction(view.getQ()));

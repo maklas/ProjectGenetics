@@ -80,7 +80,8 @@ public class Chromosome {
     }
 
     public boolean getBit(int pos) {
-        for (Gene gene : genes) {
+        for (int i = genes.size - 1; i >= 0; i--) {
+            Gene gene = genes.get(i);
             if (gene.length() <= pos){
                 pos-= gene.length();
             } else {
@@ -91,7 +92,8 @@ public class Chromosome {
     }
 
     public void set(int pos, boolean set) {
-        for (Gene gene : genes) {
+        for (int i = genes.size - 1; i >= 0; i--) {
+            Gene gene = genes.get(i);
             if (pos >= gene.length()){
                 pos -= gene.length();
             } else {

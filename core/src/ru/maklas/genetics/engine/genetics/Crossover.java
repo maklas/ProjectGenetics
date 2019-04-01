@@ -38,13 +38,9 @@ public class Crossover {
 
 
     public Children cross(Chromosome a, Chromosome b, int[] crossingPoints){
-        //5
-        //0, 3, 5, 10
-        //0, 3, 5, 10, 16
 
         Chromosome childA = a.cpy();
         Chromosome childB = b.cpy();
-
 
         int currentPosition = 0;
         boolean switching = false;
