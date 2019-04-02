@@ -67,8 +67,8 @@ public class Crossover {
     }
 
     public static class Children {
-        public Chromosome childA;   //a + b
-        public Chromosome childB;   //b + a
+        public Chromosome childA;
+        public Chromosome childB;
 
         public Children(Chromosome childA, Chromosome childB) {
             this.childA = childA;

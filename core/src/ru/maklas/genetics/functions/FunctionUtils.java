@@ -1,5 +1,8 @@
 package ru.maklas.genetics.functions;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
+
 public class FunctionUtils {
 
     /**
@@ -31,6 +34,13 @@ public class FunctionUtils {
         return _findMinimalPoint(fun, Math.max(minX, lowestX - step), Math.min(maxX, lowestX + step), step / (maxX - minX), iterations - 1);
     }
 
+
+    private static final Array<Color> goodColors = Array.with(Color.BLUE, Color.RED, Color.FOREST, Color.GOLD);
+    public static Color goodFunctionColor(int id){
+        id = id >= 0 ? id : -id;
+        id = id % goodColors.size;
+        return goodColors.get(id);
+    }
 
 
 

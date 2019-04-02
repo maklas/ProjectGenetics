@@ -12,7 +12,6 @@ import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.assets.Asset;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.mnw.*;
-import ru.maklas.genetics.states.FunctionGeneticsSetupState;
 import ru.maklas.genetics.statics.Game;
 import ru.maklas.genetics.utils.Log;
 import ru.maklas.genetics.utils.gsm_lib.EmptyStateManager;
@@ -108,7 +107,7 @@ public class ProjectGenetics extends ApplicationAdapter {
 
             MNW.gsm.dispose();
             batch.dispose();
-            A.getAllAssets().foreach(Asset::dispose);
+            A.all().foreach(Asset::dispose);
             Log.logger.dispose();
             Utils.executor.shutdown();
         } catch (Exception e) {

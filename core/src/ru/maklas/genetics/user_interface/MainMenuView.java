@@ -7,10 +7,12 @@ public class MainMenuView extends BaseStage {
 
     private VisTextButton functionBtn;
     private VisTextButton paretoBtn;
+    private VisTextButton graphBtn;
 
     public MainMenuView() {
         functionBtn = new VisTextButton("Минимум функции");
         paretoBtn = new VisTextButton("Парето");
+        graphBtn = new VisTextButton("Графики");
 
         VisTable table = new VisTable();
         table.setFillParent(true);
@@ -18,7 +20,9 @@ public class MainMenuView extends BaseStage {
 
         table.add(functionBtn).padBottom(20);
         table.row();
-        table.add(paretoBtn);
+        table.add(paretoBtn).padBottom(20);
+        table.row();
+        table.add(graphBtn);
     }
 
 
@@ -28,5 +32,9 @@ public class MainMenuView extends BaseStage {
 
     public void onPareto(Runnable r){
         paretoBtn.addChangeListener(r);
+    }
+
+    public void onGraph(Runnable r){
+        graphBtn.addChangeListener(r);
     }
 }

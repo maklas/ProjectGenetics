@@ -2,6 +2,8 @@ package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Array;
+import ru.maklas.genetics.functions.CustomExpressionFunction;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.user_interface.MainMenuView;
 import ru.maklas.genetics.utils.gsm_lib.State;
@@ -15,6 +17,7 @@ public class MainMenuState extends State {
         view = new MainMenuView();
         view.onFunction(() -> pushState(new FunctionGeneticsSetupState()));
         view.onPareto(() -> pushState(new ParetoSetupState()));
+        view.onGraph(() -> pushState(new FunctionGraphState(Array.with(new CustomExpressionFunction("x^2"), new CustomExpressionFunction("x * log(x, 2)")))));
         MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);
     }
 
