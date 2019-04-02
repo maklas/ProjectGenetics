@@ -1,6 +1,7 @@
 package ru.maklas.genetics.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -80,6 +81,9 @@ public class FunctionGraphState extends AbstractEngineState {
     @Override
     protected void update(float dt) {
         engine.update(dt);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            popState();
+        }
     }
 
     @Override

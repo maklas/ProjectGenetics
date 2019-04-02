@@ -151,6 +151,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         }
         if (existingTracks != null && existingTracks.size > 0){
             int moveDirection = tr.textPos.y < cam.position.y ? 1 : -1;
+            int maxRepetitions = 200;
             boolean collision;
             do {
                 collision = false;
@@ -161,9 +162,10 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
                         break;
                     }
                 }
+                if (maxRepetitions-- < 0){
+                    break;
+                }
             } while (collision);
-
-
         }
         if (clampY == y){
             tr.drawPoint = true;
