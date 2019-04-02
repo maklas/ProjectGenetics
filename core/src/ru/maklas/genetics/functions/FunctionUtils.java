@@ -35,7 +35,7 @@ public class FunctionUtils {
     }
 
 
-    private static final Array<Color> goodColors = Array.with(Color.BLUE, Color.RED, Color.FOREST, Color.GOLD);
+    private static final Array<Color> goodColors = Array.with(Color.BLUE, Color.RED, Color.FOREST, Color.BROWN, Color.VIOLET, Color.ORANGE);
     public static Color goodFunctionColor(int id){
         id = id >= 0 ? id : -id;
         id = id % goodColors.size;

@@ -72,7 +72,8 @@ public class EntityDebugSystem extends RenderEntitySystem {
             new String[]{"L", "Enable/Disable physics debug"},
             new String[]{"Z", "Zoom in"},
             new String[]{"X", "Zoom out"},
-            new String[]{"C", "Revert zoom"}
+            new String[]{"C", "Revert zoom"},
+            new String[]{"Y", "Print Engine debug"}
     );
 
     @Override
@@ -118,6 +119,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
 
         updateCamera();
         updateTimeline();
+        updateEntityDebug();
         updateHelp();
         updateRuler();
         updateZoom();
@@ -149,6 +151,12 @@ public class EntityDebugSystem extends RenderEntitySystem {
         if (isUsingRuler) drawRuler();
         if (drawFramePercent) drawFramePercent();
         batch.end();
+    }
+
+    private void updateEntityDebug() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Y) && engine instanceof TestEngine){
+            System.out.println(((TestEngine) engine).captureResults());
+        }
     }
 
     private void updateFramePercent() {

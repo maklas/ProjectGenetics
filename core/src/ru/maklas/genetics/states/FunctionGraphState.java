@@ -57,7 +57,7 @@ public class FunctionGraphState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new FunctionTrackingRenderSystem().setEnableTracking(true).setPrintXY(true));
         engine.add(new EntityDebugSystem().setTextInfoEnabled(false).setZoomAtMouse(true));
-        engine.add(new FunctionRenderSystem().setDrawFunctions(true).setDrawNet(true).setFillNet(true).setNetColor(Color.BLACK).setNumberColor(Color.BLACK));
+        engine.add(new FunctionRenderSystem().setDrawFunctions(true).setDrawNet(true).setDrawPortions(true).setFillNet(false).setNetColor(Color.BLACK).setNumberColor(Color.BLACK));
         engine.add(new UpdatableEntitySystem());
         engine.add(new TTLSystem());
     }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import com.badlogic.gdx.utils.Pool;
+import org.jetbrains.annotations.Nullable;
 import ru.maklas.genetics.assets.A;
 import ru.maklas.genetics.engine.B;
 import ru.maklas.genetics.engine.M;
@@ -62,7 +63,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         for (Entity function : functions) {
             FunctionComponent fc = function.get(M.fun);
             if (fc.trackMouse && xWithinCam(mouse.x)){
-                trackResults.add(createTrack(fc, mouse));
+                trackResults.add(createTrack(fc, mouse, trackResults));
             }
         }
 
@@ -80,6 +81,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
                     sr.set(ShapeRenderer.ShapeType.Filled);
                     sr.setColor(Color.PINK);
                     sr.circle(tr.point.x, tr.point.y, 3 * cam.zoom, 8);
+                    sr.set(ShapeRenderer.ShapeType.Line);
                 }
             }
 
@@ -87,7 +89,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
             Gdx.gl.glDisable(GL20.GL_BLEND);
 
 
-            if (printXY) {
+            if (printXY && trackResults.size > 0) {
                 batch.begin();
                 BitmapFont font = A.images.font;
 
@@ -134,7 +136,7 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         return this;
     }
 
-    private TrackResult createTrack(FunctionComponent fc, Vector2 mouse) {
+    private TrackResult createTrack(FunctionComponent fc, Vector2 mouse, @Nullable Array<TrackResult> existingTracks) {
         TrackResult tr = trackResultPool.obtain();
         tr.lineFrom.set(mouse);
         double y = fc.graphFunction.f(mouse.x);
@@ -146,6 +148,22 @@ public class FunctionTrackingRenderSystem extends RenderEntitySystem {
         tr.textPos.set(mouse.x, ((float) clampY));
         if (clampY < Utils.camBotY(cam) + (15 * cam.zoom)){
             tr.textPos.y += 15 * cam.zoom;
+        }
+        if (existingTracks != null && existingTracks.size > 0){
+            int moveDirection = tr.textPos.y < cam.position.y ? 1 : -1;
+            boolean collision;
+            do {
+                collision = false;
+                for (TrackResult existingTrack : existingTracks) {
+                    if (tr.textPos.y >= existingTrack.textPos.y - (15d * cam.zoom) && tr.textPos.y <= existingTrack.textPos.y + (15d * cam.zoom)){
+                        collision = true;
+                        tr.textPos.y = (float) (existingTrack.textPos.y + (moveDirection * 16d * cam.zoom));
+                        break;
+                    }
+                }
+            } while (collision);
+
+
         }
         if (clampY == y){
             tr.drawPoint = true;
