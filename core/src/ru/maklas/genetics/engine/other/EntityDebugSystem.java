@@ -73,7 +73,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
             new String[]{"Z", "Zoom in"},
             new String[]{"X", "Zoom out"},
             new String[]{"C", "Revert zoom"},
-            new String[]{"Y", "Print Engine debug"}
+            new String[]{"J", "Print Engine debug"}
     );
 
     @Override
@@ -154,7 +154,7 @@ public class EntityDebugSystem extends RenderEntitySystem {
     }
 
     private void updateEntityDebug() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Y) && engine instanceof TestEngine){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J) && engine instanceof TestEngine){
             System.out.println(((TestEngine) engine).captureResults());
         }
     }
