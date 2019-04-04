@@ -7,6 +7,7 @@ import ru.maklas.mengine.Engine;
 
 public class RandomBitChangeMutation implements MutationFunction {
 
+    float mutationChance;
     int bitsToMutateMin = 1;
     int bitsToMutateMax = 1;
     IntArray memory = new IntArray();
@@ -15,17 +16,19 @@ public class RandomBitChangeMutation implements MutationFunction {
 
     }
 
-    public RandomBitChangeMutation(int bitsToMutateMin, int bitsToMutateMax) {
+    public RandomBitChangeMutation(int bitsToMutateMin, int bitsToMutateMax, float mutationChance) {
         this.bitsToMutateMin = bitsToMutateMin;
         this.bitsToMutateMax = bitsToMutateMax;
+        this.mutationChance = MathUtils.clamp(mutationChance, 0, 1);
     }
 
-    public RandomBitChangeMutation(int bitsToMutate) {
-        this(bitsToMutate, bitsToMutate);
+    public RandomBitChangeMutation(int bitsToMutate, float mutationChance) {
+        this(bitsToMutate, bitsToMutate, mutationChance);
     }
 
     @Override
     public void mutate(Engine engine, Chromosome child, Chromosome parentA, Chromosome parentB) {
+        if (MathUtils.random() > mutationChance) return;
         memory.clear();
         int bitsToMutate = MathUtils.random(bitsToMutateMin, bitsToMutateMax);
 

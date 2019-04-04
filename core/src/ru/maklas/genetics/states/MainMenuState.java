@@ -16,6 +16,7 @@ public class MainMenuState extends State {
     protected void onCreate() {
         view = new MainMenuView();
         view.onFunction(() -> pushState(new FunctionGeneticsSetupState()));
+        view.onNash(() -> pushState(new NashSetupState()));
         view.onPareto(() -> pushState(new ParetoSetupState()));
         view.onGraph(() -> pushState(new FunctionGraphState(Array.with(new CustomExpressionFunction("x^2"), new CustomExpressionFunction("x * log(x, 2)"), new CustomExpressionFunction("log(x, 2)"), new CustomExpressionFunction("x"), new CustomExpressionFunction("2^x")))));
         MNW.backgroundColor.set(0.95f, 0.95f, 0.95f, 1);

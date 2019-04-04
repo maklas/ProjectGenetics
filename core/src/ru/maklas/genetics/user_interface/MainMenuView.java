@@ -7,18 +7,22 @@ public class MainMenuView extends BaseStage {
 
     private VisTextButton functionBtn;
     private VisTextButton paretoBtn;
+    private VisTextButton nashBtn;
     private VisTextButton graphBtn;
 
     public MainMenuView() {
         functionBtn = new VisTextButton("Минимум функции");
-        paretoBtn = new VisTextButton("Парето");
+        paretoBtn = new VisTextButton("Оптимальность по Парето");
         graphBtn = new VisTextButton("Графики");
+        nashBtn = new VisTextButton("Равновесие Нэша");
 
         VisTable table = new VisTable();
         table.setFillParent(true);
         addActor(table);
 
         table.add(functionBtn).padBottom(20);
+        table.row();
+        table.add(nashBtn).padBottom(20);
         table.row();
         table.add(paretoBtn).padBottom(20);
         table.row();
@@ -28,6 +32,10 @@ public class MainMenuView extends BaseStage {
 
     public void onFunction(Runnable r){
         functionBtn.addChangeListener(r);
+    }
+
+    public void onNash(Runnable r){
+        nashBtn.addChangeListener(r);
     }
 
     public void onPareto(Runnable r){

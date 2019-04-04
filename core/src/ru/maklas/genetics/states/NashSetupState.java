@@ -10,7 +10,7 @@ import ru.maklas.genetics.user_interface.XYSettingsView;
 import ru.maklas.genetics.utils.StringUtils;
 import ru.maklas.genetics.utils.gsm_lib.State;
 
-public class ParetoSetupState extends State {
+public class NashSetupState extends State {
 
     XYSettingsView view;
 
@@ -26,10 +26,16 @@ public class ParetoSetupState extends State {
                     params.setBiFunction1(SerovNashBiFunction.rand(view.getMin(), view.getMax()));
                     params.setBiFunction2(SerovNashBiFunction.rand(view.getMin(), view.getMax()));
                 } else {
-                    params.setBiFunction1(new SerovNashBiFunction(100, 250, 0.2, 0.8));
-                    params.setBiFunction2(new SerovNashBiFunction(250, 100, 0.8, 0.2));
+                    params.setBiFunction1(new SerovNashBiFunction(70, 20, 0.2, 0.8));
+                    params.setBiFunction2(new SerovNashBiFunction(10, 70, 0.8, 0.2));
+
+                    Chromosome c1 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 10, 10);
+                    Chromosome c2 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 40, 30);
+                    Chromosome c3 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 30, 60);
+                    Chromosome c4 = EntityUtils.chromosome(view.getBitsPerGene(), view.getMin(), view.getMax(), 60, 65);
+                    params.getInitialPopulation().addAll(c1, c2, c3, c4);
                 }
-                params.setFitnessFunction(new ParetoFitnessFunction(view.getQ()));
+                params.setFitnessFunction(new NashFitnessFunction(view.getQ()));
                 params.setBitsPerGene(view.getBitsPerGene());
                 params.setPopulationSize(view.getPopulationSize());
                 params.setMinMax(view.getMin(), view.getMax());
@@ -43,14 +49,14 @@ public class ParetoSetupState extends State {
             }
         });
         
-        view.setPopulationSize(200);
-        view.setBitsPerGeneLen(24);
+        view.setPopulationSize(25);
+        view.setBitsPerGeneLen(32);
         view.setBitMutationMinMax(1, 1);
         view.setCrossingPoints(1);
-        view.setGenerationMemory(1);
-        view.setMinMax(0, 300);
-        view.setQ(6);
-        view.setMutationChance(9);
+        view.setGenerationMemory(10);
+        view.setMinMax(0, 80);
+        view.setQ(2);
+        view.setMutationChance(90);
         view.setRandomizeFunctions(true);
 
     }

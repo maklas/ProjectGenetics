@@ -56,6 +56,7 @@ public class M {
         map.put(CameraSystem.class, i++);
         map.put(RenderingSystem.class, i++);
         map.put(FunctionRenderSystem.class, i++);
+        map.put(GradientRenderSystem.class, i++);
         map.put(BiFunctionRenderSystem.class, i++);
         map.put(HistoryRenderSystem.class, i++);
         map.put(ChromosomeTrackingRenderSystem.class, i++);

@@ -22,7 +22,6 @@ import ru.maklas.genetics.engine.input.EngineInputAdapter;
 import ru.maklas.genetics.engine.other.EntityDebugSystem;
 import ru.maklas.genetics.engine.other.TTLSystem;
 import ru.maklas.genetics.engine.rendering.*;
-import ru.maklas.genetics.functions.bi_functions.CustomBiFunction;
 import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.statics.EntityType;
 import ru.maklas.genetics.statics.ID;
@@ -35,7 +34,7 @@ import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
 import ru.maklas.mengine.TestEngine;
 
-public class ParetoGeneticsState extends AbstractEngineState {
+public class BiFunGeneticsState extends AbstractEngineState {
 
 
     private ShapeRenderer sr;
@@ -44,9 +43,10 @@ public class ParetoGeneticsState extends AbstractEngineState {
     private ControlTable controlTable;
     private ChromosomeInfoTable chromosomeInfo;
     private Params params;
+    private boolean keepEvolvingUI = false;
 
 
-    public ParetoGeneticsState(Params params) {
+    public BiFunGeneticsState(Params params) {
         this.params = params;
     }
 
@@ -92,6 +92,7 @@ public class ParetoGeneticsState extends AbstractEngineState {
                 .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
         engine.add(new BiFunctionRenderSystem());
+        engine.add(new GradientRenderSystem());
     }
 
     @Override
@@ -125,6 +126,7 @@ public class ParetoGeneticsState extends AbstractEngineState {
                 cc.setControllable();
             }
         });
+        controlTable.addCheckBox("Keep evolving", false, e -> keepEvolvingUI = e);
         controlTable.addButton("Next Generation", () -> engine.dispatch(new EvolveRequest()));
         controlTable.addButton("Reset population", () -> engine.dispatch(new ResetEvolutionRequest()));
         controlTable.addButton("Reset cam", () -> {
@@ -161,9 +163,9 @@ public class ParetoGeneticsState extends AbstractEngineState {
         if (Gdx.input.isKeyPressed(Input.Keys.U)){
             engine.dispatch(new EvolveRequest());
         } else
-        if (Gdx.input.isKeyPressed(Input.Keys.Y)){
+        if (Gdx.input.isKeyPressed(Input.Keys.Y) || keepEvolvingUI){
             long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() - start < 16.666f) {
+            while (System.currentTimeMillis() - start < 33.332f) {
                 engine.dispatch(new EvolveRequest());
             }
         }

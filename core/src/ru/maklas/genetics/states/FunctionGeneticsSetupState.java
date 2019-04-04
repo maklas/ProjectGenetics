@@ -30,7 +30,7 @@ public class FunctionGeneticsSetupState extends State {
                 params.setMinMax(mm.getMin(), mm.getMax());
                 params.setGenerationMemory(mm.getGenerationMemory());
                 params.setReproductionFunction(new CrossoverReproductionFunction(mm.getCrossingPoints()));
-                params.setMutationFunction(new RandomBitChangeMutation(mm.getBitMutationMin(), mm.getBitMutationMax()));
+                params.setMutationFunction(new RandomBitChangeMutation(mm.getBitMutationMin(), mm.getBitMutationMax(), mm.getMutationChance()));
                 params.setMutationChance(mm.getMutationChance());
                 params.setFitnessFunction(new FunctionMinimalValueFitnessFunction(mm.getQ()));
                 params.setGenerationDistribution(mm.getGenerationDistribution());
@@ -67,8 +67,8 @@ public class FunctionGeneticsSetupState extends State {
             gsm.print("Generation memory >= 1");
             return false;
         }
-        if (mm.getCrossingPoints() < 1){
-            gsm.print("Crossing points >= 1");
+        if (mm.getCrossingPoints() < 0){
+            gsm.print("Crossing points >= 0");
             return false;
         }
         if (mm.getCrossingPoints() >= mm.getBitsPerGene()){

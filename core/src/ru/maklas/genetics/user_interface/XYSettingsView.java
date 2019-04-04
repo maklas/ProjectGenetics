@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Consumer;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 
-public class ParetoView extends BaseStage {
+public class XYSettingsView extends BaseStage {
 
     private final VisTextButton start;
     private final VisLabel functionDescription;
@@ -24,7 +24,7 @@ public class ParetoView extends BaseStage {
     private final VisLabel precisionLabel;
     private final VisCheckBox randomFunctionCheckBox;
 
-    public ParetoView() {
+    public XYSettingsView() {
         VisTable table = new VisTable();
         table.setFillParent(true);
         table.align(Align.topLeft);

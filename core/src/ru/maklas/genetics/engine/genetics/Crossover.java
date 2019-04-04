@@ -41,6 +41,9 @@ public class Crossover {
 
         Chromosome childA = a.cpy();
         Chromosome childB = b.cpy();
+        if (crossingPoints.length == 0){
+            return new Children(childA, childB);
+        }
 
         int currentPosition = 0;
         boolean switching = false;
@@ -55,12 +58,12 @@ public class Crossover {
             }
             switching = !switching;
         }
-        while (currentPosition < a.length()){
-            if (switching){
-                childA.set(currentPosition, b.getBit(currentPosition));
-                childB.set(currentPosition, a.getBit(currentPosition));
+        if (switching){
+            while (currentPosition < a.length()){
+                    childA.set(currentPosition, b.getBit(currentPosition));
+                    childB.set(currentPosition, a.getBit(currentPosition));
+                currentPosition++;
             }
-            currentPosition++;
         }
 
         return new Children(childA, childB);

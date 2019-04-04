@@ -16,9 +16,11 @@ import ru.maklas.genetics.utils.ClassUtils;
 public class Test {
 
     public static void main(String[] args){
-        Chromosome a = new Chromosome().add(new Gene(BitArray.fromString("1110101")));
-        Chromosome b = new Chromosome().add(new Gene(BitArray.fromString("0101100")));
-        Crossover.Children children = new Crossover().cross(a, b, new int[]{1, 8});
+        //Chromosome a = new Chromosome().add(new Gene(BitArray.fromString("101101001101110011110000"))).add(new Gene(BitArray.fromString("010000111110010110101110")));
+        //Chromosome b = new Chromosome().add(new Gene(BitArray.fromString("110110100101111000100010"))).add(new Gene(BitArray.fromString("101000110111000111000001")));
+        Chromosome a = new Chromosome().add(new Gene(BitArray.fromString("101010101010101010101010"))).add(new Gene(BitArray.fromString("101010101010101010101010")));
+        Chromosome b = new Chromosome().add(new Gene(BitArray.fromString("010101010101010101010101"))).add(new Gene(BitArray.fromString("010101010101010101010101")));
+        Crossover.Children children = new Crossover().cross(a, b, new int[]{6, 38});
         System.out.println(a.byteCode());
         System.out.println(b.byteCode());
         System.out.println("   V");

@@ -98,6 +98,7 @@ public class Chromosome {
                 pos -= gene.length();
             } else {
                 gene.setBit(pos, set);
+                return;
             }
         }
     }
