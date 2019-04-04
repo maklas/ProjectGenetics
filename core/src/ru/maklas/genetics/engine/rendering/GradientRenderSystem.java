@@ -40,7 +40,7 @@ public class GradientRenderSystem extends RenderEntitySystem {
         ShapeRenderer sr = this.sr;
         double min = this.min;
         double max = this.max;
-        double newMin = Double.MAX_VALUE;
+        double newMin =  0x1.fffffffffffffP+1000;
         double newMax = 0;
 
         GraphBiFunction f1 = params.getBiFunction1();
@@ -54,19 +54,25 @@ public class GradientRenderSystem extends RenderEntitySystem {
                 while (y < topY) {
                     double v1 = f1.f(x, y);
                     double v2 = f2.f(x, y);
-
-                    double val = Math.min(v1, v2);
+                    if (v1 == 0 || v2 == 0){
+                        y += step;
+                        continue;
+                    }
+                    //double val = v1 + v2; double power = 0.1; //Показывает точку черещ которую пройдут хромосомы
+                    double val = Math.max(v1, v2); double power = 0.1; //Показывает кривую которую пересекут хромосомы
+                    //double val = (v1 * v2); double power = 0.1;
                     if (val > newMax){
                         newMax = val;
                     }
                     if (val < newMin){
                         newMin = val;
                     }
-                    float intensity = (float) Math.pow(((val - min) / (max - min)), 0.2);
-                    if (intensity > 1) intensity = 1;
-                    intensity = 1 - intensity;
-
-                    sr.setColor(intensity, intensity, intensity, 1);
+                    double intensity = ((val - min) / (max - min));
+                    intensity = intensity > 1 ? 1 : Math.pow(intensity, power);
+                    if (intensity > 0.1){
+                        intensity = 1;
+                    }
+                    sr.setColor((float) intensity, (float) intensity, (float) intensity, 1);
                     sr.point(x, y, 0);
                     y += step;
                 }

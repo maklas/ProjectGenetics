@@ -5,9 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import ru.maklas.genetics.engine.genetics.Chromosome;
 import ru.maklas.genetics.engine.genetics.Crossover;
 import ru.maklas.genetics.engine.genetics.Gene;
+import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.mnw.MNW;
 import ru.maklas.genetics.utils.BitArray;
 import ru.maklas.genetics.utils.ClassUtils;
+import ru.maklas.genetics.utils.StringUtils;
 
 /**
  * Created by maklas on 04-Jan-18.
@@ -26,6 +28,16 @@ public class Test {
         System.out.println("   V");
         System.out.println(children.childA.byteCode());
         System.out.println(children.childB.byteCode());
+
+
+        SerovNashBiFunction f1 = new SerovNashBiFunction(100, 250, 0.2, 0.8);
+        SerovNashBiFunction f2 = new SerovNashBiFunction(250, 100, 0.8, 0.2);
+
+        double x = 200;
+        for (double y = 0; y < 300; y++) {
+            System.out.println(new Vector2((float) x, (float) y) + "F1: " + StringUtils.dfSigDigits(f1.f(x, y), 1, 3) + ", F2: " + StringUtils.dfSigDigits(f2.f(x, y), 1, 3));
+        }
+
     }
 
     private static String toString(BitArray bits){
