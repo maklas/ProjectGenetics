@@ -1,6 +1,7 @@
 package ru.maklas.genetics.engine.genetics;
 
 import com.badlogic.gdx.math.CumulativeDistribution;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import ru.maklas.genetics.engine.M;
@@ -45,7 +46,7 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
 
             Chromosome chromosomeA = a.get(M.chromosome).chromosome;
             Chromosome chromosomeB = b.get(M.chromosome).chromosome;
-            Crossover.Children children = crossover.cross(chromosomeA, chromosomeB, randPoints(chromosomeA.length()));
+            Crossover.Children children = crossover.cross(chromosomeA, chromosomeB, getCrossPoints(chromosomeA));//randPoints(chromosomeA.length()));
 
             nextGen.add(EntityUtils.chromosome(idCounter.next(), children.childA, generationNumber, a, b));
             if (nextGen.size < populationSize) {
@@ -56,17 +57,27 @@ public class CrossoverReproductionFunction implements ReproductionFunction {
         return nextGen;
     }
 
+    private int[] getCrossPoints(Chromosome chromosomeA) {
+        if (chromosomeA.getGenes().size == 1) return new int[]{MathUtils.random(1, chromosomeA.length() - 1)};
+        if (chromosomeA.getGenes().size == 2) {
+            int geneSize = chromosomeA.getGenes().get(0).length();
+            int random = MathUtils.random(1, geneSize - 1);
+            return new int[]{random, geneSize, geneSize - random};
+        }
+        throw new RuntimeException("Unknown Chromosome length");
+    }
+
     private IntArray intArrayCache = new IntArray();
     private int[] randPoints(int chromosomeLength){
-        if (chromosomeLength == 1){
-            return new int[]{Utils.rand.nextInt(chromosomeLength)};
+        if (crossPoints == 1){
+            return new int[]{MathUtils.random(1, chromosomeLength - 1)};
         }
         IntArray intArray = this.intArrayCache;
         intArray.clear();
         for (int i = 0; i < crossPoints; i++) {
-            int val = Utils.rand.nextInt(chromosomeLength + 1);
+            int val = MathUtils.random(1, chromosomeLength - 1);
             while (intArray.contains(val)){
-                val = Utils.rand.nextInt(chromosomeLength + 1);
+                val = MathUtils.random(1, chromosomeLength - 1);
             }
             intArray.add(val);
         }

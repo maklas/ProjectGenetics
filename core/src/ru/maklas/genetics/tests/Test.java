@@ -28,16 +28,15 @@ public class Test {
         System.out.println("   V");
         System.out.println(children.childA.byteCode());
         System.out.println(children.childB.byteCode());
+        System.out.println("------");
 
-
-        SerovNashBiFunction f1 = new SerovNashBiFunction(100, 250, 0.2, 0.8);
-        SerovNashBiFunction f2 = new SerovNashBiFunction(250, 100, 0.8, 0.2);
-
-        double x = 200;
-        for (double y = 0; y < 300; y++) {
-            System.out.println(new Vector2((float) x, (float) y) + "F1: " + StringUtils.dfSigDigits(f1.f(x, y), 1, 3) + ", F2: " + StringUtils.dfSigDigits(f2.f(x, y), 1, 3));
-        }
-
+        Chromosome nc = new Chromosome().add(new Gene(BitArray.fromString("00000"))).add(new Gene(BitArray.fromString("11111")));
+        Chromosome nc2 = new Chromosome().add(new Gene(BitArray.fromString("11111"))).add(new Gene(BitArray.fromString("00000")));
+        System.out.println(nc.byteCode());
+        System.out.println(nc2.byteCode());
+        Crossover.Children kids = new Crossover().cross(nc, nc2, new int[]{4, 6});
+        System.out.println(kids.childA.byteCode());
+        System.out.println(kids.childB.byteCode());
     }
 
     private static String toString(BitArray bits){

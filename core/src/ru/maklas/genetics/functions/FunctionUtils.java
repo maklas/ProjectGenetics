@@ -1,7 +1,14 @@
 package ru.maklas.genetics.functions;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Consumer;
+import com.badlogic.gdx.utils.FloatArray;
+import org.jetbrains.annotations.Nullable;
+import ru.maklas.genetics.functions.bi_functions.GraphBiFunction;
+
+import java.util.Comparator;
 
 public class FunctionUtils {
 
@@ -42,6 +49,58 @@ public class FunctionUtils {
         return goodColors.get(id);
     }
 
+
+    public static Array<Vector2> findParetoMinimal(GraphBiFunction f1, GraphBiFunction f2, double leftX, double rightX, double botY, double topY, double step, @Nullable Consumer<Float> progressCallback){
+        int width = (int) Math.ceil((rightX - leftX) / step);
+        int height = (int) Math.ceil((topY - botY) / step);
+        double[][] v1 = new double[height][width];
+        double[][] v2 = new double[height][width];
+
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                double x = leftX + i * step;
+                double y = botY + j * step;
+                {
+                    v1[j][i] = f1.f(x, y);
+                    v2[j][i] = f2.f(x, y);
+                }
+            }
+        }
+        Array<Vector2> result = new Array<>();
+        for (int i = 0; i < width; i++) {
+            double x = leftX + i * step;
+            double ySum = 0;
+            int count = 0;
+
+            for (int j = 0; j < height; j++) {
+                double y = botY + j * step;
+                double val_1 = v1[j][i];
+                double val_2 = v2[j][i];
+
+                boolean foundAnyBetter = false;
+
+                findingBetterPoint:
+                for (int k = 0; k < width; k++) {
+                    for (int l = 0; l < height; l++) {
+                        if (v1[l][k] < val_1 && v2[l][k] < val_2){
+                            foundAnyBetter = true;
+                            break findingBetterPoint;
+                        }
+                    }
+                }
+                if (!foundAnyBetter){
+                    ySum += y;
+                    count++;
+                }
+            }
+            if (count > 0){
+                result.add(new Vector2((float)x, (float)(ySum / count)));
+            }
+            if (progressCallback != null) progressCallback.accept(((float) i) / width);
+        }
+        return result;
+    }
 
 
 }

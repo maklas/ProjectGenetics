@@ -109,6 +109,15 @@ public class ParetoSetupState extends State {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             popState();
         }
+
+        double q = view.getQ();
+        int populationSize = view.getPopulationSize();
+        if (populationSize > 0 && q > 0){
+            double secondBest = 1 / (Math.pow(1d + (1 / (populationSize - 1d)), q));
+            double last = 1 / (Math.pow(2, q));
+            view.setSecondBest(secondBest);
+            view.setLast(last);
+        }
     }
 
 

@@ -93,6 +93,7 @@ public class BiFunGeneticsState extends AbstractEngineState {
         engine.add(new FunctionTrackingRenderSystem());
         engine.add(new BiFunctionRenderSystem());
         engine.add(new GradientRenderSystem());
+        //engine.add(new ParetoMinimalRenderSystem());
     }
 
     @Override

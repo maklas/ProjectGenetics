@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Consumer;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
+import ru.maklas.genetics.utils.StringUtils;
 
 public class XYSettingsView extends BaseStage {
 
@@ -22,6 +23,7 @@ public class XYSettingsView extends BaseStage {
     private final VisValidatableTextField bitsPerGeneField;
     private final VisValidatableTextField qField;
     private final VisLabel precisionLabel;
+    private final VisLabel secondBestLabel;
     private final VisCheckBox randomFunctionCheckBox;
 
     public XYSettingsView() {
@@ -51,6 +53,7 @@ public class XYSettingsView extends BaseStage {
         bitsPerGeneField = new VisValidatableTextField(new Validators.IntegerValidator());
         qField = new VisValidatableTextField(new Validators.FloatValidator());
         precisionLabel = label("");
+        secondBestLabel = label("");
         randomFunctionCheckBox = new VisCheckBox("", false);
 
 
@@ -95,7 +98,7 @@ public class XYSettingsView extends BaseStage {
         table.row();
 
         table.add(label("Q")).right();
-        table.add(qField).width(75);
+        table.add(inTable(t -> { t.add(qField).width(75).padRight(10); t.add(secondBestLabel);}));
         table.row();
 
 
@@ -192,6 +195,13 @@ public class XYSettingsView extends BaseStage {
         precisionLabel.setText("Precision: " + s);
     }
 
+    public void setSecondBest(double d){
+        secondBestLabel.setText(StringUtils.dfSigDigits(d, 2, 3));
+    }
+
+    public void setLast(double d){
+        //lastLabel.setText(StringUtils.dfSigDigits(d, 2, 3));
+    }
     public void setRandomizeFunctions(boolean randomize){
         randomFunctionCheckBox.setChecked(randomize);
     }
