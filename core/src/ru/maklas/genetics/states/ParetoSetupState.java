@@ -43,15 +43,15 @@ public class ParetoSetupState extends State {
             }
         });
         
-        view.setPopulationSize(200);
-        view.setBitsPerGeneLen(24);
+        view.setPopulationSize(500);
+        view.setBitsPerGeneLen(20);
         view.setBitMutationMinMax(1, 1);
         view.setCrossingPoints(1);
         view.setGenerationMemory(1);
         view.setMinMax(0, 300);
-        view.setQ(6);
+        view.setQ(150);
         view.setMutationChance(9);
-        view.setRandomizeFunctions(true);
+        view.setRandomizeFunctions(false);
 
     }
 

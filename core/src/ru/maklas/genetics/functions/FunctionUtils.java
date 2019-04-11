@@ -1,14 +1,12 @@
 package ru.maklas.genetics.functions;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Consumer;
-import com.badlogic.gdx.utils.FloatArray;
 import org.jetbrains.annotations.Nullable;
 import ru.maklas.genetics.functions.bi_functions.GraphBiFunction;
-
-import java.util.Comparator;
 
 public class FunctionUtils {
 
@@ -100,6 +98,12 @@ public class FunctionUtils {
             if (progressCallback != null) progressCallback.accept(((float) i) / width);
         }
         return result;
+    }
+
+    public static void renderPoints(ShapeRenderer sr, Array<Vector2> points){
+        for (int i = 1; i < points.size; i++) {
+            sr.line(points.get(i - 1), points.get(i));
+        }
     }
 
 

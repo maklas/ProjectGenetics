@@ -40,14 +40,14 @@ public class FunctionGeneticsSetupState extends State {
         mm.onSelectFunction(() -> pushState(new FunctionSelectionState(function)));
 
         setFunDesc(function);
-        mm.setPopulationSize(25);
+        mm.setPopulationSize(150);
         mm.setBitsPerGeneLen(32);
         mm.setBitMutationMinMax(1, 1);
         mm.setCrossingPoints(1);
-        mm.setGenerationMemory(10);
-        mm.setMinMax(-150, 150);
+        mm.setGenerationMemory(5);
+        mm.setMinMax(-1500, 1500);
         mm.setQ(2);
-        mm.setMutationChance(90);
+        mm.setMutationChance(20);
     }
 
     private boolean validate() {

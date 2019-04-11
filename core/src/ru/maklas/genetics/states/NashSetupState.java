@@ -49,14 +49,14 @@ public class NashSetupState extends State {
             }
         });
         
-        view.setPopulationSize(25);
-        view.setBitsPerGeneLen(32);
+        view.setPopulationSize(150);
+        view.setBitsPerGeneLen(28);
         view.setBitMutationMinMax(1, 1);
         view.setCrossingPoints(1);
-        view.setGenerationMemory(10);
+        view.setGenerationMemory(5);
         view.setMinMax(0, 80);
-        view.setQ(2);
-        view.setMutationChance(90);
+        view.setQ(3);
+        view.setMutationChance(20);
         view.setRandomizeFunctions(true);
 
     }

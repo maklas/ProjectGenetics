@@ -58,7 +58,7 @@ public class GradientRenderSystem extends RenderEntitySystem {
                         y += step;
                         continue;
                     }
-                    //double val = v1 + v2; double power = 0.1; //Показывает точку черещ которую пройдут хромосомы
+                    //double val = v1 + v2; double power = 2; //Показывает точку черещ которую пройдут хромосомы
                     double val = Math.max(v1, v2); double power = 0.1; //Показывает кривую которую пересекут хромосомы
                     //double val = (v1 * v2); double power = 0.1;
                     if (val > newMax){
@@ -69,9 +69,7 @@ public class GradientRenderSystem extends RenderEntitySystem {
                     }
                     double intensity = ((val - min) / (max - min));
                     intensity = intensity > 1 ? 1 : Math.pow(intensity, power);
-                    if (intensity > 0.1){
-                        intensity = 1;
-                    }
+                    intensity = 1 - intensity;
                     sr.setColor((float) intensity, (float) intensity, (float) intensity, 1);
                     sr.point(x, y, 0);
                     y += step;

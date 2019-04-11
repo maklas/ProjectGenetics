@@ -46,11 +46,7 @@ public class ParetoMinimalRenderSystem extends RenderEntitySystem {
         sr.begin(ShapeRenderer.ShapeType.Line);
         sr.setColor(Color.GREEN);
 
-        for (int i = 1; i < paretoMinimal.size; i++) {
-            Vector2 a = paretoMinimal.get(i - 1);
-            Vector2 b = paretoMinimal.get(i);
-            sr.line(a, b);
-        }
+        FunctionUtils.renderPoints(sr, paretoMinimal);
 
         sr.end();
         if (inProgress){
