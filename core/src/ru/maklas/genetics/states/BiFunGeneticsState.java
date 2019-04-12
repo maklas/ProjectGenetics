@@ -9,10 +9,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
+import ru.maklas.genetics.engine.EngineUtils;
 import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.formulas.BiFunctionComponent;
+import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.XyGeneChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.dispatchable.ChromosomeSelectedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
@@ -169,6 +172,11 @@ public class BiFunGeneticsState extends AbstractEngineState {
             while (System.currentTimeMillis() - start < 33.332f) {
                 engine.dispatch(new EvolveRequest());
             }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            int generation = engine.getSystemManager().getExtendableSystem(ChromosomeSystem.class).currentGenerationNumber;
+            Array<Entity> chromosomes = EngineUtils.getGeneration(engine, generation).get(M.generation).chromosomes;
+            pushState(new CriterialChromosomeState(params.getBiFunction1(), params.getBiFunction2(), chromosomes.map(c -> c.get(M.chromosome).chromosome), generation), false, false);
         }
 
         engine.update(dt);

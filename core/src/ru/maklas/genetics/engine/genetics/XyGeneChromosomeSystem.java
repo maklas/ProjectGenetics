@@ -5,7 +5,6 @@ import ru.maklas.genetics.engine.M;
 import ru.maklas.genetics.engine.genetics.dispatchable.EvolveRequest;
 import ru.maklas.genetics.engine.genetics.dispatchable.GenerationChangedEvent;
 import ru.maklas.genetics.engine.genetics.dispatchable.ResetEvolutionRequest;
-import ru.maklas.genetics.utils.Utils;
 import ru.maklas.mengine.Entity;
 
 public class XyGeneChromosomeSystem extends ChromosomeSystem {

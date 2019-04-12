@@ -45,7 +45,7 @@ public class ChromosomeRenderSystem extends RenderEntitySystem {
         sr = engine.getBundler().getAssert(B.sr);
         cam = engine.getBundler().getAssert(B.cam);
         batch = engine.getBundler().getAssert(B.batch);
-        params = engine.getBundler().getAssert(B.params);
+        params = engine.getBundler().get(B.params);
         minMaxColor = Color.SCARLET;
         minMaxColor.a = 0.65f;
     }
