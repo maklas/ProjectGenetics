@@ -58,10 +58,10 @@ public class HistoryState extends AbstractEngineState {
         engine.add(new TTLSystem());
         engine.add(new HistoryRenderSystem());
         engine.add(new FunctionRenderSystem()
-                .setNetColor(Color.BLACK)
+                .setAxisColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillNet(false)
-                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
+                .setDrawNet(false)
+                .setNetColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
     }
 

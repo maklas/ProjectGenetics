@@ -62,9 +62,9 @@ public class FunctionSelectionState extends AbstractEngineState {
     @Override
     protected void addSystems(Engine engine) {
         engine.add(new FunctionRenderSystem()
-                .setNetColor(Color.BLACK)
+                .setAxisColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
+                .setNetColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new EntityDebugSystem().setTextInfoEnabled(false));
         engine.add(new CameraSystem());
         engine.add(new FunctionTrackingRenderSystem());

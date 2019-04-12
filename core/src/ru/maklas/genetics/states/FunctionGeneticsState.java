@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ImmutableArray;
 import ru.maklas.genetics.engine.B;
@@ -90,10 +89,10 @@ public class FunctionGeneticsState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new TTLSystem());
         engine.add(new FunctionRenderSystem()
-                .setNetColor(Color.BLACK)
+                .setAxisColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillNet(false)
-                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
+                .setDrawNet(false)
+                .setNetColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
         engine.add(new ChromosomeTrackingRenderSystem().setMode(ChromosomeTrackMode.CURRENT_GEN));
 
@@ -117,8 +116,8 @@ public class FunctionGeneticsState extends AbstractEngineState {
         double lowestY = params.getFunction().f(lowestX);
         controlTable.addLabel("Target: (" + StringUtils.dfSigDigits(lowestX, 5, 3) + ", " + StringUtils.dfSigDigits(lowestY, 5, 3) + ")");
         Label errorLabel = controlTable.addLabel("Error: (" + StringUtils.dfSigDigits(lowestX, 5, 3) + ", " + StringUtils.dfSigDigits(lowestY, 5, 3) + ")");
-        controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
-        controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
+        controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawAxisPortions(e));
+        controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
         ChromosomeTrackingRenderSystem system = engine.getSystemManager().getSystem(ChromosomeTrackingRenderSystem.class);

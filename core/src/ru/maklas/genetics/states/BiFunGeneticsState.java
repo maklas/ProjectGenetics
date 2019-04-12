@@ -86,10 +86,10 @@ public class BiFunGeneticsState extends AbstractEngineState {
         engine.add(new CameraSystem());
         engine.add(new TTLSystem());
         engine.add(new FunctionRenderSystem()
-                .setNetColor(Color.BLACK)
+                .setAxisColor(Color.BLACK)
                 .setNumberColor(Color.BLACK)
-                .setFillNet(false)
-                .setFillColor(new Color(0.5f, 0.5f, 0.5f, 1)));
+                .setDrawNet(false)
+                .setNetColor(new Color(0.5f, 0.5f, 0.5f, 1)));
         engine.add(new FunctionTrackingRenderSystem());
         engine.add(new BiFunctionRenderSystem());
         engine.add(new GradientRenderSystem());
@@ -112,8 +112,8 @@ public class BiFunGeneticsState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         Label bestValueLabel = controlTable.addLabel("");
-        controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawPortions(e));
-        controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setFillNet(e));
+        controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawAxisPortions(e));
+        controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
         controlTable.addCheckBox("Track mouse", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setEnableTracking(e));
         controlTable.addCheckBox("Print XY", true, e -> engine.getSystemManager().getSystem(FunctionTrackingRenderSystem.class).setPrintXY(e));
