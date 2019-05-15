@@ -60,7 +60,7 @@ public class BiFunGeneticsState extends AbstractEngineState {
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         view = new CornerView();
         controlTable = new ControlTable(true);
-        chromosomeInfo = new ChromosomeInfoTable();
+        chromosomeInfo = new ChromosomeInfoTable().setPrintFunctionValue(false);
     }
 
     @Override
@@ -115,6 +115,9 @@ public class BiFunGeneticsState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         Label bestValueLabel = controlTable.addLabel("");
+        controlTable.addLabel("Population size: " + params.getPopulationSize());
+        controlTable.addLabel("Mutation chance: " + params.getMutationChance() + "%");
+        controlTable.addLabel("Bits per gene: " + params.getBitsPerGene());
         controlTable.addCheckBox("Draw numbers", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawAxisPortions(e));
         controlTable.addCheckBox("Draw net", false, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawNet(e));
         controlTable.addCheckBox("Draw functions", true, e -> engine.getSystemManager().getSystem(FunctionRenderSystem.class).setDrawFunctions(e));
@@ -138,6 +141,7 @@ public class BiFunGeneticsState extends AbstractEngineState {
             cam.setPosition(0, 0);
             cam.zoom = 1;
         });
+        controlTable.addButton("Criterial view", this::launchCriterialView);
         view.bottomRight.setActor(chromosomeInfo);
 
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
@@ -174,13 +178,17 @@ public class BiFunGeneticsState extends AbstractEngineState {
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            int generation = engine.getSystemManager().getExtendableSystem(ChromosomeSystem.class).currentGenerationNumber;
-            Array<Entity> chromosomes = EngineUtils.getGeneration(engine, generation).get(M.generation).chromosomes;
-            pushState(new CriterialChromosomeState(params.getBiFunction1(), params.getBiFunction2(), chromosomes.map(c -> c.get(M.chromosome).chromosome), generation), false, false);
+            launchCriterialView();
         }
 
         engine.update(dt);
         view.act();
+    }
+
+    private void launchCriterialView(){
+        int generation = engine.getSystemManager().getExtendableSystem(ChromosomeSystem.class).currentGenerationNumber;
+        Array<Entity> chromosomes = EngineUtils.getGeneration(engine, generation).get(M.generation).chromosomes;
+        pushState(new CriterialChromosomeState(params.getBiFunction1(), params.getBiFunction2(), chromosomes.map(c -> c.get(M.chromosome).chromosome), generation), false, false);
     }
 
 

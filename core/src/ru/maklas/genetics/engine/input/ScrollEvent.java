@@ -6,6 +6,7 @@ public class ScrollEvent implements Event {
 
     boolean up;
 
+    /** @param up zoom-in or scroll-up **/
     public ScrollEvent(boolean up) {
         this.up = up;
     }

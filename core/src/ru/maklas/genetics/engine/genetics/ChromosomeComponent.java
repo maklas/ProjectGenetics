@@ -15,4 +15,10 @@ public class ChromosomeComponent implements IRenderComponent {
         this.chromosome = chromosome;
         this.generation = generation;
     }
+
+    public ChromosomeComponent(Chromosome chromosome, int generation, boolean dirty) {
+        this.chromosome = chromosome;
+        this.generation = generation;
+        this.dirty = dirty;
+    }
 }

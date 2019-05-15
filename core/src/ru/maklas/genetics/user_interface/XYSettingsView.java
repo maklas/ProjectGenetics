@@ -80,9 +80,9 @@ public class XYSettingsView extends BaseStage {
         table.add(generationMemoryField).width(75);
         table.row();
 
-        table.add(label("Cross points")).right();
-        table.add(crossPointField).width(75);
-        table.row();
+        //table.add(label("Cross points")).right();
+        //table.add(crossPointField).width(75);
+        //table.row();
 
         VisTable mutationTable = new VisTable();
         mutationTable.defaults().padRight(10);

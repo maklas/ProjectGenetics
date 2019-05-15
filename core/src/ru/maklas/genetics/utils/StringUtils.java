@@ -37,6 +37,16 @@ public class StringUtils {
         return StringUtils.df(d, -(logFloor - (significantDigits - 1)));
     }
 
+    /**
+     * If double is more than zero, uses default digit after point.
+     * If does is less than 0, gets to significant points specified.
+     */
+    public static String ffSigDigits(float f, int defaultDigitsAfterPoint, int significantDigits){
+        int logFloor = f == 0d ? 0 : (int) Math.floor(Math.log10(f));
+        if (logFloor >= 0) return df(f, defaultDigitsAfterPoint);
+        return StringUtils.df(f, -(logFloor - (significantDigits - 1)));
+    }
+
     public static String df(double d){
         return df(d, 2);
     }

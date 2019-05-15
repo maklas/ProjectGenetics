@@ -14,6 +14,9 @@ import ru.maklas.mengine.Entity;
 
 public class ChromosomeInfoTable extends VisTable {
 
+    boolean printFitness = true;
+    boolean printFunctionValue = true;
+
     public ChromosomeInfoTable() {
         setBackground(new TextureRegionDrawable(A.images.whiteBox10pxHalfAlpha));
         setColor(Color.LIGHT_GRAY);
@@ -21,7 +24,7 @@ public class ChromosomeInfoTable extends VisTable {
     }
 
     public void set(@Nullable Entity entity){
-        clearChildren();
+        clear();
         if (entity == null) {
             return;
         }
@@ -30,14 +33,29 @@ public class ChromosomeInfoTable extends VisTable {
 
         label("Id: " + entity.id);
         label("Gen: " + cc.generation);
-        label("Pos: " + StringUtils.ff(entity.x, 2) + ", " + StringUtils.ff(entity.y, 2));
+        label("Pos: " + StringUtils.ffSigDigits(entity.x, 2, 3) + ", " + StringUtils.ffSigDigits(entity.y, 2, 3));
         label("Genes");
         for (Gene gene : cc.chromosome.getGenes()) {
             label("   " + gene.getName() + ": " + gene.getRawData().toStringSmart(4));
         }
-        label("Fitness: " + StringUtils.dfSigDigits(entity.get(M.chromosome).fitness, 2, 2));
-        label("Function value: " + StringUtils.dfSigDigits(entity.get(M.chromosome).functionValue, 2, 2));
+        if (printFitness) label("Fitness: " + StringUtils.dfSigDigits(entity.get(M.chromosome).fitness, 2, 2));
+        if (printFunctionValue) label("Function value: " + StringUtils.dfSigDigits(entity.get(M.chromosome).functionValue, 2, 2));
     }
+
+    public void clear(){
+        clearChildren();
+    }
+
+    public ChromosomeInfoTable setPrintFitness(boolean print) {
+        this.printFitness = print;
+        return this;
+    }
+
+    public ChromosomeInfoTable setPrintFunctionValue(boolean print) {
+        this.printFunctionValue = print;
+        return this;
+    }
+
 
     private void label(String text){
         VisLabel label = new VisLabel(text);
