@@ -42,8 +42,8 @@ public class ParetoSetupState extends State {
                 params.setMutationChance(view.getMutationChance());
                 params.setGenerationDistribution(GenerationDistribution.RANDOM);
                 params.setStopFunction(new MultipleConditionStopFunction()
-                        .add(new ElitePointPercentageStopFunction(0.75, 1.0))
-                        .add(new MaxIterationsStopFunction(300)));
+                        .add(new ElitePointPercentageStopFunction(0.65, 1.0))
+                        .add(new MaxIterationsStopFunction(150)));
 
                 pushState(new BiFunGeneticsState(params));
             }

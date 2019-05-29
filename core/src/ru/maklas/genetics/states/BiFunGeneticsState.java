@@ -191,6 +191,11 @@ public class BiFunGeneticsState extends AbstractEngineState {
                 }
             }
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.V) && params.getStopFunction() != null && !params.getStopFunction().shouldStop(engine)) {
+            while (!params.getStopFunction().shouldStop(engine)) {
+                engine.dispatch(new EvolveRequest());
+            }
+        }
 
         engine.update(dt);
         view.act();
