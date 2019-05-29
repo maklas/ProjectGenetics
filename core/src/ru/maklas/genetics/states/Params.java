@@ -22,7 +22,10 @@ public class Params {
     private FitnessFunction fitnessFunction;
     private GenerationDistribution generationDistribution;
     private int mutationChance = 100;
+    private StopConditionFunction stopFunction;
 
+    public Params() {
+    }
 
     public GraphFunction getFunction() {
         return function;
@@ -136,5 +139,13 @@ public class Params {
     /**0..100**/
     public int getMutationChance() {
         return mutationChance;
+    }
+
+    public StopConditionFunction getStopFunction() {
+        return stopFunction;
+    }
+
+    public void setStopFunction(StopConditionFunction stopFunction) {
+        this.stopFunction = stopFunction;
     }
 }

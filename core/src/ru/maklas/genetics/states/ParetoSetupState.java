@@ -5,6 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import ru.maklas.genetics.engine.genetics.*;
+import ru.maklas.genetics.engine.genetics.stop_conditions.ElitePointPercentageStopFunction;
+import ru.maklas.genetics.engine.genetics.stop_conditions.MaxIterationsStopFunction;
+import ru.maklas.genetics.engine.genetics.stop_conditions.MultipleConditionStopFunction;
 import ru.maklas.genetics.functions.bi_functions.SerovNashBiFunction;
 import ru.maklas.genetics.user_interface.XYSettingsView;
 import ru.maklas.genetics.utils.StringUtils;
@@ -38,6 +41,9 @@ public class ParetoSetupState extends State {
                 params.setMutationFunction(new RandomBitChangeMutation(view.getBitMutationMin(), view.getBitMutationMax(), view.getMutationChance()));
                 params.setMutationChance(view.getMutationChance());
                 params.setGenerationDistribution(GenerationDistribution.RANDOM);
+                params.setStopFunction(new MultipleConditionStopFunction()
+                        .add(new ElitePointPercentageStopFunction(0.75, 1.0))
+                        .add(new MaxIterationsStopFunction(300)));
 
                 pushState(new BiFunGeneticsState(params));
             }

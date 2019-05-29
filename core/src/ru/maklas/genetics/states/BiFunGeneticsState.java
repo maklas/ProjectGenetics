@@ -115,6 +115,7 @@ public class BiFunGeneticsState extends AbstractEngineState {
         view.bottomLeft.setActor(controlTable);
         Label generationLabel = controlTable.addLabel("");
         Label bestValueLabel = controlTable.addLabel("");
+        Label elitePointsLabel = controlTable.addLabel("Elite points: " + 0 + "%");
         controlTable.addLabel("Population size: " + params.getPopulationSize());
         controlTable.addLabel("Mutation chance: " + params.getMutationChance() + "%");
         controlTable.addLabel("Bits per gene: " + params.getBitsPerGene());
@@ -147,6 +148,7 @@ public class BiFunGeneticsState extends AbstractEngineState {
         engine.subscribe(GenerationChangedEvent.class, e -> generationLabel.setText("Generation: " + StringUtils.priceFormatted(e.getGenerationNumber(), '\'')));
         engine.subscribe(ChromosomeSelectedEvent.class, e -> chromosomeInfo.set(e.getChromosome()));
         engine.subscribe(GenerationChangedEvent.class, e -> bestValueLabel.setText("Best Value: " + StringUtils.dfSigDigits(e.getBestChromosome().get(M.chromosome).functionValue, 3, 3)));
+        engine.subscribe(GenerationChangedEvent.class, e -> elitePointsLabel.setText("Elite points: " + StringUtils.df(EngineUtils.getElitePointsPercent(engine, 1.0) * 100, 2) + "%"));
 
         engine.dispatch(new ResetEvolutionRequest());
     }
@@ -179,6 +181,15 @@ public class BiFunGeneticsState extends AbstractEngineState {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
             launchCriterialView();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.F) && params.getStopFunction() != null && !params.getStopFunction().shouldStop(engine)) {
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 16.666f) {
+                engine.dispatch(new EvolveRequest());
+                if (params.getStopFunction().shouldStop(engine)){
+                    break;
+                }
+            }
         }
 
         engine.update(dt);

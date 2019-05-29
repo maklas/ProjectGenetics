@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ImmutableArray;
+import ru.maklas.genetics.engine.genetics.ChromosomeSystem;
 import ru.maklas.genetics.engine.genetics.GenerationComponent;
 import ru.maklas.mengine.Engine;
 import ru.maklas.mengine.Entity;
@@ -15,6 +16,26 @@ import ru.maklas.genetics.engine.rendering.TextureUnit;
 import ru.maklas.genetics.engine.rendering.RenderComponent;
 
 public class EngineUtils {
+
+    /**
+     * @param minFitness 0..1
+     * @return 0..1
+     */
+    public static double getElitePointsPercent(Engine engine, double minFitness){
+        ChromosomeSystem chromosomeSystem = engine.getSystemManager().getExtendableSystem(ChromosomeSystem.class);
+        if (chromosomeSystem == null || chromosomeSystem.currentGeneration == null) return 0;
+        Array<Entity> currGenChromosomes = chromosomeSystem.currentGeneration.get(M.generation).chromosomes;
+        if (currGenChromosomes.size == 0) return 0;
+
+        int good = 0;
+        for (Entity chromosome : currGenChromosomes) {
+            double fitness = chromosome.get(M.chromosome).fitness;
+            if (fitness >= minFitness){
+                good++;
+            }
+        }
+        return ((double) good) / currGenChromosomes.size;
+    }
 
     /** Adds new RenderUnit with animation attached **/
     public static Animation addAnimation(Entity e, TextureRegion[] regions, float cycleTime) {

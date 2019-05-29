@@ -172,16 +172,25 @@ public class FunctionGeneticsState extends AbstractEngineState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)){
             engine.dispatch(new ResetEvolutionRequest());
         } else
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)){ //Just one
             engine.dispatch(new EvolveRequest());
         } else
-        if (Gdx.input.isKeyPressed(Input.Keys.U)){
+        if (Gdx.input.isKeyPressed(Input.Keys.U)){ //One every frame while pressed
             engine.dispatch(new EvolveRequest());
         } else
-        if (Gdx.input.isKeyPressed(Input.Keys.Y)){
+        if (Gdx.input.isKeyPressed(Input.Keys.Y)){ //As many as possible without noticable lag on screen every frame.
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start < 16.666f) {
                 engine.dispatch(new EvolveRequest());
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.F) && params.getStopFunction() != null && !params.getStopFunction().shouldStop(engine)) {
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 16.666f) {
+                engine.dispatch(new EvolveRequest());
+                if (params.getStopFunction().shouldStop(engine)){
+                    break;
+                }
             }
         }
 
